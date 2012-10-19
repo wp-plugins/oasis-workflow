@@ -36,7 +36,7 @@ The plugin provides three processes:
 **Reassign - How to pass the buck?**
  - What if you have been assigned a workflow task, but you feel you are not the appropriate person to complete it? No worry, you can assign the task to another person. 
 
-**Due Date and Email reminders help you to publish your articles on time**
+**Due Date and Email reminders** help you to publish your articles on time.
 
 You can find the complete list of features on the [support](http://oasisworkflow.com) site.
 
