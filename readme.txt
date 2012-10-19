@@ -30,7 +30,7 @@ Users can view their current assignments and sign off their tasks once it’s comp
 Process history lets users retrace their steps
 For auditing purposes a record is maintained of all posts that are routed through a workflow process. The process history also captures the comments added by the user when they signed off the particular task.
 
-Reassign – How to pass the buck?
+Reassign - How to pass the buck?
 What if you have been assigned a workflow task, but you feel you are not the appropriate person to complete it? No worry, you can assign the task to another person. 
 
 Due Date and Email reminders help you to publish your articles on time
