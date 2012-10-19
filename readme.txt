@@ -14,24 +14,27 @@ Any online publishing organization has one or several Managing Editors responsib
 Oasis Workflow plugin is designed to automate any workflow process using a simple, intuitive graphical user interface (GUI).
 
 The plugin provides three processes:
+
 1. Assignment - represents task related to content generation.
+
 2. Review - represents task related to content review.
+
 3. Publish - represents the actual "publish" task.
 
 **Visual Work flow Designer**
-Configure your work flow using the easy drag and drop designer interface. See screen shots for more detail.
+ - Configure your work flow using the easy drag and drop designer interface. See screen shots for more detail.
 
 **Role-Based routing definitions allow you to assign tasks dynamically**
-By using role-based routing, you can ensure that your process moves forward as quickly as possible without sacrificing accountability.
+ - By using role-based routing, you can ensure that your process moves forward as quickly as possible without sacrificing accountability.
 
 **Inbox**
-Users can view their current assignments and sign off their tasks once it’s completed.
+ - Users can view their current assignments and sign off their tasks once it's completed.
 
 **Process history lets users retrace their steps**
-For auditing purposes a record is maintained of all posts that are routed through a workflow process. The process history also captures the comments added by the user when they signed off the particular task.
+ - For auditing purposes a record is maintained of all posts that are routed through a workflow process. The process history also captures the comments added by the user when they signed off the particular task.
 
 **Reassign - How to pass the buck?**
-What if you have been assigned a workflow task, but you feel you are not the appropriate person to complete it? No worry, you can assign the task to another person. 
+ - What if you have been assigned a workflow task, but you feel you are not the appropriate person to complete it? No worry, you can assign the task to another person. 
 
 **Due Date and Email reminders help you to publish your articles on time**
 
