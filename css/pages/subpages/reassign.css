@@ -1,0 +1,51 @@
+.loading{
+	background-image: url( "../../../img/ajax-loader.gif");
+	background-position: 50% 80%;
+	background-repeat: no-repeat;
+	width:10px;
+}
+#reassgn-setting{
+	background-color:white;
+	color:black;
+	border:0.25em solid #ddd;	
+	font-size:13px;
+	padding:1em;
+	-moz-border-radius:1em;
+	border-radius:1em; 
+	font-family:helvetica;
+	box-shadow: 2px 2px 19px #aaa;
+   -o-box-shadow: 2px 2px 19px #aaa;
+   -webkit-box-shadow: 2px 2px 19px #aaa;
+   -moz-box-shadow: 2px 2px 19px #aaa;
+   font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
+	width:300px;
+}
+.dialog-title{
+	border-bottom:1px dotted grey; padding-bottom:1.5em; font-size:90%;
+	text-align:center;
+	font-size:14px;
+}
+
+.reassign-set{
+	margin:30px 0 20px 0;
+	width:100%;
+	
+}
+.reassign-set span{margin-top:5px;}
+
+.reassign-set span{
+	float:right;
+	margin-right:5px;
+	width:15px;
+}
+
+#reassignCancel{
+	margin:5px 30px 0 0px;
+	float:right;
+	color:blue;
+}
+#reassignSave{
+	float:right;
+	width:70px;
+}
+

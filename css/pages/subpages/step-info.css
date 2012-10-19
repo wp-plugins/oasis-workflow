@@ -1,0 +1,134 @@
+#controls {
+	margin-left:20px;
+}
+
+.loading{
+	background-image: url( "../../../img/ajax-loader.gif");
+	background-position: 50% 80%;
+	background-repeat: no-repeat;
+	width:10px;
+}
+
+#step-setting{
+	background-color:white;
+	color:black;
+	border:0.25em solid #ddd;	
+	font-size:13px;
+	padding:1em;
+	-moz-border-radius:1em;
+	border-radius:1em; 
+	font-family:helvetica;
+	box-shadow: 2px 2px 19px #aaa;
+   -o-box-shadow: 2px 2px 19px #aaa;
+   -webkit-box-shadow: 2px 2px 19px #aaa;
+   -moz-box-shadow: 2px 2px 19px #aaa;
+   font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
+}
+
+#step-setting label{
+	float:left;
+	width:130px;
+	margin-top:4px;
+}
+
+#step-name, #assignment-email-subject, #reminder-email-subject{
+	border:1px solid #dadada;
+	-moz-border-radius:0.2em;
+	border-radius:0.2em; 
+}
+
+.dialog-title{
+	border-bottom:1px dotted grey; padding-bottom:1.5em; font-size:90%;
+	text-align:center;
+	font-size:18px;
+}
+
+.step-name input{
+	width:350px;
+}
+.step-assignee{
+	margin-top:25px;
+}
+.step-assignee div{
+	float:left;
+}
+.step-assignee-list{
+	text-align:center;
+}
+.step-assignee-list p select{
+	width:200px;
+	border:1px solid #dadada;
+	overflow: auto;
+	height:100px;
+	cursor:pointer;
+	margin-top:-10px;
+}
+
+.step-assignee-point{
+	margin:55px 10px 0 10px;
+}
+
+.step-review-lb {
+	margin-left:0px;
+	float:left;
+}
+.step-review{
+	margin-top:25px;
+}
+.step-review-chk{
+	width:350px;
+	float:left;
+}
+.step-review-chk div{
+	margin-top:10px;
+}
+
+
+#more-show{
+	background:transparent url(../../../img/arrows-dark.png) no-repeat 105px 0px;
+	margin:30px;	
+	float:right;
+	width:120px;
+	color:blue;
+}
+
+#assignment-email-subject, #reminder-email-subject{
+	width:500px;
+}
+
+#CONTAINERassignment-email-content, #CONTAINERreminder-email-content{
+	border:1px solid #e0dede;
+}
+
+#CONTROLSassignment-email-content, #CONTROLSreminder-email-content{
+	border:0px;	
+}
+
+
+#stepCancel{
+	margin:0 10px 0px 30px;
+	float:right;
+	color:blue;
+}
+#stepSave{
+	margin-left: 10px;
+	float:right;
+	width:70px;
+}
+
+.step-set{
+	margin:0px 30px 0 0;
+}
+
+.step-set span{
+	float:right;
+	margin-right:5px;
+	width:15px;
+}
+
+#step-setting a{
+	color:blue;
+	cursor:pointer;
+}
+
+

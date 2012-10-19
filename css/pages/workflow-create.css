@@ -1,0 +1,273 @@
+.wrap, .wrap h2{
+	font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
+}
+#connection-setting{
+	font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
+}
+div#workflow-edit-icon {
+	background-image:url(../../img/edit-icon-32.png);
+	background-repeat: no-repeat
+}
+
+.workflow-assave-bt{
+	float:right;
+}
+.workflow-assave-bt{
+	margin-right:15px;	
+}
+
+#draggable {
+	width: 100px;
+	height: 100px;
+	padding: 0.5em;
+	float: left;
+	margin: 10px 10px 10px 0;
+	background-color: yellow;
+}
+
+#droppable {
+	width: 150px;
+	height: 150px;
+	padding: 0.5em;
+	float: left;
+	margin: 10px;
+	background-color: green;
+}
+
+#draggable, #draggable2 {
+	float: left;
+	height: 100px;
+	margin: 10px 10px 10px 0;
+	padding: 0.5em;
+	width: 100px;
+	background-color: yellow;
+}
+#workflow-area{
+	height:450px;
+	width:73%;
+	floar:left;
+}
+#workflow-info-area{
+	width:25%;
+	float:right;
+	margin:10px;
+}
+.workflow-save{float:right;}
+.fc_action{
+	border:1px solid #d7d5d5;
+	-moz-border-radius:0.5em;
+	border-radius:0.5em;
+	background-color:#fbfbfb;
+}
+#workflow-define-div{
+	margin:0 0 10px 10px;
+}
+#workflow-define-div table{
+	width:100%;
+}
+#workflow-define-div table label{
+	margin-left:5px;
+	font-weight:bold;
+}
+#workflow-define-div table textarea{
+	height:205px;
+	width:100%;
+	line-height: 20px;
+}
+#wfsortable, .wfeditable{
+	padding:0px 10px 0px 10px
+}
+#wfsortable li, .wfeditable li{
+	-moz-border-radius: 0.5em;
+	border-radius: 0.5em;
+	margin-bottom:10px;
+	cursor:move;
+}
+.widget-wf-process{
+	padding:6px;margin-left:3px;
+}
+#widget-text-__i__-title{
+		
+}
+#define-workflow-description{
+	
+}
+.sortable img{margin-top:30px !important;}
+.fc_action{
+	padding-bottom:-15px;
+}
+.fc_action fieldset img{
+	float:left;
+}
+.postbox-container{
+	width:100%;
+}
+.loading{
+	background-image: url( "../../img/ajax-loader.gif");
+	background-position: 50% 80%;
+	background-repeat: no-repeat;
+	width:10px;
+}
+.loading_1{
+	background-image: url( "../../img/ajax-loader-1.gif");
+	background-position: 50% 80%;
+	background-repeat: no-repeat;
+}
+#workflow-show-bt{
+	margin-left:15px;	
+}
+
+.wf_graphic_show_link{
+	float:right;
+	margin-right:30px;
+	color:black;
+	text-decoration:none;
+}
+.wf_graphic_show_link div{
+	display:inline;
+	background:transparent url(../../img/arrows-dark.png) no-repeat 0 0px;
+}
+#delete-form{
+	float:right;
+	margin-right:150px;
+}
+
+.changed-data-set input{
+	float: right;
+}
+#new-create-wf-save, #connection-setting-save{
+	margin-right:10px;
+}
+#new-create-wf-cancel, #connection-setting-cancel{
+	float:right;
+	margin:5px 25px 0 0;
+}
+.changed-data-set span{
+	float:right;
+	width:25px;
+	margin-top:3px;
+}
+.save_loading{
+	float:right;
+	margin-top:3px;
+	width:20px;
+}
+/*==================*/
+#list { border-bottom:1px dotted grey; padding-bottom:1.5em; font-size:90%;}
+#list table { width:100%; text-align:left;}
+#connection-setting, #new-workflow-create-check { 
+	background-color:white;
+	color:black;
+	border:0.25em solid #ddd;
+	padding:1em;
+	-moz-border-radius:1em;
+	border-radius:1em;
+	box-shadow: 2px 2px 19px #aaa;
+   -o-box-shadow: 2px 2px 19px #aaa;
+   -webkit-box-shadow: 2px 2px 19px #aaa;
+   -moz-box-shadow: 2px 2px 19px #aaa;
+   display:none;
+   font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
+}
+#connection-setting{
+	font-size:12px;
+}
+
+#new-workflow-create-check{
+	font-size:13px;
+}
+
+.dialog-title, .div-line{
+	border-bottom:1px dotted grey; font-size:90%;
+	text-align:center;
+}
+.dialog-title{padding-bottom:1.5em;}
+.div-line{padding:5px;margin-bottom:10px;width:95%;}
+
+.dialog-title strong{
+	font-size:13px;
+}
+.connection-status{
+	border-bottom:1px dotted grey;
+	padding:5px;
+}
+#wfsortable div{font-size:13px;}
+.wfmessage{padding:0 10px 0 10px}
+.wfmessage p, .wfmessage p a{font-size:13px;}
+/*==================*/
+.w { 
+	padding:1.3em 1em 1.3em 1em;
+	position:absolute;
+	border: 1px solid black;
+	z-index:4;
+	border-radius:1em;
+	border:1px solid #346789;
+	box-shadow: 2px 2px 19px #e0e0e0;
+	   -o-box-shadow: 2px 2px 19px #e0e0e0;
+	   -webkit-box-shadow: 2px 2px 19px #e0e0e0;
+	   -moz-box-shadow: 2px 2px 19px #e0e0e0;
+	-moz-border-radius:0.5em;
+	border-radius:0.5em;
+	
+	opacity:0.8;
+	filter:alpha(opacity=80);
+	cursor:move;
+}
+.w img{
+	float:left;
+}
+.w label{
+	float:left;
+	margin:-2px 5px 0 2px;
+}
+.aLabel {
+	background-color:white;
+	opacity:0.8;
+	padding:0.3em;				
+}
+			
+.ep {
+	float:right;
+	width:1em;
+	height:1em;
+	background-color:#994466;
+	cursor:pointer;
+}			
+._jsPlumb_endpoint {
+	z-index:3;
+	opacity:0;
+}
+
+/*	._jsPlumb_connector { border:1px solid red; }*/			
+			
+.dragHover { border:1px dotted red; }
+
+path { cursor:pointer; }
+.date-clear{padding:1px;}
+.labelcomponent{
+	border:1px solid #346789;
+	widht:20px;
+	height:15px;
+	padding:1px;
+	-moz-border-radius:1em;
+	border-radius:1em;
+	z-index:10;
+	background-color:white;
+}
+/*------*/
+#process-info-div{width:100%;}
+.workflow-save-bt{
+	float:right;
+	margin:0 15px 5px 0;
+	width:50px;
+}
+.process-lbl{font-weight:bold;font-size:15px;}
+.wfmessage p{line-height:30px;}
+.workflow-lbl{font-weight:bold;font-size:15px;}
+#define-workflow-description{height:100px !important;}
+#start-date, #end-date{background-color:white;width:110px;}
+.save-action-div{margin-top:15px;}
+.fc_error_message{border:1px solid red !important;}
+.first_step{margin-top:-10px;}
+.first_step span{float:left;margin-top:4px;}
+.first_step span input{cursor:pointer;}

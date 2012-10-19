@@ -1,0 +1,21 @@
+.wrap, .wrap h2{
+	font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
+}
+.message{
+	border:1px solid #b0b4fa; 
+	background-color:#dcddfa;
+	width:97%;
+	margin:20px 0 20px 0;
+	-moz-border-radius:0.5em;
+	border-radius:0.5em;
+	padding:10px; 
+}
+#setting_form{
+	font-size:13px;
+}
+#workflow-setting{margin-top:10px;}
+.changed-data-set{
+	margin:20px 0 0 250px;
+}
+#div_reminder_day{margin-top: 20px; opacity:0.5;}
+#reminder_days{width:50px;text-align:right;}

@@ -1,0 +1,5 @@
+#workflow-inbox{}
+#workflow-inbox .loading{display:none;}
+#workflow-inbox .hurry-td{padding:20px;}
+#workflow-inbox .hurray-lbl{font-weight:bold;height:30px;}
+#reassign-div{display:none;}
