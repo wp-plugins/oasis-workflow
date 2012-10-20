@@ -51,7 +51,7 @@ You can find the complete list of features on the [support](http://oasisworkflow
 
 == Frequently Asked Questions ==
 
-For [Frequently Asked Questions](http://oasisworkflow.com/faqs) plus documentation, plugin help, go [here](http://oasisworkflow.com)
+For [Frequently Asked Questions](http://oasisworkflow.com/?page_id=15) plus documentation, plugin help, go [here](http://oasisworkflow.com)
 
 == Screenshots ==
 
