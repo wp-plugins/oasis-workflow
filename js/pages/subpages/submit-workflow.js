@@ -181,23 +181,26 @@ jQuery(document).ready(function() {
 	//------------save-------------------
 	jQuery("#submitSave").click(function(){	
 		if(!jQuery("#workflow-select").val()){
-			alert("Please Select the workflow.") ;
-			return;
+			alert("Please select a workflow.") ;
+			return false;
 		}
 		
 		if(!jQuery("#step-select").val()){
-			alert("Please Select the step.") ;
-			return;
+			alert("Please select a step.") ;
+			return false;
 		}
 		
 		if(jQuery("#step-select").val() == "nodefine"){
-			alert("This Step didn't defined.") ;
-			return;
+			alert("This step is not defined.") ;
+			return false;
 		}
 		
 		var actors = assign_actor_chk() ;
 		if(!actors)return;
-		if(!chk_due_date("due-date"))return;
+		if(!chk_due_date("due-date")){
+			alert("Please enter a due date.");
+			return false;
+		}
 		
 		jQuery("#hi_workflow_id").val(jQuery("#workflow-select").val());
 		jQuery("#hi_step_id").val(jQuery("#step-select").val());		
