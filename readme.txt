@@ -1,9 +1,10 @@
 === Oasis Workflow ===
-Contributors: Nugget Solutions Inc
-Tags: workflow, review, assignment, publish, inbox, workflow history, audit
+Contributors: nuggetsol
+Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8YRMFYFEAEBQG
+Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit
 Requires at least: 3.3
-Tested up to: 3.4
-Stable tag: trunk
+Tested up to: 3.4.2
+Stable tag: 1.0.1
 
 Workflow process for WordPress made simple with Oasis Workflow.
 
@@ -51,7 +52,7 @@ You can find the complete list of features on the [support](http://oasisworkflow
 
 == Frequently Asked Questions ==
 
-For [Frequently Asked Questions](http://oasisworkflow.com/?page_id=15) plus documentation, plugin help, go [here](http://oasisworkflow.com)
+For [Frequently Asked Questions](http://oasisworkflow.com/faqs) plus documentation, plugin help, go [here](http://oasisworkflow.com)
 
 == Screenshots ==
 
@@ -67,3 +68,8 @@ For [Frequently Asked Questions](http://oasisworkflow.com/?page_id=15) plus docu
 = Version 1.0.0 =
 
 Initial version
+
+= Version 1.0.1 =
+Added Multisite capability.
+Admin can now view another user's inbox and signoff on behave of other users.
+Bug fixes.

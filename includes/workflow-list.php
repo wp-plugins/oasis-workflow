@@ -6,7 +6,7 @@ class FCWorkflowList extends FCWorkflowBase
 		global $wpdb;
 		$wf_id = $_GET["wf_id"] ;
 		FCWorkflowList::delete_step_by_wfid( $wf_id ) ;
-		$result = $wpdb->get_results( $wpdb->prepare( "DELETE FROM fc_workflows WHERE ID = " . $wf_id ) );
+		$result = $wpdb->get_results( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}fc_workflows WHERE ID = " . $wf_id ) );
 		wp_redirect( admin_url( 'admin.php?page=oasiswf-admin' ) );
 		exit();	
 	}
@@ -21,7 +21,7 @@ class FCWorkflowList extends FCWorkflowBase
 				$wf_info = json_decode( $wfinfo ) ;
 				foreach ($wf_info->steps as $k => $v) {
 					if( $v->fc_dbid == "nodefine" ) continue;
-					$result = $wpdb->get_results( $wpdb->prepare( "DELETE FROM fc_workflow_steps WHERE ID = " . $v->fc_dbid ) );
+					$result = $wpdb->get_results( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}fc_workflow_steps WHERE ID = " . $v->fc_dbid ) );
 				}
 			}
 		}	
@@ -48,10 +48,10 @@ class FCWorkflowList extends FCWorkflowBase
 			return FCWorkflowList::get_workflow();	
 
 		if( $action == "active" )
-			$sql = "SELECT * FROM fc_workflows WHERE start_date <= '$currenttime' AND end_date >= '$currenttime' AND is_valid = 1" ;
+			$sql = "SELECT * FROM {$wpdb->prefix}fc_workflows WHERE start_date <= '$currenttime' AND end_date >= '$currenttime' AND is_valid = 1" ;
 		
 		if( $action == "inactive" )
-			$sql = "SELECT * FROM fc_workflows WHERE NOT(start_date <= '$currenttime' AND end_date >= '$currenttime' AND is_valid = 1)" ;
+			$sql = "SELECT * FROM {$wpdb->prefix}fc_workflows WHERE NOT(start_date <= '$currenttime' AND end_date >= '$currenttime' AND is_valid = 1)" ;
 			
 		return $wpdb->get_results( $sql ) ;
 	}
@@ -64,7 +64,7 @@ class FCWorkflowList extends FCWorkflowBase
 					SUM(ID > 0) as wfall, 
 					SUM(start_date <= '$currenttime' AND end_date >= '$currenttime' AND is_valid = 1) as wfactive, 
 					SUM(NOT(start_date <= '$currenttime' AND end_date >= '$currenttime' AND is_valid = 1)) as wfinactive 
-				FROM fc_workflows" ;
+				FROM {$wpdb->prefix}fc_workflows" ;
 		return $wpdb->get_row( $sql ) ;
 	}
 }

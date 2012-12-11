@@ -1,24 +1,32 @@
 <?php
 global $workflow_message;
 $wfid = "";
+$workflow = "";
 $wfeditable = true;
-if( $_GET["wf_id"] ) {
+if( isset($_GET['wf_id']) && $_GET["wf_id"] ) {
 	$wfid = $_GET["wf_id"] ;
 	$workflow = $create_workflow->get_workflow( array( 'ID' => $wfid ) );	
 	$wfeditable = $create_workflow->is_wf_editable( $_GET["wf_id"] ) ; // check editable.
 	
-	if( !$_POST["save_action"] ){
+	if( isset($_POST['save_action']) && !$_POST["save_action"] ){
 		$workflow_message = FCWorkflowValidate::check_workflow_validate($wfid)	;
 	}
 }
+$workflow_info = "";
+if (is_object($workflow)) {
+	$workflow_info = $workflow->wf_info;
+}
 echo "<script type='text/javascript'> 
-		wf_structure_data = '{$workflow->wf_info}';
+		wf_structure_data = '{$workflow_info}';
 		wfeditable = '{$wfeditable}' ;
 	</script>";
 ?>
 <div class="wrap">
 	<div id="workflow-edit-icon" class="icon32"><br></div>
-	<h2><label id="page_top_lbl"><?php echo $workflow->name . " (" . $workflow->version .")" ;?></label></h2>
+	<?php 
+	if (is_object($workflow)){?>
+		<h2><label id="page_top_lbl"><?php echo $workflow->name . " (" . $workflow->version .")" ;?></label></h2>
+	<?php }?>	
 	<form id="wf-form" method="post" action="<?php echo admin_url('admin.php?page=oasiswf-admin');?>" >		
 		<div style="margin-bottom:10px;">											
 			<div id='fc_message' <?php echo  ($workflow_message) ? "class='updated fc_error_message'" : "";?> >
@@ -32,7 +40,7 @@ echo "<script type='text/javascript'>
 					<div class="postbox" >
 						<div class="handlediv" title="Click to toggle"><br></div>			
 						<h3 style="padding:7px;">
-							<span class="process-lbl"><?php echo  __(Processes);?></span>
+							<span class="process-lbl"><?php echo __('Processes');?></span>
 						</h3>																
 						<div class="move-div">							
 							<?php
@@ -61,7 +69,10 @@ echo "<script type='text/javascript'>
 							<span class="workflow-lbl"><?php echo  __("Workflow Info");?></span>
 						</h3>
 						<?php 
-							$title = ""; $dec = "";									
+							$title = ""; 
+							$dec = "";
+							$startdate = "";
+							$enddate = "";									
 							if($workflow){
 								$title = $workflow->name;
 								$dec = $workflow->description;
@@ -69,8 +80,11 @@ echo "<script type='text/javascript'>
 								$enddate = $create_workflow->format_date_for_display( $workflow->end_date );
 								if( !$startdate && !$enddate ){
 									$pre_version_end_date = $create_workflow->get_previous_workflow_version($wfid, "end_date") ;
+									$able_start_date = "";
 									if( $pre_version_end_date )
+									{
 										$able_start_date = $create_workflow->get_pre_next_date( $pre_version_end_date ) ;
+									}
 									$startdate = $create_workflow->format_date_for_display( $able_start_date ) ;
 								}									
 							}
@@ -172,14 +186,10 @@ echo "<div id='connection-setting'>{$create_workflow->connection_setting_html()}
 	jQuery(document).ready(function() {	
 		//----------loading modal--------------
 		if(!jQuery("#wf_id").val()){
-			new_create_workflow_modal = function (){
-				jQuery('#new-workflow-create-check').modal();
-				jQuery(".modalCloseImg").hide() ;
-			}		
 			if(navigator.appName == "Netscape"){
-				new_create_workflow_modal() ;
+				show_workflow_create_modal() ;
 			}else{
-				setTimeout("new_create_workflow_modal()", 500);
+				setTimeout("show_workflow_create_modal()", 500);
 			}
 		}
 	});	
@@ -192,4 +202,9 @@ echo "<div id='connection-setting'>{$create_workflow->connection_setting_html()}
 	function close_modal(){
 		jQuery.modal.close();
 	}
+
+	function show_workflow_create_modal(){
+		jQuery('#new-workflow-create-check').modal();
+		jQuery(".modalCloseImg").hide() ;
+	}		
 </script>

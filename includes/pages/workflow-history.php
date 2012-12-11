@@ -1,8 +1,9 @@
 <?php
-$histories = $history_workflow->get_workflow_history_all( $_GET["post"] );
+$selected_post = isset( $_GET['post'] ) ? $_GET["post"] : "";
+$histories = $history_workflow->get_workflow_history_all( $selected_post );
 $count_posts = $history_workflow->get_history_count();				
-$pagenum=($_GET["paged"]) ? $_GET["paged"] : 1;	
-$per_page=($per_page) ? $per_page : 150;
+$pagenum = (isset( $_GET['paged'] ) && $_GET["paged"]) ? $_GET["paged"] : 1;	
+$per_page = 150;
 ?>
 <style type="text/css">.wrap, .wrap h2{font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;}</style>
 <script type='text/javascript' src='<?php echo OASISWF_URL . "js/pages/workflow-inbox.js";?>' ></script>
@@ -13,13 +14,13 @@ $per_page=($per_page) ? $per_page : 150;
 		<div class="tablenav">
 			<div class="alignleft actions">
 				<select id="post_filter">
-					<option selected="selected"></option>
+					<option selected="selected"><?php echo __("View Post/Page Workflow History")?></option>
 					<?php 
 					$wf_posts = $history_workflow->get_workflow_posts(); 
 					if( $wf_posts )
 					{
 						foreach ($wf_posts as $wf_post) {
-							if( $_GET["post"] == $wf_post->wfpostid )
+							if( isset( $_GET['post'] ) && $_GET["post"] == $wf_post->wfpostid )
 								echo "<option value={$wf_post->wfpostid} selected>{$wf_post->title}</option>" ;
 							else
 								echo "<option value={$wf_post->wfpostid}>{$wf_post->title}</option>" ;
@@ -29,7 +30,7 @@ $per_page=($per_page) ? $per_page : 150;
 				</select>
 				
 				<a href="javascript:window.open('<?php echo admin_url('admin.php?page=oasiswf-history&post=')?>' + jQuery('#post_filter').val(), '_self')">
-					<input type="button" class="button-secondary action" value="Filter">
+					<input type="button" class="button-secondary action" value="<?php echo __("Filter"); ?>" />
 				</a>
 			</div>
 			<div class="tablenav-pages">
@@ -127,7 +128,7 @@ $per_page=($per_page) ? $per_page : 150;
 						}
 					else:
 						echo "<tr>" ;
-						echo "<td colspan='8' class='no-found-td'><lavel>";
+						echo "<td colspan='9' class='no-found-td'><lavel>";
 						echo __("No workflow history data found.");
 						echo "</label></td>";
 						echo "</tr>" ;

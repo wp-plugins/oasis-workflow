@@ -93,10 +93,10 @@ class FCWorkflowValidate extends FCWorkflowBase
 		$w = "ID <> " . $wf_id . " && ((start_date <= '$start_date' && end_date >= '$start_date') OR (start_date <= '$end_date' && end_date >= '$end_date'))" ;
 		
 		if( $workflow->parent_id ){
-			$sql = "SELECT * FROM fc_workflows 
+			$sql = "SELECT * FROM {$wpdb->prefix}fc_workflows 
 					WHERE (ID = $workflow->parent_id || parent_id = $workflow->parent_id) && $w	" ;
 		}else{
-			$sql = "SELECT * FROM fc_workflows 
+			$sql = "SELECT * FROM {$wpdb->prefix}fc_workflows 
 					WHERE (parent_id = $wf_id) && $w " ;
 		}
 		
@@ -122,10 +122,10 @@ class FCWorkflowValidate extends FCWorkflowBase
 		$w = "ID <> " . $wf_id . " && ((start_date <= '$start_date' && end_date >= '$start_date') OR (start_date <= '$end_date' && end_date >= '$end_date'))" ;
 		
 		if( $workflow->parent_id ){
-			$sql = "SELECT * FROM fc_workflows 
+			$sql = "SELECT * FROM {$wpdb->prefix}fc_workflows 
 					WHERE (ID = $workflow->parent_id || parent_id = $workflow->parent_id) && $w	" ;
 		}else{
-			$sql = "SELECT * FROM fc_workflows 
+			$sql = "SELECT * FROM {$wpdb->prefix}fc_workflows 
 					WHERE (parent_id = $wf_id) && $w " ;
 		}
 		

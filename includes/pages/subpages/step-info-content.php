@@ -1,19 +1,21 @@
 <?php
-global $wp_roles, $wpdb ;	
-if( $_GET["step_dbid"] != "nodefine" )
+global $wp_roles, $wpdb ;
+$process_info = "";
+$step_info = "";
+if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 {
-	$step_row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM fc_workflow_steps WHERE ID = " . $_GET["step_dbid"] ) );
+	$step_row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflow_steps WHERE ID = " . $_GET["step_dbid"] ) );
 	$step_info = json_decode($step_row->step_info);
 	$process_info = json_decode($step_row->process_info);
 }
 
-?>				
+?>
 <div id="step-setting" class="popup-div">
 	<div class="dialog-title"><strong><?php echo __("Step Information");?></strong></div>
 	<div id="step-setting-content" style="overflow:auto;" >
 		<p class="step-name">
 			<label><?php echo __("Step Name :")?> </label><input type="text" id="step-name" name="step-name" /></span>
-		</p>		
+		</p>
 		<div class="step-assignee" style="height:120px;">
 			<div style="margin-left:0px;">
 				<label><?php echo __("Assignee(s) :") ;?> </label>
@@ -22,9 +24,9 @@ if( $_GET["step_dbid"] != "nodefine" )
 				<label>Available</label><br class="clear">
 				<p>
 					<select id="step-role-list" name="step-role-list" size=10>
-						<?php 
+						<?php
 						foreach ( $wp_roles->role_names as $role => $name ) {
-							echo "<option value='$role'>$name</option>";										
+							echo "<option value='$role'>$name</option>";
 						}
 						?>
 					</select>
@@ -38,16 +40,16 @@ if( $_GET["step_dbid"] != "nodefine" )
 				<label><?php echo __("Assigned") ;?></label><br class="clear">
 				<p>
 					<select id="step-role-set-list" name="step-role-set-list" size=10>
-						<?php 
-						if( $step_info->assignee ){
+						<?php
+						if( is_object( $step_info ) && $step_info->assignee ){
 							foreach ( $step_info->assignee as $role => $name ) {
-								echo "<option value='$role'>$name</option>";										
+								echo "<option value='$role'>$name</option>";
 							}
 						}
 						?>
 					</select>
 				</p>
-			</div>						
+			</div>
 		</div>
 		<br class="clear">
 		<p class="step-status">
@@ -58,12 +60,12 @@ if( $_GET["step_dbid"] != "nodefine" )
 					<select id="step-status-select" style="width:150px;margin-top:-5px;">
 						<option value=""></option>
 						<?php
-						foreach ( get_post_stati(array('show_in_admin_status_list' => true)) as $status ) {				
+						foreach ( get_post_stati(array('show_in_admin_status_list' => true)) as $status ) {
 							$chk = "" ;
-							if( $status == $step_info->status ){
+							if( is_object( $step_info ) && ($status == $step_info->status) ){
 								$chk = "selected" ;
-							}									
-							echo "<option value='{$status}' $chk>{$status}</option>" ;													
+							}
+							echo "<option value='{$status}' $chk>{$status}</option>" ;
 						}
 						?>
 					</select>
@@ -72,26 +74,26 @@ if( $_GET["step_dbid"] != "nodefine" )
 					<label>On Failure</label><br><br>
 					<select id="step-failure-status-select" style="width:150px;margin-top:-5px;">
 						<option value=""></option>
-						<?php 
-						foreach ( get_post_stati(array('show_in_admin_status_list' => true)) as $status ) {				
+						<?php
+						foreach ( get_post_stati(array('show_in_admin_status_list' => true)) as $status ) {
 							$chk = "" ;
-							if( $status == $step_info->failure_status ){
+							if( is_object( $step_info ) && ($status == $step_info->failure_status )){
 								$chk = "selected" ;
-							}									
-							echo "<option value='{$status}' $chk>{$status}</option>" ;													
+							}
+							echo "<option value='{$status}' $chk>{$status}</option>" ;
 						}
 						?>
 					</select>
 				</div>
-			</div>			
+			</div>
 			<br class="clear">
-		</p>				
+		</p>
 		<div class="step-review" style="display:none;">
 			<div class="step-review-lb">
 				<label><?php echo __("Review Decision : ") ;?></label>
 			</div>
 			<div class="step-review-chk">
-				<?php 
+				<?php
 					$oasiswf_review_decision = get_option( "oasiswf_review" ) ;
 					if( $oasiswf_review_decision ) {
 						$stl = "style='margin-top:5px;'" ;
@@ -104,7 +106,7 @@ if( $_GET["step_dbid"] != "nodefine" )
 						}
 					}
 				?>
-			</div>			
+			</div>
 			<br class="clear">
 		</div>
 		<div class="first_step" >
@@ -113,40 +115,51 @@ if( $_GET["step_dbid"] != "nodefine" )
 			<br class="clear">
 		</div>
 		<a href="#" class="more-show" id="more-show" style="color:blue;"><?php echo __("Advanced details");?></a>
-		<form>	
+		<form>
 			<div id="wf-email-define" style="display:none;margin-top:40px;">
-				<h3 style="margin:10px 0 20px 0;"><?php echo __("Assignment Email") ;?></h3>			
+				<h3 style="margin:10px 0 20px 0;"><?php echo __("Assignment Email") ;?></h3>
 				<div>
 					<div style="float:left;width:130px;"><label><?php echo __("Placeholder : ") ;?></label></div>
 					<div style="float:left;">
 						<select id="assign-placeholder" style="width:150px;">
 							<option value=" "></option>
-							<?php 
+							<?php
 							$placeholders = get_option( "oasiswf_placeholders" ) ;
 							if( $placeholders ){
 								foreach ($placeholders as $k => $v ) {
 									echo "<option value='$k'>{$v}</option>" ;
-								}						
-							}						
+								}
+							}
 							?>
 						</select>
 						<input type="button" class="button-primary placeholder-add-bt" value="Add" style="margin-left:20px;" />
 					</div>
 					<br class="clear">
-				</div>							
+				</div>
 				<p>
 					<label >Email subject : </label>
-					<input type="text" id="assignment-email-subject" name="assignment-email-subject" value="<?php echo $process_info->assign_subject;?>" />			
-				</p>				
+					<?php
+					$assignment_subject = "";
+					$assignment_content = "";
+					$reminder_subject = "";
+					if (is_object($process_info) )
+					{
+					   $assignment_subject = $process_info->assign_subject;
+					   $assignment_content = $process_info->assign_content;
+					   $reminder_subject = $process_info->reminder_subject;
+					}
+					?>
+					<input type="text" id="assignment-email-subject" name="assignment-email-subject" value="<?php echo $assignment_subject;?>" />
+				</p>
 				<div style="width:100%;height:250px;">
 					<div style="float:left;"><label><?php echo __("Email message : ") ;?></label></div>
 					<div style="float:left;" id="assignment-email-content-div">
-						<textarea id="assignment-email-content" name="assignment-email-content" 
-							style="width:500px;height:200px;"><?php echo $process_info->assign_content;?></textarea>
+						<textarea id="assignment-email-content" name="assignment-email-content"
+							style="width:500px;height:200px;"><?php echo $assignment_content;?></textarea>
 					</div>
 					<br class="clear">
 				</div>
-				<br class="clear">							
+				<br class="clear">
 				<div style="margin:30px 0 20px 0;">
 					<h3><?php echo __("Reminder Email") ;?></h3>
 				</div>
@@ -155,45 +168,45 @@ if( $_GET["step_dbid"] != "nodefine" )
 					<div style="float:left;">
 						<select id="reminder-placeholder" style="width:150px;">
 							<option value=" "></option>
-							<?php 
+							<?php
 							$placeholders = get_option( "oasiswf_placeholders" ) ;
 							if( $placeholders ){
 								foreach ($placeholders as $k => $v ) {
 									echo "<option value='$k'>{$v}</option>" ;
-								}						
-							}						
+								}
+							}
 							?>
 						</select>
 						<input type="button" class="button-primary placeholder-add-bt" value="Add" style="margin-left:20px;" />
 					</div>
 					<br class="clear">
-				</div>			
+				</div>
 				<p>
 					<label><?php echo __("Email subject : ") ;?></label>
-					<input type="text" id="reminder-email-subject" name="reminder-email-subject" value="<?php echo $process_info->reminder_subject?>" />
-				</p>			
+					<input type="text" id="reminder-email-subject" name="reminder-email-subject" value="<?php echo $reminder_subject?>" />
+				</p>
 				<div style="width:100%;height:250px;">
 					<div style="float:left;"><label><?php echo __("Email message : ") ;?></label></div>
 					<div style="float:left;">
-						<textarea id="reminder-email-content" name="reminder-email-content" 
-							style="width:500px;height:200px;"><?php echo $process_info->reminder_content;?></textarea>
+						<textarea id="reminder-email-content" name="reminder-email-content"
+							style="width:500px;height:200px;"><?php echo $reminder_subject;?></textarea>
 					</div>
 					<br class="clear">
-				</div>							
+				</div>
 			</div>
 		</form>
 		<br class="clear">
 		<input type="hidden" id="step_gpid-hi" value="<?php echo $_GET["step_gpid"] ;?>" />
 		<input type="hidden" id="step_dbid-hi" value="<?php echo $_GET["step_dbid"] ;?>" />
 	</div>
-	<div class="dialog-title" style="padding-bottom:0.5em"></div>	
+	<div class="dialog-title" style="padding-bottom:0.5em"></div>
 	<br class="clear">
 	<p class="step-set">
 		<?php if( $_GET["editable"] ):?>
 			<input type="button" id="stepSave" class="button-primary" value="<?php echo __("Save") ;?>"  />
 			<span>&nbsp;</span>
 		<?php endif;?>
-			<a href="#" id="stepCancel" style="color:blue;margin-top:5px;"><?php echo __("Cancel") ;?></a>							
+			<a href="#" id="stepCancel" style="color:blue;margin-top:5px;"><?php echo __("Cancel") ;?></a>
 	</p>
-	<br class="clear">	
-</div>	
+	<br class="clear">
+</div>

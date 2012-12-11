@@ -1,6 +1,6 @@
 <?php
 class FCWorkflowInbox extends FCWorkflowBase
-{	
+{
 	static function get_table_header()
 	{
 		echo "<tr>";
@@ -12,24 +12,24 @@ class FCWorkflowInbox extends FCWorkflowBase
 		echo "<th>" . __("Step") . "</th>";
 		echo "<th>" . __("Status") . "</th>";
 		echo "<th>" . __("Due Date") . "</th>";
-		echo "<th>" . __("Comments") . "</th>";	
+		echo "<th>" . __("Comments") . "</th>";
 		echo "</tr>";
 	}
-	
+
 	static function get_editinline_html()
 	{
 		global $current_screen;
-		$wp_list_table = _get_list_table('WP_Posts_List_Table');	
+		$wp_list_table = _get_list_table('WP_Posts_List_Table');
 		$current_screen->post_type=$_POST["post_type"];
 		$wp_list_table->inline_edit();
 		exit();
 	}
-	
+
 	static function get_step_signoff_content()
 	{
 		ob_start() ;
-		FCWorkflowActions::include_files( "submit-step" ) ;	
-		$result = ob_get_contents();		
+		FCWorkflowActions::include_files( "submit-step" ) ;
+		$result = ob_get_contents();
 		ob_end_clean();
 		echo $result;
 		exit();
@@ -39,56 +39,58 @@ class FCWorkflowInbox extends FCWorkflowBase
 	{
 		ob_start() ;
 		include( OASISWF_PATH . "includes/pages/subpages/reassign.php" ) ;
-		$result = ob_get_contents();		
+		$result = ob_get_contents();
 		ob_end_clean();
 		echo $result;
 		exit();
 	}
-	
+
 	static function check_claim($actionid)
 	{
 		global $wpdb;
 		$action = FCWorkflowInbox::get_action( array("ID" => $actionid ) ) ;
-		$w = "WHERE action_status = 'assignment' AND post_id = {$action->post_id}" ; 
-		$rows = $wpdb->get_results("SELECT * FROM fc_action_history $w") ;
+		$w = "WHERE action_status = 'assignment' AND post_id = {$action->post_id}" ;
+		$rows = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}fc_action_history $w") ;
 		if( count($rows) > 1 )return $rows;
 		return false;
 	}
-	
+
 	static function claim_process()
 	{
 		global $wpdb;
 		$actioid = $_POST["actionid"] ;
 		$actions = FCWorkflowInbox::check_claim($_POST["actionid"]) ;
-		
+		$action_history_table = FCUtility::get_action_history_table_name();
 		if( $actions ){
 			foreach ($actions as $action) {
-				if( $actioid == $action->ID ){					
+				if( $actioid == $action->ID ){
 					$newData = (array)$action ;
 					unset($newData["ID"]) ;
 					$newData["action_status"] = "assignment" ;
 					$newData["from_id"] = $action->ID ;
-					$newData["create_datetime"] = current_time('mysql') ; 
-					$iid = FCWorkflowInbox::insert_to_table( "fc_action_history", $newData ) ;			
-					$data["action_status"] = "claimed" ; 
-					//$data["comment"] = "" ; 
+					$newData["create_datetime"] = current_time('mysql') ;
+					$iid = FCWorkflowInbox::insert_to_table( $action_history_table, $newData ) ;
+					$data["action_status"] = "claimed" ;
+					//$data["comment"] = "" ;
 				}else{
-					$data["action_status"] = "claim_cancel" ;					
+					$data["action_status"] = "claim_cancel" ;
 					$title = "Task claimed" ;
-					$message = "Another user has claimed the task, so please ignore it." ;			
+					$message = "Another user has claimed the task, so please ignore it." ;
 					FCWorkflowEmail::send_mail($action->assign_actor_id, $title, $message) ;
 					//$data["comment"] = "" ;
 				}
-				$wpdb->update( "fc_action_history", $data, array( "ID" => $action->ID ) ) ;
+				$wpdb->update( $action_history_table, $data, array( "ID" => $action->ID ) ) ;
 			}
 		}
 		echo $iid ;
 		exit();
 	}
-	
+
 	static function reset_assign_actor()
 	{
 		global $wpdb;
+		$action_table = FCUtility::get_action_table_name();
+		$action_history_table = FCUtility::get_action_history_table_name();
 		if( $_POST["oasiswf"] && $_POST["reassign_id"] ){
 			$action = FCWorkflowInbox::get_action( array("ID" => $_POST["oasiswf"] ) ) ;
 			$data = (array)$action ;
@@ -97,13 +99,13 @@ class FCWorkflowInbox extends FCWorkflowBase
 				$data["assign_actor_id"] = $_POST["reassign_id"] ;
 				$data["from_id"] = $_POST["oasiswf"] ;
 				$data["create_datetime"] = current_time('mysql') ;
-				$iid = FCWorkflowInbox::insert_to_table( "fc_action_history", $data ) ;				
+				$iid = FCWorkflowInbox::insert_to_table( $action_history_table, $data ) ;
 				if( $iid ){
-					$wpdb->update("fc_action_history", array( "action_status" => "reassigned" ), array( "ID" => $_POST["oasiswf"] ) ) ;
-					$wpdb->get_results("DELETE FROM fc_emails WHERE action=0  AND to_user = " . get_current_user_id() . " AND history_id=" . $_POST["oasiswf"]) ;
-					FCWorkflowEmail::send_step_email($iid, $_POST["reassign_id"]) ; // send mail to the actor .					
+					$wpdb->update($action_history_table, array( "action_status" => "reassigned" ), array( "ID" => $_POST["oasiswf"] ) ) ;
+					$wpdb->get_results("DELETE FROM {$wpdb->prefix}fc_emails WHERE action=0  AND to_user = " . get_current_user_id() . " AND history_id=" . $_POST["oasiswf"]) ;
+					FCWorkflowEmail::send_step_email($iid, $_POST["reassign_id"]) ; // send mail to the actor .
 					echo $iid ;
-				}		
+				}
 			}else{
 				$reviews = FCWorkflowInbox::get_review_action( array("review_status" => "assignment", "action_history_id" => $_POST["oasiswf"] ) ) ;
 				foreach ($reviews as $review) {
@@ -117,28 +119,47 @@ class FCWorkflowInbox extends FCWorkflowBase
 				$reviewId = $review["ID"] ;
 				unset( $review["ID"] ) ;
 				$review["actor_id"] = $_POST["reassign_id"] ;
-				$r_iid = FCWorkflowInbox::insert_to_table( "fc_action", $review ) ;
+				$r_iid = FCWorkflowInbox::insert_to_table( $action_table, $review ) ;
 				if( $r_iid ){
-					$wpdb->update("fc_action", array( "review_status" => "reassigned" ), array( "ID" => $reviewId ) ) ;
+					$wpdb->update($action_table, array( "review_status" => "reassigned" ), array( "ID" => $reviewId ) ) ;
 					$data = array("to_id" => $r_iid, "sign_off_date" => current_time("mysql")) ;
 					update_option("reassign_{$reviewId}", $data) ;
-					$wpdb->get_results("DELETE FROM fc_emails WHERE action=0 AND to_user = " . get_current_user_id() . " AND history_id=" . $_POST["oasiswf"]) ;
+					$wpdb->get_results("DELETE FROM {$wpdb->prefix}fc_emails WHERE action=0 AND to_user = " . get_current_user_id() . " AND history_id=" . $_POST["oasiswf"]) ;
 					FCWorkflowEmail::send_step_email($_POST["oasiswf"], $_POST["reassign_id"]) ; // send mail to the actor .
 					echo $r_iid ;
-				}	
-			}				
-			exit();	
-		}		
+				}
+			}
+			exit();
+		}
 	}
-	
+
 	static function get_step_comment()
 	{
 		ob_start() ;
-		include( OASISWF_PATH . "includes/pages/subpages/action-comments.php" ) ;	
-		$result = ob_get_contents();		
+		include( OASISWF_PATH . "includes/pages/subpages/action-comments.php" ) ;
+		$result = ob_get_contents();
 		ob_end_clean();
 		echo $result;
 		exit();
 	}
+
+	static function get_assigned_users()
+	{
+		global $wpdb;
+		$order_by = " ORDER BY USERS.DISPLAY_NAME";
+		$sql = "SELECT distinct USERS.ID, USERS.display_name FROM
+					(SELECT U1.ID, U1.display_name FROM {$wpdb->users} AS U1
+					LEFT JOIN {$wpdb->prefix}fc_action_history AS AH ON U1.ID = AH.assign_actor_id
+					WHERE AH.action_status = 'assignment'
+					UNION
+					SELECT U2.ID, U2.display_name FROM {$wpdb->users} AS U2
+					LEFT JOIN {$wpdb->prefix}fc_action AS A ON U2.ID = A.actor_id
+					WHERE A.review_status = 'assignment') USERS
+					{$order_by} ";
+
+		$result = $wpdb->get_results( $sql ) ;
+		return $result;
+	}
+
 }
 ?>

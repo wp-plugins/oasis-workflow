@@ -4,18 +4,18 @@ global $workflow_message ;
 
 /*************************************/
 /*     Workflow basic functions    */
-/*************************************/ 
+/*************************************/
 class FCWorkflowBase
 {
 	function get_current_user_role()
 	{
 		global $wp_roles;
-		foreach ( $wp_roles->role_names as $role => $name ) :	
+		foreach ( $wp_roles->role_names as $role => $name ) :
 			if ( current_user_can( $role ) )
-				return $role ;	
+				return $role ;
 		endforeach;
 	}
-	
+
 	function get_menu_position()
 	{
 		global $menu ;
@@ -27,88 +27,92 @@ class FCWorkflowBase
 		}
 		for( $i = $ep ;$i > $sp ;$i-- ){
 			if( !in_array($i, $menu_position))return $i ;
-		}		
+		}
 	}
-	
+
 	function get_workflow($param = null, $getform = "rows")
 	{
 		global $wpdb;
-		$w = ($param["ID"]) ? " ID = " . $param["ID"] : 1 ;
-		$w .= ($param["name"]) ? " AND name = '" . $param["name"] ."'" : "" ;
-		$w .= ($param["version"]) ? " AND version = '" . $param["version"] ."'" : "" ;
-		$w .= ($param["is_valid"]) ? " AND is_valid = " . $param["is_valid"] : "" ;
-		
-		if($param["ID"])$getform = "row" ;
-		
+		$w = (isset($param['ID']) && $param["ID"]) ? " ID = " . $param["ID"] : 1 ;
+		$w .= (isset($param['name']) && $param["name"]) ? " AND name = '" . $param["name"] ."'" : "" ;
+		$w .= (isset($param['version']) && $param["version"]) ? " AND version = '" . $param["version"] ."'" : "" ;
+		$w .= (isset($param['is_valid']) && $param["is_valid"]) ? " AND is_valid = " . $param["is_valid"] : "" ;
+
+		if(isset($param['ID']) && $param["ID"])$getform = "row" ;
+
 		if($getform == "row")
-			$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM fc_workflows WHERE $w" ) );
-		else 
-			$result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM fc_workflows WHERE $w ORDER BY ID desc" ) );
-					
+			$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflows WHERE $w" ) );
+		else
+			$result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflows WHERE $w ORDER BY ID desc" ) );
+
 		return $result;
 	}
-	
+
 	function get_step($param = null)
 	{
 		global $wpdb;
-		
-		$w = ( $param["ID"] ) ? "ID = " . $param["ID"] : 1 ;
-		
-		if( $param["ID"] )
-			$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM fc_workflow_steps WHERE $w" ) );
-		else 
-			$result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM fc_workflow_steps" ) );
-		
+
+		$w = ( isset($param['ID']) && $param["ID"] ) ? "ID = " . $param["ID"] : 1 ;
+
+		if( isset($param['ID']) && $param["ID"] )
+		{
+		   $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflow_steps WHERE $w" ) );
+		}
+		else
+		{
+			$result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflow_steps" ) );
+		}
+
 		return $result ;
-			
+
 	}
-	
+
 	function get_action($param = null, $getform = "rows")
 	{
 		global $wpdb;
-		$w = ($param["ID"]) ? " ID = " . $param["ID"] : 1 ;
-		$w .= ($param["action_status"]) ? " AND action_status = '" . $param["action_status"] ."'" : "" ;
-		$w .= ($param["step_id"]) ? " AND step_id = " . $param["step_id"] : "" ;
-		$w .= ($param["assign_actor_id"]) ? " AND assign_actor_id = " . $param["assign_actor_id"] : "" ;
-		$w .= ($param["post_id"]) ? " AND post_id = " . $param["post_id"] : "" ;
-		$w .= ($param["from_id"]) ? " AND from_id = " . $param["from_id"] : "" ;
-		if($param["ID"])$getform = "row" ;
-		
+		$w = (isset($param['ID']) && $param["ID"]) ? " ID = " . $param["ID"] : 1 ;
+		$w .= (isset($param['action_status']) && $param["action_status"]) ? " AND action_status = '" . $param["action_status"] ."'" : "" ;
+		$w .= (isset($param['step_id']) && $param["step_id"]) ? " AND step_id = " . $param["step_id"] : "" ;
+		$w .= (isset($param['assign_actor_id']) && $param["assign_actor_id"]) ? " AND assign_actor_id = " . $param["assign_actor_id"] : "" ;
+		$w .= (isset($param['post_id']) && $param["post_id"]) ? " AND post_id = " . $param["post_id"] : "" ;
+		$w .= (isset($param['from_id']) && $param["from_id"]) ? " AND from_id = " . $param["from_id"] : "" ;
+		if(isset($param['ID']) && $param["ID"])$getform = "row" ;
+
 		if($getform == "row")
-			$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM fc_action_history WHERE $w" ) );
-		else 
-			$result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM fc_action_history WHERE $w ORDER BY create_datetime DESC" ) );
-					
+			$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_action_history WHERE $w" ) );
+		else
+			$result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_action_history WHERE $w ORDER BY create_datetime DESC" ) );
+
 		return $result;
 	}
-	
+
 	function get_review_action($param = null, $getform = "rows")
 	{
 		global $wpdb;
-		$w = ($param["ID"]) ? " ID = " . $param["ID"] : 1 ;
-		$w .= ($param["action_history_id"]) ? " AND action_history_id = " . $param["action_history_id"] : "" ;
-		$w .= ($param["review_status"]) ? " AND review_status = '" . $param["review_status"] ."'" : "" ;
-		$w .= ($param["actor_id"]) ? " AND actor_id = " . $param["actor_id"] : "" ;
-		$w .= ($param["reassign_actor_id"]) ? " AND reassign_actor_id = " . $param["reassign_actor_id"] : "" ;
-		$w .= ($param["step_id"]) ? " AND step_id = " . $param["step_id"] : "" ;
-		
-		if($param["ID"])$getform = "row" ;
-		
+		$w = (isset($param['ID']) && $param["ID"]) ? " ID = " . $param["ID"] : 1 ;
+		$w .= (isset($param['action_history_id']) && $param["action_history_id"]) ? " AND action_history_id = " . $param["action_history_id"] : "" ;
+		$w .= (isset($param['review_status']) && $param["review_status"]) ? " AND review_status = '" . $param["review_status"] ."'" : "" ;
+		$w .= (isset($param['actor_id']) && $param["actor_id"]) ? " AND actor_id = " . $param["actor_id"] : "" ;
+		$w .= (isset($param['reassign_actor_id']) && $param["reassign_actor_id"]) ? " AND reassign_actor_id = " . $param["reassign_actor_id"] : "" ;
+		$w .= (isset($param['step_id']) && $param["step_id"]) ? " AND step_id = " . $param["step_id"] : "" ;
+
+		if(isset($param['ID']) && $param["ID"])$getform = "row" ;
+
 		if($getform == "row")
-			$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM fc_action WHERE $w" ) );
-		else 
-			$result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM fc_action  WHERE $w ORDER BY ID DESC" ) );
-					
+			$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_action WHERE $w" ) );
+		else
+			$result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_action  WHERE $w ORDER BY ID DESC" ) );
+
 		return $result;
 	}
-	
+
 	function insert_to_table($table, $data)
 	{
 		global $wpdb;
 		$result = $wpdb->insert($table, $data);
 		if( $result ){
-			
-			$row = $wpdb->get_row("SELECT max(ID) as maxid FROM $table");		
+
+			$row = $wpdb->get_row("SELECT max(ID) as maxid FROM $table");
 			if($row)
 				return $row->maxid ;
 			else
@@ -117,47 +121,32 @@ class FCWorkflowBase
 			return false;
 		}
 	}
-	
-	function get_all_users_with_role($role) {
-		$wp_user_search = new WP_User_Search('', '', $role);
-		return $wp_user_search->get_results();
-	}
-	
-	function get_users_by_role($role, $frm = "obj")
+
+	function get_users_by_role($role)
 	{
 		if( count( $role ) > 0 )
 		{
-			foreach ( $role as $k => $v ){
-				$getusers = FCWorkflowBase::get_all_users_with_role( $k ) ;
-				for( $i = 0; $i < count($getusers); $i++ ){
-					$users[] = $getusers[$i] ;
-				}			
+			//$userstr = "";
+		   foreach ( $role as $k => $v ){
+			   $user_query = new WP_User_Query(array( 'role' => $k, 'orderby' => 'display_name' ));
+			   if ( !empty( $user_query->results ) ) {
+               foreach ( $user_query->results as $user ) {
+					   $part["ID"] = $user->ID ;
+					   $part["name"] = $user->display_name ;
+					   $userstr[] =(object) $part ;
+               }
+			   }
 			}
-			
-			if( $frm == "obj" ){
-				for( $i = 0; $i < count($users); $i++ ){
-					$part["ID"] = $users[$i] ;
-					$part["name"] = FCWorkflowBase::get_user_name($users[$i]) ;
-					//$part_user = get_userdata( $users[$i] ) ;
-					//if($part_user->data->user_nicename)
-					//	$part["name"] = $part_user->data->user_nicename ;
-					//else
-					//	$part["name"] = $part_user->data->user_login ;
-					$userstr[] =(object) $part ;
-				}
-				return (object)$userstr;
-			}else{
-				return $users;
-			}
+			return (object)$userstr;
 		}
 		return "" ;
-		
+
 	}
-	
+
 	function get_new_version($parentid)
 	{
 		global $wpdb;
-		$row = $wpdb->get_row("SELECT max(version) as maxversion FROM fc_workflows WHERE parent_id=" . $parentid . " OR ID=" . $parentid);
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT max(version) as maxversion FROM {$wpdb->prefix}fc_workflows WHERE parent_id=%s OR ID=%s", $parentid, $parentid));
 		$current_version = $row->maxversion;
 		return $current_version + 1 ;
 	}
@@ -169,7 +158,7 @@ class FCWorkflowBase
 		if( $result ){
 			foreach ( $result as $k => $v ) {
 				if( $k == "ID" ) continue ;
-				$data[$k] = $v ;				
+				$data[$k] = $v ;
 			}
 			$newId = FCWorkflowBase::insert_to_table($tablename, $data) ;
 			if( $newId )
@@ -180,20 +169,20 @@ class FCWorkflowBase
 			return false;
 		}
 	}
-	
+
 	function get_date_int($ddate=null, $frm="-")
 	{
 		$ddate = ( $ddate ) ? $ddate : current_time( 'mysql', 0 ) ;
 		$arr = explode($frm, $ddate) ;
 		return $arr[0] * 10000 + $arr[1] * 100 + $arr[2] * 1   ;
 	}
-		
+
 	function format_date_for_db($ddate, $frm="/")
 	{
 		$arr = explode( $frm, $ddate ) ;
 		return $arr[2] . "-" . $arr[0] . "-" . $arr[1] ;
 	}
-	
+
 	function format_date_for_display($ddate, $frm="-", $dateform="date")
 	{
 		if( $dateform == "date" ){
@@ -204,16 +193,16 @@ class FCWorkflowBase
 			}
 		}else{
 			$s_ddate = explode( " ", $ddate ) ;
-			
+
 			if( $s_ddate[0] == "0000-00-00" ) return "";
-			
+
 			if( $s_ddate[0] ){
 				$arr = explode( $frm, $s_ddate[0] ) ;
 				return $arr[1] . "/" . $arr[2] . "/" . $arr[0] . " " . $s_ddate[1] ;
 			}
 		}
 	}
-	
+
 	function get_page_link($count_posts,$pagenum,$per_page=20)
 	{
 		$allpages=ceil($count_posts / $per_page);
@@ -234,18 +223,18 @@ class FCWorkflowBase
 				);
 		echo $page_links_text;
 	}
-	
+
 	function get_postcount_in_wf($wfid)
 	{
 		global $wpdb;
-		$sql = "SELECT DISTINCT(A.post_id) 
-					FROM 
-						(SELECT AA.post_id, BB.workflow_id  
-							FROM 
-							(SELECT * FROM fc_action_history WHERE action_status='assignment') AS AA 
-							LEFT JOIN 
-							fc_workflow_steps AS BB 
-							ON AA.step_id=BB.ID) as A 
+		$sql = "SELECT DISTINCT(A.post_id)
+					FROM
+						(SELECT AA.post_id, BB.workflow_id
+							FROM
+							(SELECT * FROM {$wpdb->prefix}fc_action_history WHERE action_status='assignment') AS AA
+							LEFT JOIN
+							{$wpdb->prefix}fc_workflow_steps AS BB
+							ON AA.step_id=BB.ID) as A
 					WHERE A.workflow_id=$wfid" ;
 		$result = $wpdb->get_results( $sql ) ;
 		return count( $result );
@@ -255,40 +244,45 @@ class FCWorkflowBase
 	function get_pre_next_date($ddate, $frm="next", $days=1)
 	{
 		$date = new DateTime($ddate);
-		
+
 		$dstamp = $date->format("U");
 
 		if( $frm == "next" )
 			$dstamp = $dstamp + 3600 * 24 * $days ;
 		else
 			$dstamp = $dstamp - 3600 * 24 * $days ;
-			
+
 		return gmdate("Y-m-d", $dstamp) ;
 	}
-	
-	function get_assigned_post($postid = null, $frm = "rows")
+
+	function get_assigned_post($postid = null, $selected_user = null, $frm = "rows")
 	{
 		global $wpdb;
-		$user_id = get_current_user_id();
-		
+		if ( $selected_user ){
+			$user_id = $selected_user;
+		}
+		else {
+			$user_id = get_current_user_id();
+		}
+
 		if( $postid )
 			$w = "WHERE (assign_actor_id = $user_id OR actor_id = $user_id) AND post_id = " . $postid ;
-		else			
+		else
 			$w = "WHERE assign_actor_id = $user_id OR actor_id = $user_id" ;
-		
-		$sql = "SELECT A.*, B.review_status, B.actor_id, B.reassign_actor_id, B.step_id as review_step_id, B.action_history_id, B.update_datetime FROM 
-							(SELECT * FROM fc_action_history WHERE action_status = 'assignment') as A 
-							LEFT OUTER JOIN 
-							(SELECT * FROM fc_action WHERE review_status = 'assignment') as B 
-							ON A.ID = B.action_history_id $w" ;
+
+		$sql = "SELECT A.*, B.review_status, B.actor_id, B.reassign_actor_id, B.step_id as review_step_id, B.action_history_id, B.update_datetime FROM
+							(SELECT * FROM {$wpdb->prefix}fc_action_history WHERE action_status = 'assignment') as A
+							LEFT OUTER JOIN
+							(SELECT * FROM {$wpdb->prefix}fc_action WHERE review_status = 'assignment') as B
+							ON A.ID = B.action_history_id $w order by A.due_date" ;
 		if( $frm == "rows" )
 			$result = $wpdb->get_results( $sql ) ;
 		else
 			$result = $wpdb->get_row( $sql ) ;
-			
-		return $result;	
+
+		return $result;
 	}
-	
+
 	function get_pre_next_action($fromid)
 	{
 		$action = FCWorkflowBase::get_action( array("ID" => $fromid ) ) ;
@@ -298,15 +292,15 @@ class FCWorkflowBase
 			FCWorkflowBase::get_pre_next_action($action->from_id);
 		}
 	}
-	
+
 	function get_pre_action($wfid)
 	{
-		$action = FCWorkflowBase::get_action( array( "ID" => $wfid ) ) ;	
+		$action = FCWorkflowBase::get_action( array( "ID" => $wfid ) ) ;
 		if( $action->from_id == 0 ){
 			return $action->ID ;
 		}else{
 			return FCWorkflowBase::get_pre_next_action($action->from_id);
-		}			
+		}
 	}
 
 	function get_comment_count($actionid)
@@ -323,7 +317,7 @@ class FCWorkflowBase
 		}
 		return $i ;
 	}
-	
+
 	function get_gpid_dbid($wpinfo, $stepid, $frm="")
 	{
 		if( is_object( $wpinfo ) ){
@@ -336,33 +330,33 @@ class FCWorkflowBase
 			}else{
 				$info = json_decode( $wpinfo ) ;
 				$wf_steps = $info->steps ;
-			}			
+			}
 		}
-		
+
 		if( $wf_steps ){
-			if( is_numeric( $stepid ) ){				
-				foreach ( $wf_steps as $k => $v ){				
+			if( is_numeric( $stepid ) ){
+				foreach ( $wf_steps as $k => $v ){
 					if( $stepid == $v->fc_dbid ){
 						if( $frm == "lbl" )
 							return $v->fc_label ;
 						if( $frm == "process" )
 							return $v->fc_process ;
-							
-						return $v->fc_addid ;		
+
+						return $v->fc_addid ;
 					}
-				}				
+				}
 			}else{
 				if( $frm == "lbl" )
 					return $wf_steps->$stepid->fc_label ;
 				if( $frm == "process" )
 					return $wf_steps->$stepid->fc_process ;
-				return $wf_steps->$stepid->fc_dbid ;				
+				return $wf_steps->$stepid->fc_dbid ;
 			}
 		}
-		
-		return false;	
+
+		return false;
 	}
-	
+
 	function get_process_steps($stepid, $direct="source")
 	{
 		$step = FCProcessFlow::get_step( array( "ID" => $stepid ) ) ;
@@ -377,7 +371,7 @@ class FCWorkflowBase
 				foreach ($all_path as $k => $v) {
 					$path[$v[1]] = $k ;
 				}
-								
+
 				if( $conns ){
 					if( $direct == "source" )
 						foreach ($conns as $k => $v){
@@ -395,7 +389,7 @@ class FCWorkflowBase
 						}
 					}
 					if( count($steps) > 0 )	return $steps ;
-				}				
+				}
 			}
 		}
 		return false;
@@ -439,17 +433,17 @@ include( OASISWF_PATH . "includes/workflow-history.php" ) ;
 include( OASISWF_PATH . "includes/process-flow.php" ) ;
 
 
-if( $_POST["save_action"] == "workflow_save" )
+if( isset($_POST['save_action']) && $_POST["save_action"] == "workflow_save" )
 {
 	FCWorkflowCRUD::save();
 }
 
-if( $_POST["save_action"] == "workflow_as_save" )
+if( isset($_POST['save_action']) && $_POST["save_action"] == "workflow_as_save" )
 {
 	FCWorkflowCRUD::as_save();
 }
 
-if( $_GET["page"] == "oasiswf-admin" && $_GET["action"] == "delete" )
+if( isset($_GET['page']) && $_GET["page"] == "oasiswf-admin" && isset($_GET['action']) && $_GET["action"] == "delete" )
 {
 	FCWorkflowList::delete();
 }

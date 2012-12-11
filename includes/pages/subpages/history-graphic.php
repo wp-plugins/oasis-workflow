@@ -6,16 +6,16 @@
 global $wpdb, $chkResult ;
 $sql = "SELECT C.ID, C.wf_info
 			FROM (
-				(SELECT * FROM fc_action_history WHERE ID = $chkResult) AS A 
-				LEFT JOIN fc_workflow_steps AS B  
+				(SELECT * FROM {$wpdb->prefix}fc_action_history WHERE ID = $chkResult) AS A 
+				LEFT JOIN {$wpdb->prefix}fc_workflow_steps AS B  
 				ON A.step_id = B.ID 
-				LEFT JOIN fc_workflows AS C 
+				LEFT JOIN {$wpdb->prefix}fc_workflows AS C 
 				ON B.workflow_id = C.ID
 			)" ;
 $workflow = $wpdb->get_row( $sql ) ;
 if( $workflow ){
 		
-	$sql = "SELECT * FROM fc_action_history WHERE ID <= $chkResult AND (action_status = 'processed' OR action_status = 'assignment') AND post_id = {$_GET['post']} ORDER BY ID" ;
+	$sql = "SELECT * FROM {$wpdb->prefix}fc_action_history WHERE ID <= $chkResult AND (action_status = 'processed' OR action_status = 'assignment') AND post_id = {$_GET['post']} ORDER BY ID" ;
 	$processes = $wpdb->get_results( $sql ) ;
 
 	if( $processes ){

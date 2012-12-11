@@ -76,7 +76,7 @@ class FCWorkflowActions
 			
 			$role = FCProcessFlow::get_current_user_role() ;			
 			if( $role == "administrator" ){
-				$row = $wpdb->get_row("SELECT * FROM fc_action_history WHERE post_id = {$_GET["post"]} AND action_status = 'assignment'") ;
+				$row = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}fc_action_history WHERE post_id = {$_GET["post"]} AND action_status = 'assignment'") ;
 				if( $row ){
 					echo "<link rel='stylesheet' href='" . OASISWF_URL . "css/pages/page.css' type='text/css' />";
 					echo "<script type='text/javascript'>var exit_wfid = $row->ID ;</script>" ;
@@ -127,15 +127,16 @@ class FCWorkflowActions
 	static function send_reminder_email()
 	{
 		global $wpdb;
+		$emails_table = FCUtility::get_emails_table_name();
 		if( !class_exists('FCProcessFlow') ){
 			require_once( OASISWF_PATH . "includes/workflow-base.php" ) ;
 			require_once( OASISWF_PATH . "includes/process-flow.php" ) ;	
 		}		
 		$ddate = gmdate( 'Y-m-d' ) ;
-		$rows = $wpdb->get_results( "SELECT * FROM fc_emails WHERE action = 1 AND send_date = '$ddate'" ) ;
+		$rows = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}fc_emails WHERE action = 1 AND send_date = '$ddate'" ) ;
 		foreach ($rows as $row) {
 			FCWorkflowEmail::send_mail($row->to_user, $row->subject, $row->message) ;
-			$wpdb->update("fc_emails", array("action" => 0), array("ID" => $row->ID)) ;
+			$wpdb->update($emails_table, array("action" => 0), array("ID" => $row->ID)) ;
 		}
 			
 	}
@@ -147,10 +148,10 @@ class FCWorkflowActions
 		if( $histories )
 		{
 			foreach ($histories as $history) {
-				$wpdb->get_results("DELETE FROM fc_action WHERE action_history_id = " . $history->ID) ;
-				$wpdb->get_results("DELETE FROM fc_emails WHERE history_id = " . $history->ID) ;
+				$wpdb->get_results("DELETE FROM {$wpdb->prefix}fc_action WHERE action_history_id = " . $history->ID) ;
+				$wpdb->get_results("DELETE FROM {$wpdb->prefix}fc_emails WHERE history_id = " . $history->ID) ;
 			}
-			$wpdb->get_results("DELETE FROM fc_action_history WHERE post_id = " . $postid) ;
+			$wpdb->get_results("DELETE FROM {$wpdb->prefix}fc_action_history WHERE post_id = " . $postid) ;
 		}
 	}
 }

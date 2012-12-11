@@ -3,34 +3,35 @@ class FCWorkflowHistory extends FCWorkflowBase
 {
 	static function get_table_header()
 	{
-		$order = ( $_GET["order"] == "desc" ) ? "asc" : "desc" ;
+		$create_date_order_class = "";
+		$order = ( isset($_GET['order']) && $_GET["order"] == "desc" ) ? "asc" : "desc" ;
 		
-		if( $_GET["orderby"] == "post_title" )
+		if( isset($_GET['orderby']) && $_GET["orderby"] == "post_title" )
 			$post_order_class = $_GET["order"] ;
 		else
 			$post_order_class = "" ;
 			
-		if( $_GET["orderby"] == "wf_name" )
+		if( isset($_GET['orderby']) && $_GET["orderby"] == "wf_name" )
 			$wf_order_class = $_GET["order"] ;
 		else
 			$wf_order_class = "" ;
 			
-		if( $_GET["orderby"] == "assign_actor" )
+		if( isset($_GET['orderby']) && $_GET["orderby"] == "assign_actor" )
 			$assign_order_class = $_GET["order"] ;
 		else
 			$assign_order_class = "" ;
 			
-		if( $_GET["orderby"] == "due_date" )
+		if( isset($_GET['orderby']) && $_GET["orderby"] == "due_date" )
 			$due_date_order_class = $_GET["order"] ;
 		else
 			$due_date_order_class = "" ;
 			
-		if( $_GET["orderby"] == "reminder_date" )
+		if( isset($_GET['orderby']) && $_GET["orderby"] == "reminder_date" )
 			$reminder_date_order_class = $_GET["order"] ;
 		else
 			$reminder_date_order_class = "" ;
 			
-		$wherepost = ( $_GET["post"] ) ? "&post=" . $_GET["post"] : "" ;
+		$wherepost = ( isset($_GET['post']) && $_GET["post"] ) ? "&post=" . $_GET["post"] : "" ;
 		
 		echo "<tr>";
 		echo "<th scope='col' class='manage-column check-column' ><input type='checkbox'></th>";
@@ -63,12 +64,12 @@ class FCWorkflowHistory extends FCWorkflowBase
 	static function get_workflow_history_all($postid=null)
 	{
 		global $wpdb;
-		$orderby = ( $_GET['orderby'] ) ? " ORDER BY {$_GET['orderby']} {$_GET['order']}" : "  ORDER BY A.ID DESC" ;
+		$orderby = ( isset($_GET['orderby']) && $_GET['orderby'] ) ? " ORDER BY {$_GET['orderby']} {$_GET['order']}" : "  ORDER BY A.ID DESC" ;
 		$w = "action_status!='abort_no_action' AND action_status!='complete' AND action_status!='cancelled'" ;
 		if( $postid )$w .= " AND post_id=" . $postid ;	
 		$sql = "SELECT A.* , B.post_title, C.ID as userid, C.display_name as assign_actor, D.step_info, D.workflow_id, D.wf_name, D.version 
 					FROM 
-						((SELECT * FROM fc_action_history WHERE $w) AS A
+						((SELECT * FROM {$wpdb->prefix}fc_action_history WHERE $w) AS A
 						LEFT JOIN
 						{$wpdb->posts} AS B
 						ON  A.post_id = B.ID 
@@ -76,7 +77,7 @@ class FCWorkflowHistory extends FCWorkflowBase
 						{$wpdb->users} AS C 
 						ON A.assign_actor_id = C.ID
 						LEFT JOIN 
-						(SELECT AA.*, BB.name as wf_name, BB.version FROM fc_workflow_steps AS AA LEFT JOIN fc_workflows AS BB ON AA.workflow_id = BB.ID) AS D 
+						(SELECT AA.*, BB.name as wf_name, BB.version FROM {$wpdb->prefix}fc_workflow_steps AS AA LEFT JOIN {$wpdb->prefix}fc_workflows AS BB ON AA.workflow_id = BB.ID) AS D 
 						ON A.step_id = D.ID) 
 					{$orderby}								
 					" ;	
@@ -91,9 +92,9 @@ class FCWorkflowHistory extends FCWorkflowBase
 		if( $postid )$w .= " AND post_id=" . $postid ;	
 		$sql = "SELECT A.*  
 					FROM 
-						((SELECT * FROM fc_action_history WHERE $w) AS A						
+						((SELECT * FROM {$wpdb->prefix}fc_action_history WHERE $w) AS A						
 						LEFT JOIN 
-						fc_action AS C 
+						{$wpdb->prefix}fc_action AS C 
 						ON A.ID = C.action_history_id) 							
 					" ;	
 		$result = $wpdb->get_results( $sql ) ;
@@ -116,7 +117,7 @@ class FCWorkflowHistory extends FCWorkflowBase
 	{
 		global $wpdb ;
 		$sql = "SELECT DISTINCT(A.post_id) as wfpostid , B.post_title as title 
-					FROM fc_action_history AS A 
+					FROM {$wpdb->prefix}fc_action_history AS A 
 						LEFT JOIN 
 						{$wpdb->posts} AS B 
 						ON  A.post_id = B.ID   
@@ -214,7 +215,11 @@ class FCWorkflowHistory extends FCWorkflowBase
 	{
 		if( $row->action_status == "claimed" ||  $row->action_status == "claim_cancel" || $row->action_status == "reassigned" || $row->action_status == "complete" )return ;
 		$nextHistory = FCWorkflowHistory::get_action( array( "from_id" => $row->ID ), "row" ) ;
-		return FCWorkflowHistory::get_comment_count($nextHistory->ID) ;
+		if (is_object($nextHistory))
+		{
+			return FCWorkflowHistory::get_comment_count($nextHistory->ID) ;
+		}
+		else return 0; // no comments found
 	}
 	
 	static function get_review_signoff_comment_count($review_row)

@@ -10,12 +10,39 @@
 	border-radius:0.5em;
 	padding:10px; 
 }
+#settingstuff {
+	float: left;
+}
 #setting_form{
 	font-size:13px;
 }
-#workflow-setting{margin-top:10px;}
+#workflow-setting {
+	margin-top:10px;
+}
 .changed-data-set{
 	margin:20px 0 0 250px;
 }
 #div_reminder_day{margin-top: 20px; opacity:0.5;}
 #reminder_days{width:50px;text-align:right;}
+
+.owf-sidebar {
+  float: right;
+}
+
+.owf-button {
+	float: left;
+}
+
+a.owf_about_link {
+	padding:4px;
+	display:block;
+	padding-left:25px;
+	background-repeat:no-repeat;
+	background-position:5px 50%;
+	text-decoration:none;
+	border:none;
+}
+
+a.owf_about_link:hover {
+	border-bottom-width:1px;
+}
