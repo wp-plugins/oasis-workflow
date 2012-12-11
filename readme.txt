@@ -70,6 +70,6 @@ For [Frequently Asked Questions](http://oasisworkflow.com/faqs) plus documentati
 Initial version
 
 = Version 1.0.1 =
-Added Multisite capability.
-Admin can now view another user's inbox and signoff on behave of other users.
-Bug fixes.
+* Added Wordpress Multisite capability.
+* Admin can now view another user's inbox and signoff on behave of other users.
+* Bug fixes.
