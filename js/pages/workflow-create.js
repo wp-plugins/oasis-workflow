@@ -12,21 +12,33 @@ var jQueryCgmp = jQuery.noConflict();
 	    		return;
 	    	}
 			jQuery(".changed-data-set span").addClass("loading");
-			data = {
+			check_for_duplicate_data = {
+					action: 'get_workflow_count' ,
+					name: jQuery("#new-workflow-title").val()
+				   };
+			create_data = {
 					action: 'create_new_workflow' ,
 					name: jQuery("#new-workflow-title").val(),
 					description: jQuery("#new-workflow-description").val()
-				   };
-			jQuery.post(ajaxurl, data, function( response ) {
+				   };			
+			jQuery.post(ajaxurl, check_for_duplicate_data, function( response ) {
 				jQuery(".changed-data-set span").removeClass("loading");
-				if(response){
-					jQuery("#wf_id").val(response);
-					jQuery("#define-workflow-title").val(jQuery("#new-workflow-title").val());
-					jQuery("#define-workflow-description").val(jQuery("#new-workflow-description").val());
-					jQuery("#page_top_lbl").html(jQuery("#new-workflow-title").val() + " (1)") ;
+				if(response > 0){
+					alert("There is an existing workflow with the same name. Please choose another name.");
 				}
-				close_modal();
-			});		
+				else {
+					jQuery.post(ajaxurl, create_data, function( response ) {
+						jQuery(".changed-data-set span").removeClass("loading");
+						if(response){
+							jQuery("#wf_id").val(response);
+							jQuery("#define-workflow-title").val(jQuery("#new-workflow-title").val());
+							jQuery("#define-workflow-description").val(jQuery("#new-workflow-description").val());
+							jQuery("#page_top_lbl").html(jQuery("#new-workflow-title").val() + " (1)") ;
+						}
+						close_modal();
+					});		
+				}
+			});
 		});
 		//------------changed workflow check----------
 		set_step_chaned_status = function(){

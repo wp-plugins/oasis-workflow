@@ -328,10 +328,16 @@ jQuery(document).ready(function() {
 	
 	jQuery(".quick_sign_off").click(function(){
 		inbox_obj = this ;
+		$task_user = "";
+		if (jQuery('#inbox_filter').length > 0)
+		{
+			$task_user = jQuery('#inbox_filter').val(); 
+		}
 		data = {
 				action: 'get_step_signoff_content',
 				oasiswf: jQuery(this).attr("wfid"),
 				post:jQuery(this).attr("postid"),
+				task_user: $task_user,
 				parent_page: "inbox"
 			   };
 		jQuery(this).parent().children(".loading").show();

@@ -56,7 +56,7 @@ jQuery(document).ready(function() {
 	
 	first_last_step_error = function(path){
 		if(path=="failure"){
-			var msg = "This is the first step in the workflow.</br> Do you really cancel this post/page on the workflow ?"
+			var msg = "This is the first step in the workflow.</br> Do you really want to cancel the post/page from the workflow?"
 			jQuery("#message_div").html(msg).css({"background-color":"#fbd7f0", "border":"1px solid #f989d8"}).show();
 			
 			jQuery("#cancelSave").show();
@@ -229,7 +229,8 @@ jQuery(document).ready(function() {
 				post_ID: jQuery("#hi_post_id").val(),
 				hi_due_date:jQuery("#due-date").val(),
 				hi_comment: jQuery("#comments").val(),
-				review_result: jQuery("#decision-select").val()
+				review_result: jQuery("#decision-select").val(),
+				hi_task_user: jQuery("#hi_task_user").val()
 			   };
 		jQuery(".changed-data-set span").addClass("loading");
 		jQuery(this).hide();
@@ -251,16 +252,19 @@ jQuery(document).ready(function() {
 	
 	datacheck = function(){
 		if(!jQuery("#decision-select").val()){
-			alert("Please Select the action.");
+			alert("Please select an action.");
 			return false;
 		}
 		
 		if(!jQuery("#step-select").val()){
-			alert("Please Select the step.");
+			alert("Please select a step.");
 			return false;
 		}
 		
-		if(!chk_due_date("due-date"))return false;
+		if(!chk_due_date("due-date")){
+			alert("Please enter a due date.");
+			return false;
+		}
 		
 		return true;
 	}
@@ -303,7 +307,7 @@ jQuery(document).ready(function() {
 	
 	jQuery("#completeSave").click(function(){
 		var im_date = "" ;
-		if(jQuery("#immediately-span").css("display") != "none")
+		if(jQuery("#immediately-span").length > 0 && jQuery("#immediately-span").css("display") != "none")
 		{
 			if(isNaN(jQuery("#im-year").val())){
 				jQuery("#im-year").css("background-color", "#fadede") ;
