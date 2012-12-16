@@ -469,6 +469,7 @@ class FCLoadWorkflow
 
 	function page_load_control()
 	{
+	   FCInitialization::run_on_upgrade();
 		require_once( OASISWF_PATH . "includes/workflow-base.php" ) ;
 		if( isset($_GET['wf-popup']) && $_GET["wf-popup"] )
 		{
@@ -656,7 +657,7 @@ class FCLoadWorkflow
 /* plugin activation whenenver a new blog is created */
 add_action( 'wpmu_new_blog', array( 'FCInitialization', 'run_on_add_blog' ), 10, 6);
 add_action( 'delete_blog', array( 'FCInitialization', 'run_on_delete_blog' ), 10, 2);
-add_action( 'init', array( 'FCInitialization', 'run_on_upgrade' ));
+add_action( 'admin_init', array( 'FCInitialization', 'run_on_upgrade' ));
 
 include( OASISWF_PATH . "oasiswf-utilities.php" ) ;
 $fcLoadWorkflow = new FCLoadWorkflow();
