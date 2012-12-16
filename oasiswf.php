@@ -177,10 +177,12 @@ class FCInitialization
 		{
 			if ($pluginOptions['version'] == "1.0")
 			{
+			   FCUtility::owf_logger ("inside upgrading from 1.0");
 				FCInitialization::upgrade_database_101();
 			}
 			else if ($pluginOptions['version'] == "1.0.1")
 			{
+			   FCUtility::owf_logger ("inside upgrading from 1.0.1");
 				// do nothing
 			}
 
