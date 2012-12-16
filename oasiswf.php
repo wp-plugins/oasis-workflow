@@ -175,25 +175,31 @@ class FCInitialization
 		}
 		else if ( OASISWF_VERSION != $pluginOptions['version'] )
 		{
-			if ($pluginOptions['version'] == "1.0")
-			{
-				FCInitialization::upgrade_database_101();
-			}
-			else if ($pluginOptions['version'] == "1.0.1")
-			{
-				// do nothing
-			}
-
-			// update the version value
-			$oasiswf_info=array(
-				'version'=>OASISWF_VERSION,
-				'db_version'=>OASISWF_DB_VERSION
-			);
-			update_option('oasiswf_info', $oasiswf_info) ;
+		   FCInitialization::run_on_upgrade();
 		}
 
 		if ( !wp_next_scheduled('oasiswf_email_schedule') )
 			wp_schedule_event(time(), 'daily', 'oasiswf_email_schedule');
+	}
+
+	function run_on_upgrade( )
+	{
+	   $pluginOptions = get_option('oasiswf_info');
+		if ($pluginOptions['version'] == "1.0")
+		{
+			FCInitialization::upgrade_database_101();
+		}
+		else if ($pluginOptions['version'] == "1.0.1")
+		{
+			// do nothing
+		}
+
+		// update the version value
+		$oasiswf_info=array(
+			'version'=>OASISWF_VERSION,
+			'db_version'=>OASISWF_DB_VERSION
+		);
+		update_option('oasiswf_info', $oasiswf_info) ;
 	}
 
 	function _run_on_uninstall()
@@ -458,6 +464,7 @@ class FCLoadWorkflow
 
 	function page_load_control()
 	{
+	   FCInitialization::run_on_upgrade();
 		require_once( OASISWF_PATH . "includes/workflow-base.php" ) ;
 		if( isset($_GET['wf-popup']) && $_GET["wf-popup"] )
 		{
@@ -641,11 +648,16 @@ class FCLoadWorkflow
 		}
 	}
 }
+
+/* plugin activation whenenver a new blog is created */
+add_action( 'wpmu_new_blog', array( 'FCInitialization', 'run_on_add_blog' ), 10, 6);
+add_action( 'delete_blog', array( 'FCInitialization', 'run_on_delete_blog' ), 10, 2);
+add_action( 'admin_init', array( 'FCInitialization', 'run_on_upgrade' ));
+
 include( OASISWF_PATH . "oasiswf-utilities.php" ) ;
 $fcLoadWorkflow = new FCLoadWorkflow();
 
 include( OASISWF_PATH . "oasiswf-actions.php" ) ;
-
 $fcWorkflowActions = new FCWorkflowActions();
 
 /* ajax */
@@ -659,7 +671,4 @@ add_action('wp_ajax_claim_process', array( 'FCWorkflowInbox', 'claim_process' ) 
 add_action('wp_ajax_reset_assign_actor', array( 'FCWorkflowInbox', 'reset_assign_actor' ) );
 add_action('wp_ajax_get_step_comment', array( 'FCWorkflowInbox', 'get_step_comment' ) );
 
-/* plugin activation whenenver a new blog is created */
-add_action( 'wpmu_new_blog', array( 'FCInitialization', 'run_on_add_blog' ), 10, 6);
-add_action( 'delete_blog', array( 'FCInitialization', 'run_on_delete_blog' ), 10, 2);
 ?>
