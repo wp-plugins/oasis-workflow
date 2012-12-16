@@ -187,12 +187,10 @@ class FCInitialization
 	   $pluginOptions = get_option('oasiswf_info');
 		if ($pluginOptions['version'] == "1.0")
 		{
-		   FCUtility::owf_logger ("inside upgrading from 1.0");
 			FCInitialization::upgrade_database_101();
 		}
 		else if ($pluginOptions['version'] == "1.0.1")
 		{
-		   FCUtility::owf_logger ("inside upgrading from 1.0.1");
 			// do nothing
 		}
 
@@ -248,7 +246,6 @@ class FCInitialization
 
 	function upgrade_database_101()
 	{
-	   FCUtility::owf_logger("inside upgrade");
 		//rename table for multisite support
 		global $wpdb;
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -256,7 +253,6 @@ class FCInitialization
 		$new_table_name = $wpdb->prefix . 'fc_workflows';
 		if ($wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'") == $table_name)
 		{
-		   FCUtility::owf_logger("inside table rename workflows");
 			$wpdb->query("RENAME TABLE {$table_name} to  {$new_table_name}");
 		}
 
@@ -278,7 +274,6 @@ class FCInitialization
 		$new_table_name = $wpdb->prefix . 'fc_action_history';
 		if ($wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'") == $table_name)
 		{
-		   FCUtility::owf_logger("inside table rename workflows history");
 			$wpdb->query("RENAME TABLE {$table_name} to  {$new_table_name}");
 		}
 
