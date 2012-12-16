@@ -19,7 +19,7 @@ class FCWorkflowEmail extends FCWorkflowBase
 
 	static function get_step_mail_content($stepid, $touserid, $postid)
 	{
-		$step = FCProcessFlow::get_step( array("ID" => $stepid ) ) ;
+		$step = FCProcessFlow::get_step_by_id( $stepid ) ;
 
 		$nickname = get_user_meta( $touserid, "nickname", true ) ;
 		$first_name = get_user_meta( $touserid, "first_name", true ) ;
@@ -48,7 +48,7 @@ class FCWorkflowEmail extends FCWorkflowBase
 
 	static function get_step_comment_content($actionid)
 	{
-		$actionStep = FCProcessFlow::get_action( array("ID" => $actionid ) ) ;
+		$actionStep = FCProcessFlow::get_action_history_by_id( $actionid ) ;
 		if( !$actionStep->comment )return false ;
 		$comments = json_decode($actionStep->comment) ;
 		$commentStr = "";
@@ -73,7 +73,7 @@ class FCWorkflowEmail extends FCWorkflowBase
 
 	static function send_step_email($actionid, $touserid=null)
 	{
-		$actionStep = FCProcessFlow::get_action( array("ID" => $actionid ) ) ;
+		$actionStep = FCProcessFlow::get_action_history_by_id( $actionid ) ;
 		$touserid = ( $touserid ) ? $touserid : $actionStep->assign_actor_id ;
 		$fromuserid = get_current_user_id() ;
 

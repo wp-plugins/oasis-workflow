@@ -1,24 +1,24 @@
 <link rel='stylesheet' href='<?php echo OASISWF_URL . "css/lib/modal/basic.css";?>' type='text/css' />
 <link rel='stylesheet' href='<?php echo OASISWF_URL . "css/pages/subpages/actioncomment.css";?>' type='text/css' />
 <script type='text/javascript' src='<?php echo OASISWF_URL . "js/lib/modal/jquery.simplemodal.js";?>' ></script>
-<?php 
-	$action = FCWorkflowInbox::get_action( array("ID" => $_POST["actionid"] ) ) ;
+<?php
+	$action = FCWorkflowInbox::get_action_history_by_id( $_POST["actionid"] ) ;
 	$signoffdate = $action->create_datetime ;
 	$comments = json_decode($action->comment) ;
-	
-	if( $_POST["page_action"] =="history" )
+
+	if( isset($_POST["page_action"]) && $_POST["page_action"] == "history" )
 	{
-		$action = FCWorkflowInbox::get_action( array("from_id" => $_POST["actionid"] ), "row" ) ;
+		$action = FCWorkflowInbox::get_action_history_by_from_id( $_POST["actionid"] ) ;
 		if( $action ){
 			$comments = json_decode($action->comment) ;
 		}
 		if(!$comments)$comments = array();
 	}
-	
-	if( $_POST["page_action"] =="review" )
+
+	if( isset($_POST["page_action"]) && $_POST["page_action"] =="review" )
 	{
 		$signoffdate = "" ;
-		$action = FCWorkflowInbox::get_review_action( array("ID" => $_POST["actionid"] ), "row" ) ;
+		$action = FCWorkflowInbox::get_review_action_by_id( $_POST["actionid"] ) ;
 		if( $action ){
 			$comments = json_decode($action->comments) ;
 			$signoffdate = $action->update_datetime ;
@@ -28,14 +28,14 @@
 ?>
 <div class="info-setting" id="stepcomment-setting" style="display:none;">
 	<div class="dialog-title"><strong><?php echo __("Comment(s)") ;?></strong></div>
-	<div>					
-		<?php 
-		foreach ($comments as $comment) { 
+	<div>
+		<?php
+		foreach ($comments as $comment) {
 			if($comment->send_id == "System"){
 				$lbl = "System" ;
 			}else{
 				//$user = get_userdata( $comment->send_id ) ;
-				//$lbl = $user->data->user_nicename ;	
+				//$lbl = $user->data->user_nicename ;
 				$lbl = FCWorkflowInbox::get_user_name($comment->send_id) ;
 			}
 		?>
@@ -46,11 +46,11 @@
 			</div>
 			<p><?php echo nl2br($comment->comment);?></p>
 			<div class="comment-split-line"></div>
-		<?php }?>		
+		<?php }?>
 		<div class="changed-data-set">
-			<a href="#" id="commentCancel"><?php echo __("Cancel") ;?></a>			
+			<a href="#" id="commentCancel"><?php echo __("Cancel") ;?></a>
 		</div>
-		<br class="clear">					
+		<br class="clear">
 	</div>
 </div>
 <script type='text/javascript'>
@@ -58,7 +58,7 @@
 		jQuery("#commentCancel, .modalCloseImg").live("click", function(){
 			jQuery(document).find("#post_com_count_content").html("");
 			jQuery(document).find(".post-com-count").show();
-			jQuery.modal.close() ;			
+			jQuery.modal.close() ;
 		});
 	});
 </script>

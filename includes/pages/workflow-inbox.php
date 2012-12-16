@@ -70,8 +70,8 @@ FCUtility::owf_donation();
 								if ($stepId <= 0 || $stepId == "" ) {
 									$stepId = $wfaction->review_step_id;
 								}
-								$step = $inbox_workflow->get_step( array('ID' => $stepId ) ) ;
-								$workflow = $inbox_workflow->get_workflow( array( "ID" => $step->workflow_id ) );
+								$step = $inbox_workflow->get_step_by_id( $stepId ) ;
+								$workflow = $inbox_workflow->get_workflow_by_id( $step->workflow_id );
 
 								$chk_claim = $inbox_workflow->check_claim($wfaction->ID) ;
 

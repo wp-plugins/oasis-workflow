@@ -45,7 +45,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 	static function as_save()
 	{
 		global $wpdb;
-		$wf = FCWorkflowCRUD::get_workflow( array("ID" => $_POST["wf_id"] ) ) ;
+		$wf = FCWorkflowCRUD::get_workflow_by_id( $_POST["wf_id"] ) ;
 		if($wf){
 			$parentId = ( $wf->parent_id == 0 ) ? $wf->ID : $wf->parent_id ;
 			$newVersion = FCWorkflowCRUD::get_new_version($parentId);
@@ -201,8 +201,8 @@ class FCWorkflowCRUD extends FCWorkflowBase
 	static function get_workflow_count()
 	{
 		global $wpdb;
-		$name = $_POST["name"];
-		$result = $wpdb->get_row( $wpdb->prepare( "SELECT count(*) count FROM {$wpdb->prefix}fc_workflows WHERE LOWER(name) = LOWER('" . $name . "')" ) );
+		$name = strtolower($_POST["name"]);
+		$result = $wpdb->get_row( $wpdb->prepare( "SELECT count(*) count FROM {$wpdb->prefix}fc_workflows WHERE LOWER(name) = %s", $name ) );
 		echo $result->count;
 		exit();
 	}
@@ -210,7 +210,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 	static function wokflow_data_update($param)
 	{
 		global $wpdb;
-		$result = FCWorkflowCRUD::get_workflow( array( 'ID' => $param["wpid"] ) ) ;
+		$result = FCWorkflowCRUD::get_workflow_by_id( $param["wpid"] ) ;
 		$workflow_table = FCUtility::get_workflows_table_name();
 		if( $result ){
 			$wf_info = json_decode( $result->wf_info ) ;
@@ -227,7 +227,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 	{
 		global $wpdb ;
 		$workflow_step_table = FCUtility::get_workflow_steps_table_name();
-		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflow_steps WHERE ID = '" . $_POST["stepid"] . "'" ) );
+		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflow_steps WHERE ID = %d" , $_POST["stepid"] ));
 		if(	$result ) {
 			$result = $wpdb->update(
 						$workflow_step_table,
@@ -280,7 +280,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 	static function get_previous_workflow_version($wfid, $field_name=null)
 	{
 		global $wpdb;
-		$workflow = FCWorkflowCRUD::get_workflow( array( "ID" => $wfid ) ) ;
+		$workflow = FCWorkflowCRUD::get_workflow_by_id( $wfid ) ;
 		if( $workflow->version == 1 )return false;
 		$parent_id = ( $workflow->parent_id ) ? $workflow->parent_id : $wfid ;
 		$sql = "SELECT * FROM {$wpdb->prefix}fc_workflows WHERE version=" .  ( $workflow->version - 1 ) . " && (parent_id = " . $parent_id . " || ID = " . $parent_id .  " )" ;
@@ -330,7 +330,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 		foreach ($all_path as $k => $v) {
 			$path[$v[1]] = $k ;
 		}
-
+      $steps = array();
 		if( $conns ){
 			if( $direct == "source" )
 				foreach ($conns as $k => $v){

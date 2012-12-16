@@ -1,4 +1,4 @@
-<?php $workflow = FCProcessFlow::get_workflow( array( "is_valid" => 1 ) ) ;?>
+<?php $workflow = FCProcessFlow::get_workflow_by_validity( 1 ) ;?>
 <div class="info-setting" id="new-workflow-submit-div">
 	<div class="dialog-title"><strong><?php echo __("Submit") ;?></strong></div>
 	<div>

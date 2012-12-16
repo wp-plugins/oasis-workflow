@@ -4,7 +4,8 @@ $process_info = "";
 $step_info = "";
 if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 {
-	$step_row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflow_steps WHERE ID = " . $_GET["step_dbid"] ) );
+   $step_dbid = $_GET["step_dbid"];
+	$step_row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflow_steps WHERE ID = %d" , $step_dbid ) );
 	$step_info = json_decode($step_row->step_info);
 	$process_info = json_decode($step_row->process_info);
 }

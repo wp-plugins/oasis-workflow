@@ -3,8 +3,8 @@ Contributors: nuggetsol
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8YRMFYFEAEBQG
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit
 Requires at least: 3.3
-Tested up to: 3.4.2
-Stable tag: 1.0.1
+Tested up to: 3.5
+Stable tag: 1.0.2
 
 Workflow process for WordPress made simple with Oasis Workflow.
 
@@ -70,6 +70,9 @@ For [Frequently Asked Questions](http://oasisworkflow.com/faqs) plus documentati
 Initial version
 
 = Version 1.0.1 =
-* Added Wordpress Multisite capability.
-* Admin can now view another user's inbox and signoff on behave of other users.
-* Bug fixes.
+Added Multisite capability.
+Admin can now view another user's inbox and signoff on behave of other users.
+Bug fixes.
+
+= Version 1.0.2 =
+Made WP 3.5 compatible

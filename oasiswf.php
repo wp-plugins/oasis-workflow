@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Easily create graphical workflows to manage your work.
- Version: 1.0.1
+ Version: 1.0.2
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
 
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.1' );
-define( 'OASISWF_DB_VERSION','1.0.1');
+define( 'OASISWF_VERSION' , '1.0.2' );
+define( 'OASISWF_DB_VERSION','1.0.2');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -64,7 +64,7 @@ class FCInitialization
 	        {
 	            $old_blog = $wpdb->blogid;
 	            // Get all blog ids
-	            $blogids = $wpdb->get_col($wpdb->prepare("SELECT blog_id FROM {$wpdb->prefix}blogs"));
+	            $blogids = $wpdb->get_col("SELECT blog_id FROM {$wpdb->prefix}blogs");
 	            foreach ($blogids as $blog_id)
 	            {
 	            	switch_to_blog($blog_id);
@@ -88,7 +88,7 @@ class FCInitialization
 	        {
 	            $old_blog = $wpdb->blogid;
 	            // Get all blog ids
-	            $blogids = $wpdb->get_col($wpdb->prepare("SELECT blog_id FROM $wpdb->blogs"));
+	            $blogids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
 	            foreach ($blogids as $blog_id)
 	            {
 	                switch_to_blog($blog_id);
@@ -107,7 +107,7 @@ class FCInitialization
 		if (function_exists('is_multisite') && is_multisite())
 		{
 			//Get all blog ids; foreach them and call the uninstall procedure on each of them
-			$blog_ids = $wpdb->get_col($wpdb->prepare("SELECT blog_id FROM $wpdb->blogs"));
+			$blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
 
 			//Get all blog ids; foreach them and call the install procedure on each of them if the plugin table is found
 			foreach ( $blog_ids as $blog_id )
@@ -178,6 +178,10 @@ class FCInitialization
 			if ($pluginOptions['version'] == "1.0")
 			{
 				FCInitialization::upgrade_database_101();
+			}
+			else if ($pluginOptions['version'] == "1.0.1")
+			{
+				// do nothing
 			}
 
 			// update the version value

@@ -48,7 +48,7 @@ class FCWorkflowInbox extends FCWorkflowBase
 	static function check_claim($actionid)
 	{
 		global $wpdb;
-		$action = FCWorkflowInbox::get_action( array("ID" => $actionid ) ) ;
+		$action = FCWorkflowInbox::get_action_history_by_id( $actionid ) ;
 		$w = "WHERE action_status = 'assignment' AND post_id = {$action->post_id}" ;
 		$rows = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}fc_action_history $w") ;
 		if( count($rows) > 1 )return $rows;
@@ -92,7 +92,7 @@ class FCWorkflowInbox extends FCWorkflowBase
 		$action_table = FCUtility::get_action_table_name();
 		$action_history_table = FCUtility::get_action_history_table_name();
 		if( $_POST["oasiswf"] && $_POST["reassign_id"] ){
-			$action = FCWorkflowInbox::get_action( array("ID" => $_POST["oasiswf"] ) ) ;
+			$action = FCWorkflowInbox::get_action_history_by_id( $_POST["oasiswf"] ) ;
 			$data = (array)$action ;
 			if( $data["assign_actor_id"] != -1 ){
 				unset( $data["ID"] ) ;
@@ -107,14 +107,14 @@ class FCWorkflowInbox extends FCWorkflowBase
 					echo $iid ;
 				}
 			}else{
-				$reviews = FCWorkflowInbox::get_review_action( array("review_status" => "assignment", "action_history_id" => $_POST["oasiswf"] ) ) ;
+				$reviews = FCWorkflowInbox::get_review_action_by_status( "assignment", $_POST["oasiswf"] ) ;
 				foreach ($reviews as $review) {
 					if( $review->actor_id == $_POST["reassign_id"] ){
 						echo "Selected user is already assigned." ;
 						exit() ;
 					}
 				}
-				$review = FCWorkflowInbox::get_review_action( array( "review_status" => "assignment", "actor_id" => get_current_user_id(), "action_history_id" => $_POST["oasiswf"] ), "row" ) ;
+				$review = FCWorkflowInbox::get_review_action( "assignment", get_current_user_id(), $_POST["oasiswf"] ) ;
 				$review = (array)$review ;
 				$reviewId = $review["ID"] ;
 				unset( $review["ID"] ) ;

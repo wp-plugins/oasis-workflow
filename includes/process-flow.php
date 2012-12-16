@@ -9,7 +9,7 @@ class FCProcessFlow extends FCWorkflowBase
 	{
 		//-------submit----------
 		$post_var = isset($_GET['post']) ? $_GET["post"] : "";
-		$rows = FCProcessFlow::get_action( array("action_status" => "assignment", "post_id" => $post_var ) ) ;
+		$rows = FCProcessFlow::get_action_history_by_status( "assignment", $post_var ) ;
 		if( count( $rows ) == 0 )return "submit" ;
 
 		//-------sign------------
@@ -24,21 +24,21 @@ class FCProcessFlow extends FCWorkflowBase
 
 	static function get_first_last_step($wfid)
 	{
-		$result = FCProcessFlow::get_workflow( array( "ID" => $wfid ) ) ;
+		$result = FCProcessFlow::get_workflow_by_id( $wfid  ) ;
 		$wfinfo = json_decode( $result->wf_info ) ;
 
 		if( $wfinfo->steps ){
 			foreach ($wfinfo->steps as $k => $v) {
 				if( $v->fc_dbid == "nodefine" )return "nodefine" ;
 				$step_stru = FCProcessFlow::get_process_steps($v->fc_dbid, "target");
-				if( $step_stru["success"] )continue ;
+				if( isset($step_stru["success"]) && $step_stru["success"] )continue ;
 				$first_step[] = array($v->fc_dbid, $v->fc_label, $v->fc_process);
 			}
 
 			foreach ($wfinfo->steps as $k => $v) {
 				if( $v->fc_dbid == "nodefine" )return "nodefine" ;
 				$step_stru = FCProcessFlow::get_process_steps($v->fc_dbid, "source");
-				if( $step_stru["success"] )continue ;
+				if( isset($step_stru["success"]) && $step_stru["success"] )continue ;
 				$last_step[] = array($v->fc_dbid, $v->fc_label, $v->fc_process);
 			}
 
@@ -55,7 +55,7 @@ class FCProcessFlow extends FCWorkflowBase
 		$steps = FCProcessFlow::get_first_last_step($_POST["wf_id"]) ;
 
 		if( count($steps["first"]) == 1 && count($steps["last"]) == 1 ){
-			$workflow = FCProcessFlow::get_workflow( array( "ID" => $_POST["wf_id"] ) ) ;
+			$workflow = FCProcessFlow::get_workflow_by_id( $_POST["wf_id"] ) ;
 			$wfinfo = json_decode( $workflow->wf_info ) ;
 			if( $wfinfo->first_step && count($wfinfo->first_step) == 1 ){
 				$step_db_id = FCProcessFlow::get_gpid_dbid($wfinfo, $wfinfo->first_step[0]) ;
@@ -79,7 +79,7 @@ class FCProcessFlow extends FCWorkflowBase
 			exit();
 		}
 
-		$wf_info = FCProcessFlow::get_step( array( "ID" => $_POST["stepid"] ) ) ;
+		$wf_info = FCProcessFlow::get_step_by_id( $_POST["stepid"] ) ;
 		if($wf_info){
 			$step_info= json_decode( $wf_info->step_info ) ;
 			$users = FCProcessFlow::get_users_by_role( $step_info->assignee ) ;
@@ -149,11 +149,11 @@ class FCProcessFlow extends FCWorkflowBase
 					'comment' => json_encode( $acomments ) ,
 					'step_id' => $_POST["hi_step_id"],
 					'post_id' => $_POST["post_ID"],
-					'from_id' => $_POST["oasiswf"],
+					'from_id' => '',
 					'due_date' => '',
 					'create_datetime' => $post->post_date
 				);
-		$aiid = FCProcessFlow::save_action( $adata, $auserid, "", "temp") ;		// The action don't send email.
+		$aiid = FCProcessFlow::save_action( $adata, $auserid, "", "temp") ;		// This action doesn't send email.
 		//-----------------------------------------
 
 		$data = array(
@@ -173,7 +173,7 @@ class FCProcessFlow extends FCWorkflowBase
 	//----------------review process-------------------------
 	static function review_result_process_internal($ddata, $actionId, $result)
 	{
-		$action = FCProcessFlow::get_action( array( "ID" => $actionId ) ) ;
+		$action = FCProcessFlow::get_action_history_by_id( $actionId ) ;
 		$data = array(
 					'action_status' => "assignment",
 					'post_id' => $action->post_id,
@@ -225,7 +225,7 @@ class FCProcessFlow extends FCWorkflowBase
 
 	static function review_result_process($actionid)
 	{
-		$reviews = FCProcessFlow::get_review_action( array( "action_history_id" => $actionid ) ) ;
+		$reviews = FCProcessFlow::get_review_action_by_history_id( $actionid ) ;
 
 		if( $reviews ){
 			foreach ($reviews as $review) {
@@ -259,8 +259,7 @@ class FCProcessFlow extends FCWorkflowBase
 	{
 		global $wpdb ;
 
-		$action = FCProcessFlow::get_action( array( "ID" => $_POST["oasiswf"] ) ) ;
-
+		$action = FCProcessFlow::get_action_history_by_id( $_POST["oasiswf"] ) ;
 		$userId = get_current_user_id() ;
 		$comments[] = array( "send_id" => $userId, "comment" => stripcslashes($_POST["hi_comment"]) ) ;
 		$saveComments = json_encode( $comments ) ;
@@ -274,7 +273,15 @@ class FCProcessFlow extends FCWorkflowBase
 							"due_date" => FCProcessFlow::format_date_for_db( $_POST["hi_due_date"] ),
 							"update_datetime" => current_time('mysql')
 						 ) ;
-			$wpdb->update($action_table, $updatedata, array( "actor_id" => $_POST["hi_task_user"], "action_history_id" => $_POST["oasiswf"] ) ) ;
+			if( isset($_POST["hi_task_user"]) && $_POST["hi_task_user"] != "" )
+			{
+			   $current_actor_id = $_POST["hi_task_user"];
+			}
+			else
+			{
+			   $current_actor_id = $userId;
+			}
+			$wpdb->update($action_table, $updatedata, array( "actor_id" => $current_actor_id, "action_history_id" => $_POST["oasiswf"] ) ) ;
 			FCProcessFlow::review_result_process( $_POST["oasiswf"] ) ;
 		}else{
 			$data = array(
@@ -302,7 +309,7 @@ class FCProcessFlow extends FCWorkflowBase
 			$now_dt = new DateTime(current_time('mysql'));
 		}
 
-		$history = FCProcessFlow::get_action( array( "ID" => $_POST["oasiswf_id"] ) ) ;
+		$history = FCProcessFlow::get_action_history_by_id( $_POST["oasiswf_id"] ) ;
 		$currentTime = current_time('mysql') ;
 		$data = array(
 					'action_status' => "complete",
@@ -320,7 +327,7 @@ class FCProcessFlow extends FCWorkflowBase
 			global $wpdb;
 			$result = $wpdb->update($action_history_table, array('action_status' => 'processed'), array('ID' => $_POST["oasiswf_id"]));
 
-			$action = FCProcessFlow::get_action( array( "ID" => $_POST["oasiswf_id"] ) ) ;
+			$action = FCProcessFlow::get_action_history_by_id( $_POST["oasiswf_id"] ) ;
 			if($_POST["immediately"] && $now_dt < $im_dt){
 				FCProcessFlow::copy_step_status_to_post($_POST["post_id"], $action->step_id, "complete", $_POST["immediately"]) ;
 			}else{
@@ -351,20 +358,21 @@ class FCProcessFlow extends FCWorkflowBase
 			global $wpdb;
 			$result = $wpdb->update($action_history_table, array('action_status' => 'processed'), array('ID' => $_POST["oasiswf_id"]));
 
-			$action = FCProcessFlow::get_action( array( "ID" => $_POST["oasiswf_id"] ) ) ;
+			$action = FCProcessFlow::get_action_history_by_id( $_POST["oasiswf_id"] ) ;
 
 			FCProcessFlow::copy_step_status_to_post($_POST["post_id"], $action->step_id, $_POST["review_result"]) ;
 
 			//-----------------email-----------------------
 			$current_userid = get_current_user_id() ;
-			$user_query = new WP_User_Query(array( 'role' => 'Administrator' ));
+         $users = $wpdb->get_results( "SELECT users_1.ID, users_1.display_name FROM {$wpdb->prefix}users users_1
+         					INNER JOIN {$wpdb->prefix}usermeta usermeta_1 ON ( users_1.ID = usermeta_1.user_id )
+								WHERE (usermeta_1.meta_key = '{$wpdb->prefix}capabilities' AND CAST( usermeta_1.meta_value AS CHAR ) LIKE '%administrator%')");
+
 			$post = get_post($_POST["post_id"]) ;
 			$title = "'{$post->post_title}' was cancelled from the workflow" ;
-			if ( !empty( $user_query->results ) ) {
-            foreach ( $user_query->results as $user ) {
-               FCWorkflowEmail::send_mail( $user->ID, $title, stripcslashes($_POST["hi_comment"])) ;
-            }
-			}
+         foreach ( $users as $user ) {
+            FCWorkflowEmail::send_mail( $user->ID, $title, stripcslashes($_POST["hi_comment"])) ;
+         }
 			//---------------------------------------------
 			echo $iid;
 		}
@@ -373,7 +381,7 @@ class FCProcessFlow extends FCWorkflowBase
 
 	static function copy_step_status_to_post($postid, $stepid, $result, $immediately=null)
 	{
-		$step = FCProcessFlow::get_step( array("ID" => $stepid ) ) ;
+		$step = FCProcessFlow::get_step_by_id( $stepid ) ;
 
 		if( $step ){
 			$step_info = json_decode( $step->step_info ) ;
@@ -399,13 +407,13 @@ class FCProcessFlow extends FCWorkflowBase
 	{
 		$status_info = $_POST["hi_process_info"] ;
 		$temp = explode("@#@", $status_info) ;
-		$action = FCProcessFlow::get_action( array("ID" => $temp[0]) ) ;
+		$action = FCProcessFlow::get_action_history_by_id( $temp[0] ) ;
 		FCProcessFlow::copy_step_status_to_post($_POST["post_ID"], $action->step_id, $temp[1]) ;
 	}
 
 	static function get_pre_next_steps()
 	{
-		$oasiswf = FCProcessFlow::get_action( array( "ID" => $_POST["oasiswfId"] ) );
+		$oasiswf = FCProcessFlow::get_action_history_by_id( $_POST["oasiswfId"] );
 		$steps = FCProcessFlow::get_process_steps( $oasiswf->step_id );
 		echo json_encode( $steps ) ;
 		exit();
@@ -413,7 +421,7 @@ class FCProcessFlow extends FCWorkflowBase
 
 	static function check_submit_wf_editable($wfid)
 	{
-		$workflow = FCWorkflowCRUD::get_workflow( array( "ID" => $wfid ) ) ;
+		$workflow = FCWorkflowCRUD::get_workflow_by_id( $wfid ) ;
 
 		$s_stamp = FCWorkflowCRUD::get_date_int( $workflow->start_date ) ;
 		$e_stamp = FCWorkflowCRUD::get_date_int( $workflow->end_date ) ;
@@ -452,7 +460,7 @@ class FCProcessFlow extends FCWorkflowBase
 	static function exit_post_from_workflow()
 	{
 		global $wpdb ;
-		$action = FCProcessFlow::get_action( array("ID" => $_POST["exitId"]) ) ;
+		$action = FCProcessFlow::get_action_history_by_id( $_POST["exitId"] ) ;
 		$comment[] = array(
 						"send_id" => get_current_user_id(),
 						"comment" => "Post/Page was aborted from the workflow."

@@ -2,13 +2,12 @@
 global $chkResult;
 $oasiswf = ($_GET["oasiswf"]) ? $_GET["oasiswf"] : $chkResult ;
 $editable = current_user_can('edit_posts') ;
-$parent_page = ( $_GET["parent_page"] ) ? $_GET["parent_page"] : "post_edit" ; //check to be called from which page
-$task_user = ( $_GET["task_user"] ) ? $_GET["task_user"] : "";
+$parent_page = ( isset($_GET["parent_page"]) && $_GET["parent_page"] ) ? $_GET["parent_page"] : "post_edit" ; //check to be called from which page
+$task_user = ( isset($_GET["task_user"]) && $_GET["task_user"] ) ? $_GET["task_user"] : "";
 if( $oasiswf ){
-	$current_action = FCProcessFlow::get_action( array( "ID" => $oasiswf ) ) ;
-	$current_step = FCProcessFlow::get_step( array( "ID" => $current_action->step_id ) );
+	$current_action = FCProcessFlow::get_action_history_by_id( $oasiswf ) ;
+	$current_step = FCProcessFlow::get_step_by_id( $current_action->step_id );
 	$process = FCProcessFlow::get_gpid_dbid($current_step->workflow_id, $current_action->step_id, "process" );
-	//$workflow = FCProcessFlow::get_workflow(array("ID" => $current_step->workflow_id)) ;
 	$success_status = json_decode($current_step->step_info) ;
 	$success_status = $success_status->status ;
 }

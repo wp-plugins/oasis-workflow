@@ -1,7 +1,11 @@
 <?php
 if( isset($_POST['page_action']) && $_POST["page_action"] == "submit" ){
-	update_option("oasiswf_reminder_days", $_POST["reminder_days"]) ;
-	update_option("activate_workflow", $_POST["activate_workflow_process"]) ;
+
+	$reminder_days = (isset($_POST["reminder_days"]) && $_POST["reminder_days"]) ? $_POST["reminder_days"] : "";
+   update_option("oasiswf_reminder_days", $reminder_days) ;
+
+	$enable_workflow_process = (isset($_POST["activate_workflow_process"]) && $_POST["activate_workflow_process"]) ? $_POST["activate_workflow_process"] : "";
+	update_option("activate_workflow", $enable_workflow_process) ;
 }
 $reminder_day = get_option('oasiswf_reminder_days') ;
 ?>
@@ -41,7 +45,7 @@ $reminder_day = get_option('oasiswf_reminder_days') ;
 						name="page_action" value="<?php echo __("submit");?>" />
 				</div>
 			</div>
-	
+
 	</form>
 	<div id="poststuff">
 		<div class="owf-sidebar">
@@ -57,10 +61,10 @@ $reminder_day = get_option('oasiswf_reminder_days') ;
 					<hr />
 					<div style="text-align: center;">
 						<form target="_blank" action="https://www.paypal.com/cgi-bin/webscr" method="post">
-							<input type="hidden" name="cmd" value="_s-xclick"> 
-							<input type="hidden" name="hosted_button_id" value="8YRMFYFEAEBQG"> 
+							<input type="hidden" name="cmd" value="_s-xclick">
+							<input type="hidden" name="hosted_button_id" value="8YRMFYFEAEBQG">
 							<input	type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"
-								border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"> 
+								border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 							<img alt=""	border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 						</form>
 					</div>
@@ -91,7 +95,7 @@ jQuery(document).ready(function($) {
 				alert("Please enter correctly the number of days") ;
 				return false;
 			}
-		}		
+		}
 	});
 });
 </script>
