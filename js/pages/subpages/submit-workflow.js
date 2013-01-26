@@ -2,8 +2,8 @@ jQuery(document).ready(function() {
 	var stepProcess = "";
 	//------main function-------------
 	function load_setting(){		
-		jQuery("#publishing-action").append("<input type='button' id='workflow_submit' class='button-primary'" +
-											" value='Submit' style='float:left;' />").css({"width": "100%"});
+		jQuery("#publishing-action").append("<input type='button' id='workflow_submit' class='button button-primary button-large'" +
+											" value='Submit to Workflow' style='float:left;' />").css({"width": "100%"});
 		jQuery("#post").append(
 							"<input type='hidden' id='hi_workflow_id' name='hi_workflow_id' />" +
 							"<input type='hidden' id='hi_step_id' name='hi_step_id' />" +
@@ -40,7 +40,7 @@ jQuery(document).ready(function() {
 		stepProcess = "" ;
 		jQuery.modal.close();
 	}
-		
+	
 	load_setting();
 	
 	//----------setting when selecte------------------

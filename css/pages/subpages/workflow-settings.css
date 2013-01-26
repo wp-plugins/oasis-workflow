@@ -23,16 +23,16 @@
 	margin:20px 0 0 250px;
 }
 #div_reminder_day{margin-top: 20px; opacity:0.5;}
-#reminder_days{width:50px;text-align:right;}
+.reminder_days{
+   text-align:center;
+}
 
 .owf-sidebar {
   float: right;
 }
-
-.owf-button {
-	float: left;
+#owf_settings_button_bar {
+   margin-top: 10px;	
 }
-
 a.owf_about_link {
 	padding:4px;
 	display:block;

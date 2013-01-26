@@ -305,7 +305,7 @@ class FCWorkflowBase
 
 		if( $frm == "next" )
 			$dstamp = $dstamp + 3600 * 24 * $days ;
-		else
+		else if ($frm == "pre" )
 			$dstamp = $dstamp - 3600 * 24 * $days ;
 
 		return gmdate("Y-m-d", $dstamp) ;

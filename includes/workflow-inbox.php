@@ -70,6 +70,12 @@ class FCWorkflowInbox extends FCWorkflowBase
 					$newData["from_id"] = $action->ID ;
 					$newData["create_datetime"] = current_time('mysql') ;
 					$iid = FCWorkflowInbox::insert_to_table( $action_history_table, $newData ) ;
+					// delete reminder emails, since the assignment is now claimed
+					FCWorkflowEmail::delete_step_email($action->ID, $action->assign_actor_id);
+
+					// send mail to the actor about the assignment and add email reminders, if any
+					FCWorkflowEmail::send_step_email( $iid ) ;
+
 					$data["action_status"] = "claimed" ;
 					//$data["comment"] = "" ;
 				}else{
@@ -77,9 +83,11 @@ class FCWorkflowInbox extends FCWorkflowBase
 					$title = "Task claimed" ;
 					$message = "Another user has claimed the task, so please ignore it." ;
 					FCWorkflowEmail::send_mail($action->assign_actor_id, $title, $message) ;
+					FCWorkflowEmail::delete_step_email($action->ID, $action->assign_actor_id);
 					//$data["comment"] = "" ;
 				}
 				$wpdb->update( $action_history_table, $data, array( "ID" => $action->ID ) ) ;
+
 			}
 		}
 		echo $iid ;
@@ -102,7 +110,7 @@ class FCWorkflowInbox extends FCWorkflowBase
 				$iid = FCWorkflowInbox::insert_to_table( $action_history_table, $data ) ;
 				if( $iid ){
 					$wpdb->update($action_history_table, array( "action_status" => "reassigned" ), array( "ID" => $_POST["oasiswf"] ) ) ;
-					$wpdb->get_results("DELETE FROM {$wpdb->prefix}fc_emails WHERE action=0  AND to_user = " . get_current_user_id() . " AND history_id=" . $_POST["oasiswf"]) ;
+					$wpdb->get_results("DELETE FROM {$wpdb->prefix}fc_emails WHERE action=1  AND to_user = " . get_current_user_id() . " AND history_id=" . $_POST["oasiswf"]) ;
 					FCWorkflowEmail::send_step_email($iid, $_POST["reassign_id"]) ; // send mail to the actor .
 					echo $iid ;
 				}
@@ -124,7 +132,7 @@ class FCWorkflowInbox extends FCWorkflowBase
 					$wpdb->update($action_table, array( "review_status" => "reassigned" ), array( "ID" => $reviewId ) ) ;
 					$data = array("to_id" => $r_iid, "sign_off_date" => current_time("mysql")) ;
 					update_option("reassign_{$reviewId}", $data) ;
-					$wpdb->get_results("DELETE FROM {$wpdb->prefix}fc_emails WHERE action=0 AND to_user = " . get_current_user_id() . " AND history_id=" . $_POST["oasiswf"]) ;
+					$wpdb->get_results("DELETE FROM {$wpdb->prefix}fc_emails WHERE action=1 AND to_user = " . get_current_user_id() . " AND history_id=" . $_POST["oasiswf"]) ;
 					FCWorkflowEmail::send_step_email($_POST["oasiswf"], $_POST["reassign_id"]) ; // send mail to the actor .
 					echo $r_iid ;
 				}

@@ -4,7 +4,7 @@ Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit
 Requires at least: 3.3
 Tested up to: 3.5
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 
 Workflow process for WordPress made simple with Oasis Workflow.
 
@@ -76,3 +76,9 @@ Bug fixes.
 
 = Version 1.0.2 =
 Made WP 3.5 compatible
+
+= Version 1.0.3 =
+Added an option for admin to detach the post from oasis workflow and go back to normal wordpress behavior.
+Added reminder email AFTER certain due date feature.
+Change the post title placeholder to be a link.
+Bug fixes.

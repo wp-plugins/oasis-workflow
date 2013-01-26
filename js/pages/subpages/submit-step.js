@@ -9,13 +9,13 @@ jQuery(document).ready(function() {
 	// When page is colled from post edit page 
 	function load_setting(){
 		if(jQuery("#hi_editable").val()){
-			jQuery("#publishing-action").append("<input type='button' id='step_submit' class='button-primary'" +
+			jQuery("#publishing-action").append("<input type='button' id='step_submit' class='button button-primary button-large'" +
 												" value='Sign Off' style='float:left;' /><input type='hidden' name='hi_process_info' id='hi_process_info' />").css({"width":"100%"});
 		}else{
 			jQuery("#publish").hide();
-			jQuery("#publishing-action").append("<input type='button' id='step_submit' class='button-primary' value='Sign Off' />");
+			jQuery("#publishing-action").append("<input type='button' id='step_submit' class='button button-primary button-large' value='Sign Off' />");
 		}
-		jQuery("#publishing-action").append("<div style='width:100%;margin-top:15px;text-align:left;'><a href='admin.php?page=oasiswf-inbox'>Go to Workflow Inbox</a></div>") ;		
+		jQuery("#publishing-action").append("<a style='float:right;margin-top:10px;' href='admin.php?page=oasiswf-inbox'>Go to Workflow Inbox</a>") ;		
 		
 		jQuery("#step_submit").live('click', function(){
 			jQuery("#new-step-submit-div").modal();

@@ -1,6 +1,6 @@
 <?php
 global $chkResult;
-$oasiswf = ($_GET["oasiswf"]) ? $_GET["oasiswf"] : $chkResult ;
+$oasiswf = ( isset($_GET["oasiswf"]) && $_GET["oasiswf"]) ? $_GET["oasiswf"] : $chkResult ;
 $editable = current_user_can('edit_posts') ;
 $parent_page = ( isset($_GET["parent_page"]) && $_GET["parent_page"] ) ? $_GET["parent_page"] : "post_edit" ; //check to be called from which page
 $task_user = ( isset($_GET["task_user"]) && $_GET["task_user"] ) ? $_GET["task_user"] : "";

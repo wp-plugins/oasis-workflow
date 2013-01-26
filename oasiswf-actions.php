@@ -54,7 +54,10 @@ class FCWorkflowActions
 	{
 		if( get_option("activate_workflow") == "active" ){
 			FCWorkflowActions::include_files( "submit-workflow" ) ;
-			FCWorkflowActions::publish_status_hide() ;
+			$role = FCProcessFlow::get_current_user_role() ;
+			if( $role != "administrator" ){ // do not hide the ootb publish section for administrator
+			   FCWorkflowActions::ootb_publish_section_hide() ;
+			}
 		}
 	}
 
@@ -69,13 +72,18 @@ class FCWorkflowActions
 					FCWorkflowActions::include_files( "submit-step" ) ;
 				}
 			}
-			FCWorkflowActions::publish_status_hide() ;
+
+         $role = FCProcessFlow::get_current_user_role() ;
+         $row = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}fc_action_history WHERE post_id = {$_GET["post"]} AND action_status = 'assignment'") ;
+
+         // do not hide the ootb publish section for administrator, but hide it if the post is in the workflow
+         if( ($role != "administrator") || ($role == "administrator" && $row) ){
+            FCWorkflowActions::ootb_publish_section_hide() ;
+         }
 
 			//--------generate exit link---------
 
-			$role = FCProcessFlow::get_current_user_role() ;
 			if( $role == "administrator" ){
-				$row = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}fc_action_history WHERE post_id = {$_GET["post"]} AND action_status = 'assignment'") ;
 				if( $row ){
 					echo "<link rel='stylesheet' href='" . OASISWF_URL . "css/pages/page.css' type='text/css' />";
 					echo "<script type='text/javascript'>var exit_wfid = $row->ID ;</script>" ;
@@ -86,11 +94,12 @@ class FCWorkflowActions
 		}
 	}
 
-	static function publish_status_hide()
+	static function ootb_publish_section_hide()
 	{
 		echo "<script type='text/javascript'>
 					jQuery(document).ready(function() {
 						jQuery('#publish, .misc-pub-section-last').hide() ;
+						jQuery('#misc-publishing-actions').children('.curtime').hide() ;
 						jQuery('#post-status-display').parent().hide() ;
 					});
 				</script>";

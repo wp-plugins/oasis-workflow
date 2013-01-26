@@ -213,7 +213,12 @@ class FCWorkflowHistory extends FCWorkflowBase
 
 	static function get_signoff_comment_count($row)
 	{
-		if( $row->action_status == "claimed" ||  $row->action_status == "claim_cancel" || $row->action_status == "reassigned" || $row->action_status == "complete" )return ;
+		if( $row->action_status == "claimed" ||
+		   $row->action_status == "claim_cancel" ||
+		   $row->action_status == "reassigned" ||
+		   $row->action_status == "complete" ){
+		      return "0";
+		   }
 		$nextHistory = FCWorkflowHistory::get_action_history_by_from_id( $row->ID ) ;
 		if (is_object($nextHistory))
 		{
@@ -224,8 +229,12 @@ class FCWorkflowHistory extends FCWorkflowBase
 
 	static function get_review_signoff_comment_count($review_row)
 	{
-		if($review_row->review_status == "reassigned")return "" ;
 		$i = 0 ;
+
+	   if($review_row->review_status == "reassigned") {
+	      return $i ;
+	   }
+
 		if( $review_row ){
 			$comments = json_decode($review_row->comments) ;
 			if($comments){

@@ -11,7 +11,7 @@ class FCWorkflowEmail extends FCWorkflowBase
 			$user = get_user_by('email', $touser);
 		}
 
-		$headers = array("From: 'Oasis Workflow' <" . get_site_option( 'admin_email' ) . ">", "Content-Type: text/html");
+		$headers = array("From: " . get_option( 'blogname' ) . " <" . get_site_option( 'admin_email' ) . ">", "Content-Type: text/html");
 		$h = implode("\r\n",$headers) . "\r\n";
 
 		wp_mail($user->data->user_email, $title, $message, $h) ;
@@ -38,7 +38,8 @@ class FCWorkflowEmail extends FCWorkflowBase
 			foreach ($messages as $k => $v) {
 				$v = str_replace("%first_name%", $first_name, $v);
 				$v = str_replace("%last_name%", $last_name, $v);
-				$v = str_replace("%post_title%", $post_title, $v);
+				$post_url = admin_url( 'post.php?post=' . $postid . '&action=edit' );
+				$v = str_replace("%post_title%", '<a href=' . $post_url . ' target="_blank">' . $post_title . '</a>', $v);
 				$messages->$k = $v ;
 			}
 			return 	$messages ;
@@ -61,9 +62,11 @@ class FCWorkflowEmail extends FCWorkflowBase
 			$nameStr = ( $first_name == $last_name ) ? $nickname : $first_name . " " . $last_name ;
 			$signOffDate = FCWorkflowBase::format_date_for_display($actionStep->create_datetime, "-", "datetime");
 			$dueDate = FCWorkflowBase::format_date_for_display ($actionStep->due_date);
-
-			$commentStr .= "<p><strong>Additionally,</strong> {$nameStr} added the following comments:</p>" ;
-			$commentStr .= "<p>" . nl2br($comment->comment) . "</p>" ;
+         if ($comment->comment != "")
+         {
+			   $commentStr .= "<p><strong>Additionally,</strong> {$nameStr} added the following comments:</p>" ;
+			   $commentStr .= "<p>" . nl2br($comment->comment) . "</p>" ;
+         }
 			$commentStr .= "<p>Sign off date : {$signOffDate}</p>" ;
 			$commentStr .= "<p>Due date : {$dueDate} </p>" ;
 
@@ -76,7 +79,6 @@ class FCWorkflowEmail extends FCWorkflowBase
 		$actionStep = FCProcessFlow::get_action_history_by_id( $actionid ) ;
 		$touserid = ( $touserid ) ? $touserid : $actionStep->assign_actor_id ;
 		$fromuserid = get_current_user_id() ;
-
 		$mails = FCWorkflowEmail::get_step_mail_content($actionStep->step_id, $touserid, $actionStep->post_id) ;
 		$comment = FCWorkflowEmail::get_step_comment_content($actionid) ;
 
@@ -106,9 +108,32 @@ class FCWorkflowEmail extends FCWorkflowBase
 			$data["subject"] = $mails->reminder_subject ;
 			$data["message"] = $mailcontent ;
 			$data["action"] = 1 ;
-			$data["send_date"] = $actionStep->reminder_date ;
-			FCProcessFlow::insert_to_table( $emails_table, $data ) ;
+			if ( $actionStep->reminder_date )
+			{
+			   $data["send_date"] = $actionStep->reminder_date ;
+			   FCProcessFlow::insert_to_table( $emails_table, $data ) ;
+			}
+
+			if ( $actionStep->reminder_date_after )
+			{
+			   $data["send_date"] = $actionStep->reminder_date_after ;
+			   FCProcessFlow::insert_to_table( $emails_table, $data ) ;
+			}
 		}
+	}
+
+	static function delete_step_email($action_history_id, $user_id = null)
+	{
+      // if the user completes the assignment on time, then no need to send reminder emails
+      global $wpdb;
+      if ( $user_id )
+      {
+         $wpdb->get_results( "DELETE FROM {$wpdb->prefix}fc_emails WHERE action = 1 and history_id = " . $action_history_id . " and to_user = " . $user_id) ;
+      }
+      else
+      {
+         $wpdb->get_results( "DELETE FROM {$wpdb->prefix}fc_emails WHERE action = 1 and history_id = " . $action_history_id) ;
+      }
 	}
 }
 ?>

@@ -96,10 +96,18 @@ class FCProcessFlow extends FCWorkflowBase
 
 	static function save_action($data, $actors, $actionid=null, $actionfrm=null)
 	{
+	   // reminder days BEFORE the due date
 		$reminder_days = get_option("oasiswf_reminder_days") ;
-		$reminder_days = ($reminder_days) ? $reminder_days : 2 ;
+		if ($reminder_days) {
+		   $data["reminder_date"] = FCProcessFlow::get_pre_next_date( $data["due_date"], "pre", $reminder_days) ;
+		}
 
-		$data["reminder_date"] = FCProcessFlow::get_pre_next_date( $data["due_date"], "pre", $reminder_days) ;
+		// reminder days AFTER the due date
+		$reminder_days_after = get_option("oasiswf_reminder_days_after") ;
+		if ($reminder_days_after) {
+		   $data["reminder_date_after"] = FCProcessFlow::get_pre_next_date( $data["due_date"], "next", $reminder_days_after) ;
+		}
+
 		$action_history_table = FCUtility::get_action_history_table_name();
 		$action_table = FCUtility::get_action_table_name();
 		if( is_numeric( $actors ) ){
@@ -261,6 +269,14 @@ class FCProcessFlow extends FCWorkflowBase
 
 		$action = FCProcessFlow::get_action_history_by_id( $_POST["oasiswf"] ) ;
 		$userId = get_current_user_id() ;
+		if( isset($_POST["hi_task_user"]) && $_POST["hi_task_user"] != "" )
+		{
+		  $current_actor_id = $_POST["hi_task_user"];
+		}
+		else
+		{
+		  $current_actor_id = $userId;
+		}
 		$comments[] = array( "send_id" => $userId, "comment" => stripcslashes($_POST["hi_comment"]) ) ;
 		$saveComments = json_encode( $comments ) ;
 		$action_table = FCUtility::get_action_table_name();
@@ -273,15 +289,9 @@ class FCProcessFlow extends FCWorkflowBase
 							"due_date" => FCProcessFlow::format_date_for_db( $_POST["hi_due_date"] ),
 							"update_datetime" => current_time('mysql')
 						 ) ;
-			if( isset($_POST["hi_task_user"]) && $_POST["hi_task_user"] != "" )
-			{
-			   $current_actor_id = $_POST["hi_task_user"];
-			}
-			else
-			{
-			   $current_actor_id = $userId;
-			}
 			$wpdb->update($action_table, $updatedata, array( "actor_id" => $current_actor_id, "action_history_id" => $_POST["oasiswf"] ) ) ;
+		   // delete all the unsend emails for this workflow
+			FCWorkflowEmail::delete_step_email($_POST["oasiswf"], $current_actor_id);
 			FCProcessFlow::review_result_process( $_POST["oasiswf"] ) ;
 		}else{
 			$data = array(
@@ -294,6 +304,8 @@ class FCProcessFlow extends FCWorkflowBase
 						'create_datetime' => current_time('mysql')
 					);
 			$iid = FCProcessFlow::save_action( $data, $_POST["hi_actor_ids"], $_POST["oasiswf"]) ;
+		   // delete all the unsend emails for this workflow
+			FCWorkflowEmail::delete_step_email($_POST["oasiswf"], $current_actor_id);
 			//------post status chage----------
 			FCProcessFlow::copy_step_status_to_post($_POST["post_ID"], $action->step_id, $_POST["review_result"]) ;
 		}
@@ -323,8 +335,19 @@ class FCProcessFlow extends FCWorkflowBase
 				);
 		$action_history_table = FCUtility::get_action_history_table_name();
 		$iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
+		if( isset($_POST["hi_task_user"]) && $_POST["hi_task_user"] != "" )
+		{
+		  $current_actor_id = $_POST["hi_task_user"];
+		}
+		else
+		{
+		  $current_actor_id = get_current_user_id();
+		}
 		if( $iid ){
 			global $wpdb;
+		   // delete all the unsend emails for this workflow
+			FCWorkflowEmail::delete_step_email($_POST["oasiswf_id"], $current_actor_id);
+
 			$result = $wpdb->update($action_history_table, array('action_status' => 'processed'), array('ID' => $_POST["oasiswf_id"]));
 
 			$action = FCProcessFlow::get_action_history_by_id( $_POST["oasiswf_id"] ) ;
@@ -354,8 +377,20 @@ class FCProcessFlow extends FCWorkflowBase
 				);
 		$action_history_table = FCUtility::get_action_history_table_name();
 		$iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
+
+		if( isset($_POST["hi_task_user"]) && $_POST["hi_task_user"] != "" )
+		{
+		  $current_actor_id = $_POST["hi_task_user"];
+		}
+		else
+		{
+		  $current_actor_id = get_current_user_id();
+		}
+
 		if( $iid ){
 			global $wpdb;
+		   // delete all the unsend emails for this workflow
+			FCWorkflowEmail::delete_step_email($_POST["oasiswf_id"], $current_actor_id);
 			$result = $wpdb->update($action_history_table, array('action_status' => 'processed'), array('ID' => $_POST["oasiswf_id"]));
 
 			$action = FCProcessFlow::get_action_history_by_id( $_POST["oasiswf_id"] ) ;
@@ -475,6 +510,8 @@ class FCProcessFlow extends FCWorkflowBase
 		$action_history_table = FCUtility::get_action_history_table_name();
 		$iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
 		if($iid){
+		   // delete all the unsend emails for this workflow
+		   FCWorkflowEmail::delete_step_email($_POST["exitId"]);
 			$wpdb->update($action_history_table, array( "action_status" => "aborted" ), array( "ID" => $_POST["exitId"] ) ) ;
 			echo $iid ;
 		}

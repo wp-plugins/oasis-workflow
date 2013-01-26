@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.2' );
-define( 'OASISWF_DB_VERSION','1.0.2');
+define( 'OASISWF_VERSION' , '1.0.3' );
+define( 'OASISWF_DB_VERSION','1.0.3');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -188,10 +188,15 @@ class FCInitialization
 		if ($pluginOptions['version'] == "1.0")
 		{
 			FCInitialization::upgrade_database_101();
+			FCInitialization::upgrade_database_103();
 		}
 		else if ($pluginOptions['version'] == "1.0.1")
 		{
-			// do nothing
+			FCInitialization::upgrade_database_103();
+		}
+		else if ($pluginOptions['version'] == "1.0.2")
+		{
+			FCInitialization::upgrade_database_103();
 		}
 
 		// update the version value
@@ -214,6 +219,12 @@ class FCInitialization
 		delete_option('oasiswf_status');
 		delete_option('oasiswf_review');
 		delete_option('oasiswf_placeholders');
+		if (get_option('oasiswf_reminder_days')) {
+		   delete_option('oasiswf_reminder_days');
+		}
+		if (get_option('oasiswf_reminder_days_after')) {
+		   delete_option('oasiswf_reminder_days_after');
+		}
 
 		$wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name like 'workflow_%'") ;
 		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}fc_workflows");
@@ -285,6 +296,16 @@ class FCInitialization
 		}
 	}
 
+	function upgrade_database_103()
+	{
+		global $wpdb;
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+		// add reminder_date_after to the fc_action_history table
+		$table_name = $wpdb->prefix . 'fc_action_history';
+		$wpdb->query("ALTER TABLE {$table_name} ADD COLUMN reminder_date_after date DEFAULT NULL");
+	}
+
 	function install_database()
 	{
 		global $wpdb;
@@ -333,6 +354,7 @@ class FCInitialization
 		$table_name = $wpdb->prefix . 'fc_emails';
 		if ($wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'") != $table_name)
 		{
+		   // action - 1 indicates not send, 0 indicates email sent
 			$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
 			    `ID` int(11) NOT NULL AUTO_INCREMENT,
 			    `subject` mediumtext,
@@ -361,6 +383,7 @@ class FCInitialization
 			    `from_id` int(11) NOT NULL,
 			    `due_date` date DEFAULT NULL,
 			    `reminder_date` date DEFAULT NULL,
+			    `reminder_date_after` date DEFAULT NULL,
 			    `create_datetime` datetime NOT NULL,
 			    PRIMARY KEY (`ID`)
 	    		){$charset_collate};";
