@@ -3,7 +3,7 @@ Contributors: nuggetsol
 Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8YRMFYFEAEBQG
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit
 Requires at least: 3.3
-Tested up to: 3.5
+Tested up to: 3.5.1
 Stable tag: 1.0.3
 
 Workflow process for WordPress made simple with Oasis Workflow.
