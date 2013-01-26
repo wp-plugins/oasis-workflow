@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Easily create graphical workflows to manage your work.
- Version: 1.0.2
+ Version: 1.0.3
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
 
