@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Easily create graphical workflows to manage your work.
- Version: 1.0.3
+ Version: 1.0.4
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
 
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.3' );
-define( 'OASISWF_DB_VERSION','1.0.3');
+define( 'OASISWF_VERSION' , '1.0.4' );
+define( 'OASISWF_DB_VERSION','1.0.4');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -189,14 +189,21 @@ class FCInitialization
 		{
 			FCInitialization::upgrade_database_101();
 			FCInitialization::upgrade_database_103();
+			FCInitialization::upgrade_database_104();
 		}
 		else if ($pluginOptions['version'] == "1.0.1")
 		{
 			FCInitialization::upgrade_database_103();
+			FCInitialization::upgrade_database_104();
 		}
 		else if ($pluginOptions['version'] == "1.0.2")
 		{
 			FCInitialization::upgrade_database_103();
+			FCInitialization::upgrade_database_104();
+		}
+		else if ($pluginOptions['version'] == "1.0.3")
+		{
+			FCInitialization::upgrade_database_104();
 		}
 
 		// update the version value
@@ -213,6 +220,7 @@ class FCInitialization
 			exit();
 
 		global $wpdb;	//required global declaration of WP variable
+		delete_option('oasiswf_activate_workflow');
 		delete_option('oasiswf_info');
 		delete_option('oasiswf_process');
 		delete_option('oasiswf_path');
@@ -222,6 +230,10 @@ class FCInitialization
 		if (get_option('oasiswf_reminder_days')) {
 		   delete_option('oasiswf_reminder_days');
 		}
+		if (get_option('oasiswf_skip_workflow_roles')) {
+		   delete_option('oasiswf_skip_workflow_roles');
+		}
+
 		if (get_option('oasiswf_reminder_days_after')) {
 		   delete_option('oasiswf_reminder_days_after');
 		}
@@ -304,6 +316,16 @@ class FCInitialization
 		// add reminder_date_after to the fc_action_history table
 		$table_name = $wpdb->prefix . 'fc_action_history';
 		$wpdb->query("ALTER TABLE {$table_name} ADD COLUMN reminder_date_after date DEFAULT NULL");
+	}
+
+	function upgrade_database_104()
+	{
+	   $skip_workflow_roles = array("administrator");
+	   update_option("oasiswf_skip_workflow_roles", $skip_workflow_roles) ;
+
+	   // modify option name to prefix with oasiswf
+	   delete_option('activate_workflow');
+	   update_option("oasiswf_activate_workflow", "active") ;
 	}
 
 	function install_database()

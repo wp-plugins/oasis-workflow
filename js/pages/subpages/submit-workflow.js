@@ -133,16 +133,23 @@ jQuery(document).ready(function() {
 			var result={}, users = {} ;
 			if(response){
 				result = JSON.parse(response) ;
-				users = result["users"] ;
+				if( typeof result["users"][0] == 'object') // no users are defined 
+				{
+					users = result["users"] ;					
+				}
+				else
+				{
+					alert("No users found for the given role");
+				}
 				stepProcess = result["process"] ;
 			}
-
-			if(stepProcess == "review"){
+			// multiple actors applicable to both review and assignment step
+			if(stepProcess == "review" || stepProcess == "assignment"){
 				jQuery("#one-actors-div").hide();
-				jQuery("#multipule-actors-div").show();
+				jQuery("#multiple-actors-div").show();
 				add_option_to_select("actors-list-select", users, 'name', 'ID') ;	
 			}else{
-				jQuery("#multipule-actors-div").hide();
+				jQuery("#multiple-actors-div").hide();
 				jQuery("#one-actors-div").show();
 				add_option_to_select("actor-one-select", users, 'name', 'ID') ;	
 			}
@@ -156,7 +163,7 @@ jQuery(document).ready(function() {
 		var v = jQuery('#actors-list-select option:selected').val();
 		var t = jQuery('#actors-list-select option:selected').text();
 		if(option_exist_chk(v)){
-			if(jQuery("#actors-set-select option").length ==1 && stepProcess != "review" ){
+			if(jQuery("#actors-set-select option").length == 1 && stepProcess == "publish" ){
 				alert("You can select multiple users only for review step.\n Selected step is " + stepProcess + " step.");
 				return;
 			}

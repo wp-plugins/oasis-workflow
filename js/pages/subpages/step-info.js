@@ -156,7 +156,7 @@ jQuery(document).ready(function() {
 			return false ;
 		}
 		
-		if(!jQuery("#step-status-select").val()){
+		if(!jQuery("#step-status-select").val() && !jQuery("#step_status_publish").is(':visible')){
 			alert("Please select status on success.") ;
 			return false ;
 		}
@@ -180,7 +180,14 @@ jQuery(document).ready(function() {
 			assignee[jQuery(this).val()] = jQuery(this).text() ;
 		});
 		stepinfo["assignee"] = assignee ;
-		stepinfo["status"] = jQuery("#step-status-select").val() ;
+		if (jQuery("#step_status_publish").is(':visible'))
+		{
+			stepinfo["status"] = jQuery("#step_status_publish").html() ;
+		}
+		else
+		{
+			stepinfo["status"] = jQuery("#step-status-select").val() ;
+		}
 		stepinfo["failure_status"] = jQuery("#step-failure-status-select").val() ;
 		//stepinfo["decision"] = jQuery("input[name=review-opt]:checked").val();
 		//-------process info--------

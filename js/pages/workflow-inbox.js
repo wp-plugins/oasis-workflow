@@ -51,7 +51,7 @@ inlineEditPost = {
 				typenow = t.type = $(this).attr("real");
 				data = {
 						action: 'get_editinline_html' ,
-						post_type: $(this).attr("real"),
+						post_type: $(this).attr("real")
 					   };
 				jQuery(this).parent().children(".loading").show();
 				jQuery.post(ajaxurl, data, function( response ) {

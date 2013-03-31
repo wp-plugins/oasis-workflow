@@ -18,8 +18,8 @@ class FCWorkflowCRUD extends FCWorkflowBase
 		$valid = ( $workflow_message ) ? 0 : 1 ;
 		$result = $wpdb->update($workflow_table,
 								array(
-									'name' => trim($title),
-									'description' => $dec,
+									'name' => stripcslashes( trim( $title )),
+									'description' => stripcslashes( $dec ),
 									'wf_info' => $graphic,
 									'start_date' => $startdate,
 									'end_date' => $enddate,
@@ -50,8 +50,8 @@ class FCWorkflowCRUD extends FCWorkflowBase
 			$parentId = ( $wf->parent_id == 0 ) ? $wf->ID : $wf->parent_id ;
 			$newVersion = FCWorkflowCRUD::get_new_version($parentId);
 			$data = array(
-						'name' => $wf->name,
-						'description' => $wf->description,
+						'name' => stripcslashes( trim( $wf->name )),
+						'description' => stripcslashes( $wf->description ),
 						'version' => $newVersion,
 						'parent_id' => $parentId,
 						'create_datetime' => current_time('mysql')
@@ -188,8 +188,8 @@ class FCWorkflowCRUD extends FCWorkflowBase
 	static function create_new_workflow()
 	{
 		$data = array(
-					'name' => $_POST["name"],
-					'description' => $_POST["description"],
+					'name' => stripcslashes( $_POST["name"] ),
+					'description' => stripcslashes( $_POST["description"] ),
 					'create_datetime' => current_time('mysql')
 				);
 		$workflow_table = FCUtility::get_workflows_table_name();
@@ -227,6 +227,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 	{
 		global $wpdb ;
 		$workflow_step_table = FCUtility::get_workflow_steps_table_name();
+
 		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflow_steps WHERE ID = %d" , $_POST["stepid"] ));
 		if(	$result ) {
 			$result = $wpdb->update(
@@ -259,7 +260,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 						"wpid" => $_POST["wfid"],
 						"stepgpid" => $_POST["stepgpid"],
 						"stepdbid" => $stepId,
-						"name" => $_POST["stepname"]
+						"name" => stripcslashes( $_POST["stepname"])
 						);
 			FCWorkflowCRUD::wokflow_data_update($param) ;
 		}

@@ -30,16 +30,17 @@ class FCProcessFlow extends FCWorkflowBase
 		if( $wfinfo->steps ){
 			foreach ($wfinfo->steps as $k => $v) {
 				if( $v->fc_dbid == "nodefine" )return "nodefine" ;
-				$step_stru = FCProcessFlow::get_process_steps($v->fc_dbid, "target");
-				if( isset($step_stru["success"]) && $step_stru["success"] )continue ;
+				   $step_stru = FCProcessFlow::get_process_steps($v->fc_dbid, "target");
+				if( isset($step_stru["success"]) && $step_stru["success"] )
+				   continue ;
 				$first_step[] = array($v->fc_dbid, $v->fc_label, $v->fc_process);
 			}
 
 			foreach ($wfinfo->steps as $k => $v) {
 				if( $v->fc_dbid == "nodefine" )return "nodefine" ;
-				$step_stru = FCProcessFlow::get_process_steps($v->fc_dbid, "source");
+				   $step_stru = FCProcessFlow::get_process_steps($v->fc_dbid, "source");
 				if( isset($step_stru["success"]) && $step_stru["success"] )continue ;
-				$last_step[] = array($v->fc_dbid, $v->fc_label, $v->fc_process);
+   				$last_step[] = array($v->fc_dbid, $v->fc_label, $v->fc_process);
 			}
 
 			$getStep["first"] = $first_step ;
@@ -54,18 +55,17 @@ class FCProcessFlow extends FCWorkflowBase
 	{
 		$steps = FCProcessFlow::get_first_last_step($_POST["wf_id"]) ;
 
-		if( count($steps["first"]) == 1 && count($steps["last"]) == 1 ){
-			$workflow = FCProcessFlow::get_workflow_by_id( $_POST["wf_id"] ) ;
-			$wfinfo = json_decode( $workflow->wf_info ) ;
-			if( $wfinfo->first_step && count($wfinfo->first_step) == 1 ){
-				$step_db_id = FCProcessFlow::get_gpid_dbid($wfinfo, $wfinfo->first_step[0]) ;
-				$step_lbl = FCProcessFlow::get_gpid_dbid($wfinfo, $wfinfo->first_step[0], "lbl") ;
-				$process = FCProcessFlow::get_gpid_dbid($wfinfo, $wfinfo->first_step[0], "process") ;
-				unset($steps["first"]) ;
-				$steps["first"][] = array($step_db_id, $step_lbl, $process) ;
-			}
+		$workflow = FCProcessFlow::get_workflow_by_id( $_POST["wf_id"] ) ;
+		$wfinfo = json_decode( $workflow->wf_info ) ;
+		if( $wfinfo->first_step && count($wfinfo->first_step) == 1 ){
+			$step_db_id = FCProcessFlow::get_gpid_dbid($wfinfo, $wfinfo->first_step[0]) ;
+			$step_lbl = FCProcessFlow::get_gpid_dbid($wfinfo, $wfinfo->first_step[0], "lbl") ;
+			$process = FCProcessFlow::get_gpid_dbid($wfinfo, $wfinfo->first_step[0], "process") ;
+			unset($steps["first"]) ;
+			$steps["first"][] = array($step_db_id, $step_lbl, $process) ;
 			echo json_encode($steps) ;
-		}else{
+		}
+		else{
 			echo "wrong" ;
 		}
 
@@ -110,11 +110,29 @@ class FCProcessFlow extends FCWorkflowBase
 
 		$action_history_table = FCUtility::get_action_history_table_name();
 		$action_table = FCUtility::get_action_table_name();
-		if( is_numeric( $actors ) ){
+      $wf_info = FCProcessFlow::get_step_by_id( $data["step_id"] ) ;
+		if($wf_info)
+		{
+			$step_info = json_decode( $wf_info->step_info ) ;
+		}
+		if( is_numeric( $actors ) )
+		{
 			$data["assign_actor_id"] = $actors ;
 			$iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
 			if( !$actionfrm )FCWorkflowEmail::send_step_email( $iid ) ; // send mail to the actor .
-		}else{
+		}
+		else if (!is_numeric( $actors ) && $step_info->process == "assignment") //multiple actors are assigned in assignment step
+		{
+         $arr = explode("@", $actors) ;
+         for( $i = 0; $i < count( $arr ); $i++ )
+         {
+            $data["assign_actor_id"] = $arr[$i];
+			   $iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
+			   if( !$actionfrm )FCWorkflowEmail::send_step_email( $iid ) ; // send mail to the actor .
+         }
+		}
+		else
+		{
 			$data["assign_actor_id"] = -1 ;
 			$iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
 
@@ -163,7 +181,6 @@ class FCProcessFlow extends FCWorkflowBase
 				);
 		$aiid = FCProcessFlow::save_action( $adata, $auserid, "", "temp") ;		// This action doesn't send email.
 		//-----------------------------------------
-
 		$data = array(
 					'action_status' => "assignment",
 					'comment' => $saveComments,
@@ -280,16 +297,45 @@ class FCProcessFlow extends FCWorkflowBase
 		$comments[] = array( "send_id" => $userId, "comment" => stripcslashes($_POST["hi_comment"]) ) ;
 		$saveComments = json_encode( $comments ) ;
 		$action_table = FCUtility::get_action_table_name();
-		if( $action->assign_actor_id == -1 ){
+		if( $action->assign_actor_id == -1 )
+		{
+		   if( is_numeric( $_POST["hi_actor_ids"] ) )
+		   {
+		      $first_actor = $_POST["hi_actor_ids"];
+		   }
+		   else
+		   {
+		      $arr = explode("@", $_POST["hi_actor_ids"]) ;
+		      $first_actor = $arr[0];
+		   }
+         // update with the first actor
 			$updatedata = array(
 							"review_status" => $_POST["review_result"],
-							"reassign_actor_id" => $_POST["hi_actor_ids"],
+							"reassign_actor_id" => $first_actor,
 							"step_id" => $_POST["hi_step_id"],
 							"comments" => $saveComments,
 							"due_date" => FCProcessFlow::format_date_for_db( $_POST["hi_due_date"] ),
 							"update_datetime" => current_time('mysql')
 						 ) ;
 			$wpdb->update($action_table, $updatedata, array( "actor_id" => $current_actor_id, "action_history_id" => $_POST["oasiswf"] ) ) ;
+
+		   if( !is_numeric( $_POST["hi_actor_ids"] ) ) // insert the rest of the data for other actors
+		   {
+            for( $i = 1; $i < count( $arr ); $i++ )
+            {
+      			$redata = array(
+      							"review_status" => $_POST["review_result"],
+      							"reassign_actor_id" => $arr[$i],
+      							"actor_id" => $current_actor_id,
+      							"step_id" => $_POST["hi_step_id"],
+      							"comments" => $saveComments,
+      							"due_date" => FCProcessFlow::format_date_for_db( $_POST["hi_due_date"] ),
+      							"action_history_id" => $_POST["oasiswf"],
+      							"update_datetime" => current_time('mysql')
+      						 ) ;
+               FCProcessFlow::insert_to_table( $action_table, $redata ) ;
+            }
+		   }
 		   // delete all the unsend emails for this workflow
 			FCWorkflowEmail::delete_step_email($_POST["oasiswf"], $current_actor_id);
 			FCProcessFlow::review_result_process( $_POST["oasiswf"] ) ;
@@ -399,8 +445,8 @@ class FCProcessFlow extends FCWorkflowBase
 
 			//-----------------email-----------------------
 			$current_userid = get_current_user_id() ;
-         $users = $wpdb->get_results( "SELECT users_1.ID, users_1.display_name FROM {$wpdb->prefix}users users_1
-         					INNER JOIN {$wpdb->prefix}usermeta usermeta_1 ON ( users_1.ID = usermeta_1.user_id )
+         $users = $wpdb->get_results( "SELECT users_1.ID, users_1.display_name FROM {$wpdb->base_prefix}users users_1
+         					INNER JOIN {$wpdb->base_prefix}usermeta usermeta_1 ON ( users_1.ID = usermeta_1.user_id )
 								WHERE (usermeta_1.meta_key = '{$wpdb->prefix}capabilities' AND CAST( usermeta_1.meta_value AS CHAR ) LIKE '%administrator%')");
 
 			$post = get_post($_POST["post_id"]) ;

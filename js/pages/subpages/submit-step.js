@@ -18,7 +18,10 @@ jQuery(document).ready(function() {
 		jQuery("#publishing-action").append("<a style='float:right;margin-top:10px;' href='admin.php?page=oasiswf-inbox'>Go to Workflow Inbox</a>") ;		
 		
 		jQuery("#step_submit").live('click', function(){
-			jQuery("#new-step-submit-div").modal();
+			jQuery("#new-step-submit-div").modal({
+				minHeight:400,
+				minWidth: 600
+			});
 			wfpath = "";
 			stepProcess = "";
 			calendar_action();
@@ -151,7 +154,7 @@ jQuery(document).ready(function() {
 		stepProcess = "" ;
 		data = {
 				action: 'get_user_in_step' ,
-				stepid: jQuery(this).val(),
+				stepid: jQuery(this).val()
 			   };
 		
 		jQuery("#actors-list-select").find('option').remove() ;
@@ -170,11 +173,18 @@ jQuery(document).ready(function() {
 			var result={}, users = {} ;
 			if(response){
 				result = JSON.parse(response) ;
-				users = result["users"] ;
+				if( typeof result["users"][0] == 'object') // no users are defined 
+				{
+					users = result["users"] ;					
+				}
+				else
+				{
+					alert("No users found for the given role");
+				}
 				stepProcess = result["process"] ;
 			}
-			
-			if(stepProcess == "review"){
+			// multiple actors applicable to both review and assignment step
+			if(stepProcess == "review" || stepProcess == "assignment"){
 			//if(jQuery("#hi_current_process").val() != "review" && stepProcess == "review"){
 				jQuery("#one-actors-div").hide();
 				jQuery("#multi-actors-div").show();
@@ -193,7 +203,7 @@ jQuery(document).ready(function() {
 		var v = jQuery('#actors-list-select option:selected').val();
 		var t = jQuery('#actors-list-select option:selected').text();
 		if(option_exist_chk(v)){
-			if(jQuery("#actors-set-select option").length ==1 && stepProcess != "review" ){
+			if(jQuery("#actors-set-select option").length == 1 && stepProcess == "publish" ){
 				alert("You can select multiple users only on review step.\n Selected step is " + stepProcess + " step.");
 				return;
 			}

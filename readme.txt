@@ -4,7 +4,7 @@ Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 
 Workflow process for WordPress made simple with Oasis Workflow.
 
@@ -81,4 +81,10 @@ Made WP 3.5 compatible
 Added an option for admin to detach the post from oasis workflow and go back to normal wordpress behavior.
 Added reminder email AFTER certain due date feature.
 Change the post title placeholder to be a link.
+Bug fixes.
+
+= Version 1.0.4 =
+Made the assignment step a multi-user step, where multiple users can be assigned the work however only one can claim it.
+Configuration - Roles who are allowed to publish post without going through a workflow.
+Set "publish" as the success step for the publish step.
 Bug fixes.

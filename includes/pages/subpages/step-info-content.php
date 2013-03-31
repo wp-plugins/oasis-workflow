@@ -9,7 +9,6 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 	$step_info = json_decode($step_row->step_info);
 	$process_info = json_decode($step_row->process_info);
 }
-
 ?>
 <div id="step-setting" class="popup-div">
 	<div class="dialog-title"><strong><?php echo __("Step Information");?></strong></div>
@@ -58,18 +57,31 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 			<div style="float:left;margin-top:-15px;">
 				<div style="float:left;text-align:center;">
 					<label>On Success</label><br><br>
-					<select id="step-status-select" style="width:150px;margin-top:-5px;">
-						<option value=""></option>
-						<?php
-						foreach ( get_post_stati(array('show_in_admin_status_list' => true)) as $status ) {
-							$chk = "" ;
-							if( is_object( $step_info ) && ($status == $step_info->status) ){
-								$chk = "selected" ;
-							}
-							echo "<option value='{$status}' $chk>{$status}</option>" ;
-						}
-						?>
-					</select>
+					<?php
+					if (isset($_GET['process_name']) && $_GET['process_name'] != "publish")
+					{
+					?>
+   					<select id="step-status-select" style="width:150px;margin-top:-5px;">
+   						<option value=""></option>
+   						<?php
+   						foreach ( get_post_stati(array('show_in_admin_status_list' => true)) as $status ) {
+   							$chk = "" ;
+   							if( is_object( $step_info ) && ($status == $step_info->status) ){
+   								$chk = "selected" ;
+   							}
+   							echo "<option value='{$status}' $chk>{$status}</option>" ;
+   						}
+   						?>
+   					</select>
+   				<?php
+					}
+   				else // if step is publish, then success step has to be "publish"
+   				{
+   				?>
+						<div id="step_status_publish"><?php echo __("publish"); ?></div>
+					<?php
+   				}
+					?>
 				</div>
 				<div style="float:left;margin-left:50px;text-align:center;">
 					<label>On Failure</label><br><br>
@@ -143,11 +155,13 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 					$assignment_subject = "";
 					$assignment_content = "";
 					$reminder_subject = "";
+					$reminder_content = "";
 					if (is_object($process_info) )
 					{
 					   $assignment_subject = $process_info->assign_subject;
 					   $assignment_content = $process_info->assign_content;
 					   $reminder_subject = $process_info->reminder_subject;
+					   $reminder_content = $process_info->reminder_content;
 					}
 					?>
 					<input type="text" id="assignment-email-subject" name="assignment-email-subject" value="<?php echo $assignment_subject;?>" />
@@ -190,7 +204,7 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 					<div style="float:left;"><label><?php echo __("Email message : ") ;?></label></div>
 					<div style="float:left;">
 						<textarea id="reminder-email-content" name="reminder-email-content"
-							style="width:500px;height:200px;"><?php echo $reminder_subject;?></textarea>
+							style="width:500px;height:200px;"><?php echo $reminder_content;?></textarea>
 					</div>
 					<br class="clear">
 				</div>

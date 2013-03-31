@@ -61,8 +61,13 @@ class FCWorkflowInbox extends FCWorkflowBase
 		$actioid = $_POST["actionid"] ;
 		$actions = FCWorkflowInbox::check_claim($_POST["actionid"]) ;
 		$action_history_table = FCUtility::get_action_history_table_name();
+		$post_title = "";
 		if( $actions ){
 			foreach ($actions as $action) {
+            if ($post_title == "")
+            {
+               $post_title = stripcslashes(get_post($action->post_id)->post_title);
+            }
 				if( $actioid == $action->ID ){
 					$newData = (array)$action ;
 					unset($newData["ID"]) ;
@@ -80,8 +85,8 @@ class FCWorkflowInbox extends FCWorkflowBase
 					//$data["comment"] = "" ;
 				}else{
 					$data["action_status"] = "claim_cancel" ;
-					$title = "Task claimed" ;
-					$message = "Another user has claimed the task, so please ignore it." ;
+					$title = __("Task claimed") ;
+					$message = __('Another user has claimed the task for the article "' . $post_title . '", so please ignore it.') ;
 					FCWorkflowEmail::send_mail($action->assign_actor_id, $title, $message) ;
 					FCWorkflowEmail::delete_step_email($action->ID, $action->assign_actor_id);
 					//$data["comment"] = "" ;

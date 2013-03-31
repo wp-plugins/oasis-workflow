@@ -52,10 +52,11 @@ class FCWorkflowActions
 
 	static function workflow_submit_popup()
 	{
-		if( get_option("activate_workflow") == "active" ){
+		if( get_option("oasiswf_activate_workflow") == "active" ){
 			FCWorkflowActions::include_files( "submit-workflow" ) ;
 			$role = FCProcessFlow::get_current_user_role() ;
-			if( $role != "administrator" ){ // do not hide the ootb publish section for administrator
+			$skip_workflow_roles = get_option('oasiswf_skip_workflow_roles') ;
+			if( is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles) ){ // do not hide the ootb publish section for skip_workflow_roles option
 			   FCWorkflowActions::ootb_publish_section_hide() ;
 			}
 		}
@@ -64,7 +65,7 @@ class FCWorkflowActions
 	static function step_signoff_popup()
 	{
 		global $wpdb, $chkResult;
-		if( get_option("activate_workflow") == "active" ){
+		if( get_option("oasiswf_activate_workflow") == "active" ){
 			if( $chkResult == "submit" ){
 				FCWorkflowActions::include_files( "submit-workflow" ) ;
 			}else{
@@ -76,8 +77,9 @@ class FCWorkflowActions
          $role = FCProcessFlow::get_current_user_role() ;
          $row = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}fc_action_history WHERE post_id = {$_GET["post"]} AND action_status = 'assignment'") ;
 
-         // do not hide the ootb publish section for administrator, but hide it if the post is in the workflow
-         if( ($role != "administrator") || ($role == "administrator" && $row) ){
+         // do not hide the ootb publish section for skip_workflow_roles option, but hide it if the post is in the workflow
+         $skip_workflow_roles = get_option('oasiswf_skip_workflow_roles') ;
+         if( (is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles )) || $row){
             FCWorkflowActions::ootb_publish_section_hide() ;
          }
 

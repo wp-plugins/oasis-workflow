@@ -200,7 +200,7 @@ var jQueryCgmp = jQuery.noConflict();
 			   if( temp[c[i].targetId + "_" + c[i].sourceId] && c[i].paintStyleInUse.strokeStyle == temp[c[i].targetId + "_" + c[i].sourceId] ){
 				   var slbl = jQuery("#" + c[i].sourceId).children("label").html() ;
 				   var tlbl = jQuery("#" + c[i].targetId).children("label").html() ;
-				   alert("The path between " + slbl + " step and " + tlbl + " step is incorrec.") ;
+				   alert("The path between " + slbl + " step and " + tlbl + " step is incorrect.") ;
 				   return false;
 			   }
 		   }
@@ -213,7 +213,7 @@ var jQueryCgmp = jQuery.noConflict();
 		   	var wfinfo = {};
 		   	wfinfo = jQuery.parseJSON(param);
 		   	if(typeof(wfinfo) != 'object'){
-		   		alert("Graphic data is bad");
+		   		alert("graphic data is bad");
 		   		return;
 		   	}
 		   	for( var w in wfinfo["steps"]){
@@ -372,7 +372,7 @@ var jQueryCgmp = jQuery.noConflict();
 	        	jQuery(selectedStep).remove();
 	        	jQuery("#stepMenu").hide();
 	    	}else{
-	    		if(!confirm("This step was already defined.\n Do you really want to remove this step?")){
+	    		if(!confirm("This step is already defined.\nDo you really want to remove this step?")){
 	    			jQuery("#stepMenu").hide();
 	    			return ;
 	    		}
@@ -389,12 +389,14 @@ var jQueryCgmp = jQuery.noConflict();
 	    	var step_dbid = jQuery(selectedStep).attr("db-id");
 	    	var hrf = jQuery(this).attr('alt'); 
 	    	var h = 560 ;
+	    	var process_name = jQuery(selectedStep).attr("process-name");
 	    	//if(jQuery(selectedStep).attr("process-name") != "review")
 	    		//h = 520;
 	    	jQuery(this).attr({"href": hrf + 
 	    		"&wf-id=" + jQuery("#wf_id").val() + 
 	    		"&step_gpid=" + g_step_id + 
 	    		"&step_dbid=" + step_dbid +
+	    		"&process_name=" + process_name +
 	    		"&editable=" + wfeditable + 
 	    		"&width=730&height=" + h});
 	    	jQuery("#stepMenu").hide();

@@ -172,12 +172,12 @@ class FCWorkflowBase
 
 		   foreach ( $role as $k => $v ){
 		      $user_role = '%' . $k . '%';
-            $users = $wpdb->get_results( $wpdb->prepare( "SELECT users_1.ID, users_1.display_name FROM {$wpdb->prefix}users users_1
-            					INNER JOIN {$wpdb->prefix}usermeta usermeta_1 ON ( users_1.ID = usermeta_1.user_id )
+            $users = $wpdb->get_results( $wpdb->prepare( "SELECT users_1.ID, users_1.display_name FROM {$wpdb->base_prefix}users users_1
+            					INNER JOIN {$wpdb->base_prefix}usermeta usermeta_1 ON ( users_1.ID = usermeta_1.user_id )
 									WHERE (usermeta_1.meta_key = '{$wpdb->prefix}capabilities' AND CAST( usermeta_1.meta_value AS CHAR ) LIKE %s)",
                            $user_role ) );
 
-           foreach ( $users as $user ) {
+            foreach ( $users as $user ) {
               $userObj = new WP_User( $user->ID );
               if ( !empty( $userObj->roles ) && is_array( $userObj->roles ) ) {
 	               foreach ( $userObj->roles as $userrole )

@@ -9,9 +9,21 @@ if( isset($_POST['page_action']) && $_POST["page_action"] == "submit" ){
 
 	$enable_workflow_process = (isset($_POST["activate_workflow_process"]) && $_POST["activate_workflow_process"]) ? $_POST["activate_workflow_process"] : "";
 	update_option("activate_workflow", $enable_workflow_process) ;
+
+	$skip_workflow_roles = array();
+	if (isset($_POST["skip_workflow_roles"]) && count($_POST["skip_workflow_roles"]) > 0 )
+	{
+	   $selectedOptions = $_POST["skip_workflow_roles"];
+	   foreach ($selectedOptions as $selectedOption)
+	   {
+         array_push($skip_workflow_roles, $selectedOption);
+	   }
+	}
+	update_option("oasiswf_skip_workflow_roles", $skip_workflow_roles) ;
 }
 $reminder_day = get_option('oasiswf_reminder_days') ;
 $reminder_day_after = get_option('oasiswf_reminder_days_after') ;
+$skip_workflow_roles = get_option('oasiswf_skip_workflow_roles') ;
 ?>
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-posts-post"><br></div>
@@ -25,7 +37,7 @@ $reminder_day_after = get_option('oasiswf_reminder_days_after') ;
 				<div class="select-info" style="padding: 10px;">
    				<?php
    				$str="" ;
-   				if( get_option("activate_workflow") == "active" )$str = "checked=true" ;
+   				if( get_option("oasiswf_activate_workflow") == "active" )$str = "checked=true" ;
    				?>
 					<label><input type="checkbox" name="activate_workflow_process"
 						value="active" <?php echo $str;?> />&nbsp;&nbsp;<?php echo __("Activate Workflow process ?") ;?>
@@ -46,6 +58,14 @@ $reminder_day_after = get_option('oasiswf_reminder_days_after') ;
 					</label>
 					<input type="text" id="reminder_days_after" name="reminder_days_after" size="4" class="reminder_days" value="<?php echo $reminder_day_after;?>" maxlength=2 />
 					<?php echo __("day(s) after due date.");?>
+				</div>
+				<div class="select-info" style="padding: 10px;">
+					<div>
+						<label><?php echo __("Which role(s) can skip the workflow and use the out of the box options?")?></label>
+					</div>
+    				<select name="skip_workflow_roles[]" id="skip_workflow_roles[]" size="6" multiple="multiple">
+    				   <?php FCUtility::owf_dropdown_roles_multi($skip_workflow_roles); ?>
+    				</select>
 				</div>
 				<div id="owf_settings_button_bar">
 					<input type="submit" id="settingSave"

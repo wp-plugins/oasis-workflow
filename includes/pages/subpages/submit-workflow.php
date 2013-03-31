@@ -35,7 +35,7 @@
 			<br class="clear">
 		</div>
 
-		<div id="multipule-actors-div" class="select-info" style="height:140px;">
+		<div id="multiple-actors-div" class="select-info" style="height:140px;">
 			<label><?php echo __("Assign actor(s) :") ;?></label>
 			<div class="select-actors-div">
 				<div class="select-actors-list" >

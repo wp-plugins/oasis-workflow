@@ -46,7 +46,7 @@ var jQueryCgmp = jQuery.noConflict();
 				parent:$('#ep-'+objid).parent(),
 				anchor:"Continuous",			
 				//connectorStyle:{ strokeStyle:"blue", lineWidth:2 },
-				maxConnections:-1,			
+				maxConnections:-1			
 			});		
 	    }    
 	    var createStep = function(param, act) {

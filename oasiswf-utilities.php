@@ -57,5 +57,21 @@ class FCUtility {
              </div>';
 		echo $str;
 	}
+
+   public static function owf_dropdown_roles_multi( $selected ) {
+   	$r = '';
+   	$p = '';
+
+   	$editable_roles = get_editable_roles();
+
+   	foreach ( $editable_roles as $role => $details ) {
+   		$name = translate_user_role($details['name'] );
+   		if ( is_array($selected) && in_array(esc_attr($role), $selected)) // preselect specified role
+   			$p .= "\n\t<option selected='selected' value='" . esc_attr($role) . "'>$name</option>";
+   		else
+   			$r .= "\n\t<option value='" . esc_attr($role) . "'>$name</option>";
+   	}
+   	echo $p . $r;
+   }
 }
 ?>

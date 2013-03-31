@@ -2,21 +2,21 @@ jQuery(document).ready(function() {
 	//jQuery.modal.close();
 	var select_id = jQuery("#reassign_actors").val() ;
 	
-	moda_cloase = function(){
+	modal_close = function(){
 		jQuery(document).find("#reassign-div").html("") ;
 		jQuery.modal.close();
 	}
 	
 	jQuery("#reassignCancel, .modalCloseImg").live("click", function(){
-		moda_cloase() ;
+		modal_close() ;
 	});
 	
 	jQuery("#reassignSave").click(function(){
-		if(!jQuery("#reassign_actors").val())moda_cloase();
+		if(!jQuery("#reassign_actors").val())modal_close();
 		var obj = this ;
 		jQuery(this).parent().children("span").addClass("loading") ;
 		if( select_id == jQuery("#reassign_actors").val() ){
-			moda_cloase() ;
+			modal_close() ;
 		}else{
 			data = {
 					action: 'reset_assign_actor' ,
@@ -30,7 +30,7 @@ jQuery(document).ready(function() {
 					return false;
 				}
 				if(response){
-					moda_cloase();
+					modal_close();
 					location.reload();
 				}
 			});
