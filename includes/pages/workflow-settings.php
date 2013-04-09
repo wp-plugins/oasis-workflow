@@ -8,7 +8,7 @@ if( isset($_POST['page_action']) && $_POST["page_action"] == "submit" ){
    update_option("oasiswf_reminder_days_after", $reminder_days_after) ;
 
 	$enable_workflow_process = (isset($_POST["activate_workflow_process"]) && $_POST["activate_workflow_process"]) ? $_POST["activate_workflow_process"] : "";
-	update_option("activate_workflow", $enable_workflow_process) ;
+	update_option("oasiswf_activate_workflow", $enable_workflow_process) ;
 
 	$skip_workflow_roles = array();
 	if (isset($_POST["skip_workflow_roles"]) && count($_POST["skip_workflow_roles"]) > 0 )
