@@ -93,8 +93,8 @@ Initial version
 * Multi site enhancements. Moved the Workflow Admin to Network Admin, so workflows can be shared between all the sites.
 * No need to duplicate the workflows for new sites inside a multi site environment.
 * Note: 
-* 1. Workflows previously created in sub sites except the main site will NOT be available anymore. 
+* Workflows previously created in sub sites except the main site will NOT be available anymore. 
 If these workflows are different, they need to be recreated with this upgrade.
-* 2. Make sure to complete all the existing workflows for sub sites, to avoid any unexpected behavior. 
+* Make sure to complete all the existing workflows for sub sites, to avoid any unexpected behavior. 
 
 
