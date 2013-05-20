@@ -122,7 +122,7 @@ jQuery(document).ready(function() {
 	jQuery("#step-select").change(function(){
 		action_setting("step", "pre") ;
 		data = {
-				action: 'get_user_in_step' ,
+				action: 'get_users_in_step' ,
 				stepid: jQuery(this).val(),
 			   };	
 		
@@ -133,13 +133,13 @@ jQuery(document).ready(function() {
 			var result={}, users = {} ;
 			if(response){
 				result = JSON.parse(response) ;
-				if( typeof result["users"][0] == 'object') // no users are defined 
+				if( typeof result["users"][0] == 'object') 
 				{
 					users = result["users"] ;					
 				}
 				else
 				{
-					alert("No users found for the given role");
+					alert("No users found for the given role"); // no users are defined 
 				}
 				stepProcess = result["process"] ;
 			}

@@ -2,12 +2,12 @@
 class FCUtility {
 	public static function get_workflows_table_name() {
 		global $wpdb;
-		return $wpdb->prefix . "fc_workflows";
+		return $wpdb->base_prefix . "fc_workflows";
 	}
 
 	public static function get_workflow_steps_table_name() {
 		global $wpdb;
-		return $wpdb->prefix . "fc_workflow_steps";
+		return $wpdb->base_prefix . "fc_workflow_steps";
 	}
 
 	public static function get_action_history_table_name() {
@@ -72,6 +72,31 @@ class FCUtility {
    			$r .= "\n\t<option value='" . esc_attr($role) . "'>$name</option>";
    	}
    	echo $p . $r;
+   }
+
+   public static function owf_dropdown_post_status_multi( $selected ) {
+   	$r = '';
+   	$p = '';
+
+   	foreach ( get_post_stati(array('show_in_admin_status_list' => true)) as $status ) {
+   		if ( is_array($selected) && in_array($status, $selected)) // preselect specified status
+   			$p .= "\n\t<option selected='selected' value='" . $status . "'>$status</option>";
+   		else
+   			$r .= "\n\t<option value='" . $status . "'>$status</option>";
+   	}
+   	echo $p . $r;
+   }
+
+   public static function str_array_pos($string, $array)
+   {
+     for ($i = 0, $n = count($array); $i < $n; $i++)
+     {
+       if (stristr($string, $array[$i]) !== false)
+       {
+          return true;
+       }
+     }
+     return false;
    }
 }
 ?>

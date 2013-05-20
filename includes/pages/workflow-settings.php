@@ -2,13 +2,13 @@
 if( isset($_POST['page_action']) && $_POST["page_action"] == "submit" ){
 
 	$reminder_days = (isset($_POST["reminder_days"]) && $_POST["reminder_days"]) ? $_POST["reminder_days"] : "";
-   update_option("oasiswf_reminder_days", $reminder_days) ;
+   update_site_option("oasiswf_reminder_days", $reminder_days) ;
 
 	$reminder_days_after = (isset($_POST["reminder_days_after"]) && $_POST["reminder_days_after"]) ? $_POST["reminder_days_after"] : "";
-   update_option("oasiswf_reminder_days_after", $reminder_days_after) ;
+   update_site_option("oasiswf_reminder_days_after", $reminder_days_after) ;
 
 	$enable_workflow_process = (isset($_POST["activate_workflow_process"]) && $_POST["activate_workflow_process"]) ? $_POST["activate_workflow_process"] : "";
-	update_option("oasiswf_activate_workflow", $enable_workflow_process) ;
+	update_site_option("oasiswf_activate_workflow", $enable_workflow_process) ;
 
 	$skip_workflow_roles = array();
 	if (isset($_POST["skip_workflow_roles"]) && count($_POST["skip_workflow_roles"]) > 0 )
@@ -19,11 +19,44 @@ if( isset($_POST['page_action']) && $_POST["page_action"] == "submit" ){
          array_push($skip_workflow_roles, $selectedOption);
 	   }
 	}
-	update_option("oasiswf_skip_workflow_roles", $skip_workflow_roles) ;
+	update_site_option("oasiswf_skip_workflow_roles", $skip_workflow_roles) ;
+
+	$auto_submit_stati = array();
+	if (isset($_POST["auto_submit_stati"]) && count($_POST["auto_submit_stati"]) > 0 )
+	{
+	   $selectedOptions = $_POST["auto_submit_stati"];
+	   foreach ($selectedOptions as $selectedOption)
+	   {
+         array_push($auto_submit_stati, $selectedOption);
+	   }
+	}
+	/*
+   $auto_submit_due_days = (isset($_POST["auto_submit_due_days"]) && $_POST["auto_submit_due_days"]) ? $_POST["auto_submit_due_days"] : "";
+   $auto_submit_comment = (isset($_POST["auto_submit_comment"]) && trim($_POST["auto_submit_comment"])) ? $_POST["auto_submit_comment"] : "";
+   $auto_submit_post_count = (isset($_POST["auto_submit_post_count"]) && $_POST["auto_submit_post_count"]) ? $_POST["auto_submit_post_count"] : "";
+   $auto_submit_settings = array(
+      'auto_submit_stati' => $auto_submit_stati,
+      'auto_submit_due_days' => $auto_submit_due_days,
+      'auto_submit_comment' => stripcslashes( $auto_submit_comment ),
+      'auto_submit_post_count' => $auto_submit_post_count
+   );
+	update_site_option("oasiswf_auto_submit_settings", $auto_submit_settings) ;
+	*/
+
 }
-$reminder_day = get_option('oasiswf_reminder_days') ;
-$reminder_day_after = get_option('oasiswf_reminder_days_after') ;
-$skip_workflow_roles = get_option('oasiswf_skip_workflow_roles') ;
+/*
+if( isset($_POST['page_action']) && $_POST["page_action"] == "auto_submit" ){
+   $submitted_posts_count = FCWorkflowActions::auto_submit_articles();
+}
+*/
+$reminder_day = get_site_option('oasiswf_reminder_days') ;
+$reminder_day_after = get_site_option('oasiswf_reminder_days_after') ;
+$skip_workflow_roles = get_site_option('oasiswf_skip_workflow_roles') ;
+$auto_submit_settings = get_site_option('oasiswf_auto_submit_settings');
+$auto_submit_stati = $auto_submit_settings['auto_submit_stati'];
+$auto_submit_due_days = $auto_submit_settings['auto_submit_due_days'];
+$auto_submit_comment = $auto_submit_settings['auto_submit_comment'];
+$auto_submit_post_count = $auto_submit_settings['auto_submit_post_count'];
 ?>
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-posts-post"><br></div>
@@ -31,13 +64,16 @@ $skip_workflow_roles = get_option('oasiswf_skip_workflow_roles') ;
 	<?php if( isset($_POST['page_action']) && $_POST["page_action"] == "submit" ):?>
 		<div class="message"><?php echo __("Settings saved successfully.");?></div>
 	<?php endif;?>
-	<form id="setting_form" method="post">
+	<?php if( isset($_POST['page_action']) && $_POST["page_action"] == "auto_submit" ):?>
+		<div class="message"><?php echo __("Auto submit completed successfully. " . $submitted_posts_count . " posts/page submitted.");?></div>
+	<?php endif;?>
+	<form id="wf_settings_form" method="post">
 		<div id="workflow-setting">
 			<div id="settingstuff">
 				<div class="select-info" style="padding: 10px;">
    				<?php
    				$str="" ;
-   				if( get_option("oasiswf_activate_workflow") == "active" )$str = "checked=true" ;
+   				if( get_site_option("oasiswf_activate_workflow") == "active" )$str = "checked=true" ;
    				?>
 					<label><input type="checkbox" name="activate_workflow_process"
 						value="active" <?php echo $str;?> />&nbsp;&nbsp;<?php echo __("Activate Workflow process ?") ;?>
@@ -67,11 +103,66 @@ $skip_workflow_roles = get_option('oasiswf_skip_workflow_roles') ;
     				   <?php FCUtility::owf_dropdown_roles_multi($skip_workflow_roles); ?>
     				</select>
 				</div>
+				<!-- hide these settings -->
+				<!--
+				<fieldset class="owf_fieldset">
+					<legend><?php echo __("Auto Submit Settings")?></legend>
+					<ol>
+   					<li>
+         				<div class="select-info" style="padding: 10px;">
+         					<div>
+         						<label><?php echo __("Post/Page status(es)")?></label>
+         					</div>
+             				<select name="auto_submit_stati[]" id="auto_submit_stati[]" size="6" multiple="multiple">
+             				   <?php FCUtility::owf_dropdown_post_status_multi($auto_submit_stati); ?>
+             				</select>
+         				</div>
+      				</li>
+      				<li>
+         				<div class="select-info" style="padding: 10px;">
+         					<label>
+        						   <?php echo __("Set Due date as current date + ") ;?>
+         					</label>
+         					<input type="text" id="auto_submit_due_days" name="auto_submit_due_days" size="4" class="auto_submit_due_days" value="<?php echo $auto_submit_due_days;?>" maxlength=2 />
+         					<?php echo __("day(s).");?>
+         				</div>
+      				</li>
+      				<li>
+         				<div class="select-info" style="padding: 10px;">
+         					<div>
+            					<label>
+           						   <?php echo __("Auto submit comments") ;?>
+            					</label>
+            				</div>
+         					<textarea id="auto_submit_comment" name="auto_submit_comment" size="4" class="auto_submit_comment"
+         					cols="80" rows="5"><?php echo $auto_submit_comment;?></textarea>
+         				</div>
+      				</li>
+      				<li>
+         				<div class="select-info" style="padding: 10px;">
+         					<label>
+        						   <?php echo __("Process ") ;?>
+         					</label>
+         					<input type="text" id="auto_submit_post_count" name="auto_submit_post_count" size="8" class="auto_submit_post_count" value="<?php echo $auto_submit_post_count;?>" maxlength=4 />
+         					<?php echo __("posts/pages at one time.");?>
+         					</br/>
+         					<?php echo __("(Limit the number of posts/pages to be processed at one time for optimum server performance.)");?>
+         				</div>
+      				</li>
+   				</ol>
+				</fieldset>
+				-->
 				<div id="owf_settings_button_bar">
 					<input type="submit" id="settingSave"
 						class="button button-primary button-large"
-						value="<?php echo __("Save") ;?>" /> <input type="hidden"
-						name="page_action" value="<?php echo __("submit");?>" />
+						value="<?php echo __("Save") ;?>" />
+				<!--
+					<input type="button" id="autoSubmitBtn"
+						class="button button-primary button-large"
+						value="<?php echo __("Trigger Auto Submit") ;?>" />
+ 				-->
+					<input type="hidden"
+						name="page_action" id="page_action" value="submit" />
 				</div>
 			</div>
 
@@ -144,6 +235,33 @@ jQuery(document).ready(function($) {
 				return false;
 			}
 		}
+		/*
+		if( !jQuery("#auto_submit_due_days").val() ){
+			alert("Please enter the number of days.") ;
+			return false;
+		}
+		if(isNaN(jQuery("#auto_submit_due_days").val())){
+			alert("Please enter a numeric value.") ;
+			return false;
+		}
+
+		if( !jQuery("#auto_submit_post_count").val() ){
+			alert("Please enter the number of posts/pages to be processed at one time.") ;
+			return false;
+		}
+		if(isNaN(jQuery("#auto_submit_post_count").val())){
+			alert("Please enter a numeric value.") ;
+			return false;
+		}
+		*/
+
 	});
+
+	/*
+	jQuery("#autoSubmitBtn").click(function(){
+		jQuery("#page_action").val("auto_submit");
+		jQuery("#wf_settings_form").submit();
+	});
+	*/
 });
 </script>

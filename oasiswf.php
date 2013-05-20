@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Easily create graphical workflows to manage your work.
- Version: 1.0.4
+ Version: 1.0.5
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
 
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.4' );
-define( 'OASISWF_DB_VERSION','1.0.4');
+define( 'OASISWF_VERSION' , '1.0.5' );
+define( 'OASISWF_DB_VERSION','1.0.5');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -44,19 +44,20 @@ class FCInitialization
 	function  __construct()
 	{
 		//run on activation of plugin
-		register_activation_hook( __FILE__, array('FCInitialization', 'run_on_activation') );
+		register_activation_hook( __FILE__, array('FCInitialization', 'oasiswf_activate') );
 
 		//run on deactivation of plugin
-		register_deactivation_hook( __FILE__, array('FCInitialization', 'run_on_deactivation') );
+		register_deactivation_hook( __FILE__, array('FCInitialization', 'oasiswf_deactivate') );
 
 		//run on uninstall
-		register_uninstall_hook(__FILE__, array('FCInitialization', 'run_on_uninstall') );
+		register_uninstall_hook(__FILE__, array('FCInitialization', 'oasiswf_uninstall') );
 
 	}
 
-	static function run_on_activation( $networkwide )
+	static function oasiswf_activate( $networkwide )
 	{
 		global $wpdb;
+		FCInitialization::run_on_activation();
 		if (function_exists('is_multisite') && is_multisite())
 		{
 	        // check if it is a network activation - if so, run the activation function for each blog id
@@ -68,16 +69,18 @@ class FCInitialization
 	            foreach ($blogids as $blog_id)
 	            {
 	            	switch_to_blog($blog_id);
-	                FCInitialization::_run_on_activation();
+	               FCInitialization::run_for_site();
 	            }
 	            switch_to_blog($old_blog);
 	            return;
 	        }
     	}
-    	FCInitialization::_run_on_activation();
+
+    	// for non-network sites only
+    	FCInitialization::install_site_database();
 	}
 
-	static function run_on_deactivation($networkwide)
+	static function oasiswf_deactivate($networkwide)
 	{
 	    global $wpdb;
 
@@ -92,18 +95,19 @@ class FCInitialization
 	            foreach ($blogids as $blog_id)
 	            {
 	                switch_to_blog($blog_id);
-	                FCInitialization::_run_on_deactivation();
+	                FCInitialization::run_on_deactivation();
 	            }
 	            switch_to_blog($old_blog);
 	            return;
 	        }
 	    }
-	    FCInitialization::_run_on_deactivation();
+	    FCInitialization::run_on_deactivation();
 	}
 
-	static function run_on_uninstall()
+	static function oasiswf_uninstall()
 	{
 		global $wpdb;
+		FCInitialization::run_on_uninstall();
 		if (function_exists('is_multisite') && is_multisite())
 		{
 			//Get all blog ids; foreach them and call the uninstall procedure on each of them
@@ -115,7 +119,7 @@ class FCInitialization
 				switch_to_blog( $blog_id );
 				if( $wpdb->query( "SHOW TABLES FROM ".$wpdb->dbname." LIKE '".$wpdb->prefix."fc_%'" ) )
 				{
-					FCInitialization::_run_on_uninstall();
+					FCInitialization::delete_for_site();
 				}
 			}
 
@@ -123,12 +127,12 @@ class FCInitialization
 			restore_current_blog();
 			return;
 		}
-		FCInitialization::_run_on_uninstall();
+		FCInitialization::delete_for_site();
 	}
 
-	function _run_on_activation( )
+	function run_on_activation()
 	{
-		$pluginOptions = get_option('oasiswf_info');
+		$pluginOptions = get_site_option('oasiswf_info');
 		if ( false === $pluginOptions )
 		{
 			$oasiswf_info=array(
@@ -164,13 +168,26 @@ class FCInitialization
 				'%last_name%' => __('last name'),
 				'%post_title%' => __('post title')
 			);
-			FCInitialization::install_database();
-			update_option('oasiswf_info', $oasiswf_info) ;
-			update_option('oasiswf_process', $oasiswf_process_info) ;
-			update_option('oasiswf_path', $oasiswf_path_info) ;
-			update_option('oasiswf_status', $oasiswf_status) ;
-			update_option('oasiswf_review', $oasiswf_review_decision) ;
-			update_option('oasiswf_placeholders', $oasiswf_placeholders) ;
+
+	      $skip_workflow_roles = array("administrator");
+
+	      /*
+         $auto_submit_settings = array(
+            'auto_submit_stati' => array("draft","pending"),
+            'auto_submit_due_days' => "1",
+            'auto_submit_comment' => "Auto submitted",
+            'auto_submit_post_count' => "10"
+         );
+			*/
+         FCInitialization::install_admin_database();
+			update_site_option('oasiswf_info', $oasiswf_info) ;
+			update_site_option('oasiswf_process', $oasiswf_process_info) ;
+			update_site_option('oasiswf_path', $oasiswf_path_info) ;
+			update_site_option('oasiswf_status', $oasiswf_status) ;
+			update_site_option('oasiswf_review', $oasiswf_review_decision) ;
+			update_site_option('oasiswf_placeholders', $oasiswf_placeholders) ;
+         update_site_option("oasiswf_skip_workflow_roles", $skip_workflow_roles) ;
+         /*update_site_option("oasiswf_auto_submit_settings", $auto_submit_settings) ;*/
 
 		}
 		else if ( OASISWF_VERSION != $pluginOptions['version'] )
@@ -180,30 +197,47 @@ class FCInitialization
 
 		if ( !wp_next_scheduled('oasiswf_email_schedule') )
 			wp_schedule_event(time(), 'daily', 'oasiswf_email_schedule');
+      /*
+		if ( !wp_next_scheduled('oasiswf_auto_submit_schedule') )
+			wp_schedule_event(time(), 'hourly', 'oasiswf_auto_submit_schedule');
+		*/
+	}
+
+	function run_for_site( )
+	{
+	   FCInitialization::install_site_database();
 	}
 
 	function run_on_upgrade( )
 	{
-	   $pluginOptions = get_option('oasiswf_info');
+	   $pluginOptions = get_site_option('oasiswf_info');
 		if ($pluginOptions['version'] == "1.0")
 		{
 			FCInitialization::upgrade_database_101();
 			FCInitialization::upgrade_database_103();
 			FCInitialization::upgrade_database_104();
+			FCInitialization::upgrade_database_105();
 		}
 		else if ($pluginOptions['version'] == "1.0.1")
 		{
 			FCInitialization::upgrade_database_103();
 			FCInitialization::upgrade_database_104();
+			FCInitialization::upgrade_database_105();
 		}
 		else if ($pluginOptions['version'] == "1.0.2")
 		{
 			FCInitialization::upgrade_database_103();
 			FCInitialization::upgrade_database_104();
+			FCInitialization::upgrade_database_105();
 		}
 		else if ($pluginOptions['version'] == "1.0.3")
 		{
 			FCInitialization::upgrade_database_104();
+			FCInitialization::upgrade_database_105();
+		}
+		else if ($pluginOptions['version'] == "1.0.4")
+		{
+			FCInitialization::upgrade_database_105();
 		}
 
 		// update the version value
@@ -211,40 +245,50 @@ class FCInitialization
 			'version'=>OASISWF_VERSION,
 			'db_version'=>OASISWF_DB_VERSION
 		);
-		update_option('oasiswf_info', $oasiswf_info) ;
+		update_site_option('oasiswf_info', $oasiswf_info) ;
 	}
 
-	function _run_on_uninstall()
+	function run_on_uninstall()
 	{
 		if( !defined( 'ABSPATH') && !defined('WP_UNINSTALL_PLUGIN') )
 			exit();
 
 		global $wpdb;	//required global declaration of WP variable
-		delete_option('oasiswf_activate_workflow');
-		delete_option('oasiswf_info');
-		delete_option('oasiswf_process');
-		delete_option('oasiswf_path');
-		delete_option('oasiswf_status');
-		delete_option('oasiswf_review');
-		delete_option('oasiswf_placeholders');
-		if (get_option('oasiswf_reminder_days')) {
-		   delete_option('oasiswf_reminder_days');
+		delete_site_option('oasiswf_activate_workflow');
+		delete_site_option('oasiswf_info');
+		delete_site_option('oasiswf_process');
+		delete_site_option('oasiswf_path');
+		delete_site_option('oasiswf_status');
+		delete_site_option('oasiswf_review');
+		delete_site_option('oasiswf_placeholders');
+		if (get_site_option('oasiswf_reminder_days')) {
+		   delete_site_option('oasiswf_reminder_days');
 		}
-		if (get_option('oasiswf_skip_workflow_roles')) {
-		   delete_option('oasiswf_skip_workflow_roles');
+		if (get_site_option('oasiswf_skip_workflow_roles')) {
+		   delete_site_option('oasiswf_skip_workflow_roles');
 		}
 
-		if (get_option('oasiswf_reminder_days_after')) {
-		   delete_option('oasiswf_reminder_days_after');
+		if (get_site_option('oasiswf_reminder_days_after')) {
+		   delete_site_option('oasiswf_reminder_days_after');
 		}
+      /*
+		if (get_site_option('oasiswf_auto_submit_settings')) {
+		   delete_site_option('oasiswf_auto_submit_settings');
+		}
+		*/
 
 		$wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name like 'workflow_%'") ;
-		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}fc_workflows");
-		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}fc_workflow_steps");
-		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}fc_emails");
-		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}fc_action_history");
-		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}fc_action");
+		$wpdb->query("DROP TABLE IF EXISTS " . FCUtility::get_workflows_table_name());
+		$wpdb->query("DROP TABLE IF EXISTS " . FCUtility::get_workflow_steps_table_name());
 
+	}
+
+	function delete_for_site( )
+	{
+	   global $wpdb;
+		$wpdb->query("DROP TABLE IF EXISTS " . FCUtility::get_emails_table_name());
+		$wpdb->query("DROP TABLE IF EXISTS " . FCUtility::get_action_history_table_name());
+		$wpdb->query("DROP TABLE IF EXISTS " . FCUtility::get_action_table_name());
 	}
 
 	function run_on_add_blog($blog_id, $user_id, $domain, $path, $site_id, $meta )
@@ -254,7 +298,7 @@ class FCInitialization
 	    {
 	        $old_blog = $wpdb->blogid;
 	        switch_to_blog($blog_id);
-	        FCInitialization::_run_on_activation();
+	        FCInitialization::run_for_site();
 	        switch_to_blog($old_blog);
 	    }
 	}
@@ -263,7 +307,7 @@ class FCInitialization
 	{
 		global $wpdb;
       switch_to_blog($blog_id);
-		FCInitialization::_run_on_uninstall();
+		FCInitialization::delete_for_site();
 	   restore_current_blog();
 	}
 
@@ -273,35 +317,35 @@ class FCInitialization
 		global $wpdb;
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 		$table_name = 'fc_workflows';
-		$new_table_name = $wpdb->prefix . 'fc_workflows';
+		$new_table_name = FCUtility::get_workflows_table_name();
 		if ($wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'") == $table_name)
 		{
 			$wpdb->query("RENAME TABLE {$table_name} to  {$new_table_name}");
 		}
 
 		$table_name = 'fc_workflow_steps';
-		$new_table_name = $wpdb->prefix . 'fc_workflow_steps';
+		$new_table_name = FCUtility::get_workflow_steps_table_name();
 		if ($wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'") == $table_name)
 		{
 			$wpdb->query("RENAME TABLE {$table_name} to  {$new_table_name}");
 		}
 
 		$table_name = 'fc_emails';
-		$new_table_name = $wpdb->prefix . 'fc_emails';
+		$new_table_name = FCUtility::get_emails_table_name();
 		if ($wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'") == $table_name)
 		{
 			$wpdb->query("RENAME TABLE {$table_name} to  {$new_table_name}");
 		}
 
 		$table_name = 'fc_action_history';
-		$new_table_name = $wpdb->prefix . 'fc_action_history';
+		$new_table_name = FCUtility::get_action_history_table_name();
 		if ($wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'") == $table_name)
 		{
 			$wpdb->query("RENAME TABLE {$table_name} to  {$new_table_name}");
 		}
 
 		$table_name = 'fc_action';
-		$new_table_name = $wpdb->prefix . 'fc_action';
+		$new_table_name = FCUtility::get_action_table_name();
 		if ($wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'") == $table_name)
 		{
 			$wpdb->query("RENAME TABLE {$table_name} to  {$new_table_name}");
@@ -314,21 +358,41 @@ class FCInitialization
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 		// add reminder_date_after to the fc_action_history table
-		$table_name = $wpdb->prefix . 'fc_action_history';
+		$table_name = FCUtility::get_action_history_table_name();
 		$wpdb->query("ALTER TABLE {$table_name} ADD COLUMN reminder_date_after date DEFAULT NULL");
 	}
 
 	function upgrade_database_104()
 	{
 	   $skip_workflow_roles = array("administrator");
-	   update_option("oasiswf_skip_workflow_roles", $skip_workflow_roles) ;
+	   update_site_option("oasiswf_skip_workflow_roles", $skip_workflow_roles) ;
 
 	   // modify option name to prefix with oasiswf
 	   delete_option('activate_workflow');
-	   update_option("oasiswf_activate_workflow", "active") ;
+	   update_site_option("oasiswf_activate_workflow", "active") ;
 	}
 
-	function install_database()
+	function upgrade_database_105()
+	{
+	   /*
+		global $wpdb;
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+      $auto_submit_settings = array(
+         'auto_submit_stati' => array("draft","pending"),
+         'auto_submit_due_days' => "1",
+         'auto_submit_comment' => "Auto submitted",
+         'auto_submit_post_count' => "10"
+      );
+   	update_site_option("oasiswf_auto_submit_settings", $auto_submit_settings) ;
+
+		$table_name = FCUtility::get_workflows_table_name();
+		$wpdb->query("ALTER TABLE {$table_name} ADD COLUMN is_auto_submit int(2) NOT NULL default 0 AFTER end_date");
+		$wpdb->query("ALTER TABLE {$table_name} ADD COLUMN auto_submit_keywords mediumtext AFTER is_auto_submit");
+		*/
+	}
+
+	function install_admin_database()
 	{
 		global $wpdb;
 		if (!empty ($wpdb->charset))
@@ -337,7 +401,7 @@ class FCInitialization
         	$charset_collate .= " COLLATE {$wpdb->collate}";
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         //fc_workflows table
-		$table_name = $wpdb->prefix . 'fc_workflows';
+		$table_name = FCUtility::get_workflows_table_name();
 		if ($wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'") != $table_name)
 		{
 			$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
@@ -349,6 +413,8 @@ class FCInitialization
 			      `parent_id` int(11) NOT NULL default 0,
 			      `start_date` date NOT NULL,
 			      `end_date` date NOT NULL,
+			      `is_auto_submit` int(2) NOT NULL default 0,
+			      `auto_submit_keywords` mediumtext,
 			      `is_valid` int(2) NOT NULL default 0,
 			      `create_datetime` datetime NOT NULL,
 			      `update_datetime` datetime NOT NULL,
@@ -357,7 +423,7 @@ class FCInitialization
 			dbDelta($sql);
 		}
         //fc_workflow_steps table
-		$table_name = $wpdb->prefix . 'fc_workflow_steps';
+		$table_name = FCUtility::get_workflow_steps_table_name();
 		if ($wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'") != $table_name)
 		{
 			$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
@@ -372,8 +438,20 @@ class FCInitialization
 	    		){$charset_collate};";
 			dbDelta($sql);
 		}
+
+		FCInitialization::install_admin_data();
+	}
+
+	function install_site_database()
+	{
+		global $wpdb;
+		if (!empty ($wpdb->charset))
+        	$charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset}";
+		if (!empty ($wpdb->collate))
+        	$charset_collate .= " COLLATE {$wpdb->collate}";
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         //fc_emails table
-		$table_name = $wpdb->prefix . 'fc_emails';
+		$table_name = FCUtility::get_emails_table_name();
 		if ($wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'") != $table_name)
 		{
 		   // action - 1 indicates not send, 0 indicates email sent
@@ -392,7 +470,7 @@ class FCInitialization
 			dbDelta($sql);
 		}
         //fc_action_history table
-		$table_name = $wpdb->prefix . 'fc_action_history';
+		$table_name = FCUtility::get_action_history_table_name();
 		if ($wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'") != $table_name)
 		{
 			$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
@@ -412,7 +490,7 @@ class FCInitialization
 			dbDelta($sql);
 		}
         //fc_action table
-		$table_name = $wpdb->prefix . 'fc_action';
+		$table_name = FCUtility::get_action_table_name();
 		if ($wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'") != $table_name)
 		{
 			$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
@@ -430,22 +508,27 @@ class FCInitialization
 			dbDelta($sql);
 
 		}
-		FCInitialization::install_data();
-	}
 
-	function install_data()
+   }
+
+	function install_admin_data()
 	{
 		/* this code is useful in future when insert example data
 		 //global $wpdb;
 		 */
 	}
 
-	function _run_on_deactivation()
+	function run_on_deactivation()
 	{
 		/*
 		 * Mail schedule remove
 		 */
 		wp_clear_scheduled_hook( 'oasiswf_email_schedule' );
+
+		/*
+		 * Auto Submit schedule remove
+		 */
+		wp_clear_scheduled_hook( 'oasiswf_auto_submit_schedule' );
 	}
 
 	static function add_css_file($stylesheet_arr)
@@ -505,6 +588,7 @@ class FCLoadWorkflow
 		//init: Runs after WordPress has finished loading but before any headers are send. It is used before sending data send to browser.
 		add_action('init', array('FCLoadWorkflow', 'page_load_control'));
 		add_action('admin_menu',  array('FCLoadWorkflow', 'register_menu_pages'));
+		add_action('network_admin_menu',  array('FCLoadWorkflow', 'register_network_admin_menu_pages'));
 	}
 
 	function page_load_control()
@@ -519,10 +603,17 @@ class FCLoadWorkflow
 		}
 	}
 
-	function register_menu_pages()
+   function register_network_admin_menu_pages()
+   {
+      FCLoadWorkflow::register_admin_menu_pages();
+
+	   add_action('admin_print_styles', array('FCLoadWorkflow', 'add_css_files'));
+		add_action('admin_print_scripts', array('FCLoadWorkflow', 'add_js_files'));
+		add_action('admin_footer', array('FCLoadWorkflow', '_add_js_files'));
+   }
+
+	function register_admin_menu_pages()
 	{
-		$current_role = FCWorkflowBase::get_current_user_role() ;
-		$position = FCWorkflowBase::get_menu_position() ;
 		add_menu_page(__('Workflow Admin', 'oasiswf'),
 					  	__('Workflow Admin', 'oasiswf'),
 						'activate_plugins',
@@ -550,6 +641,17 @@ class FCLoadWorkflow
 	    				'activate_plugins',
 	    				'oasiswf-setting',
 	    				array('FCLoadWorkflow','workflow_settings'));
+	}
+
+	function register_menu_pages()
+	{
+		$current_role = FCWorkflowBase::get_current_user_role() ;
+		$position = FCWorkflowBase::get_menu_position() ;
+
+		if (!is_multisite())
+		{
+		   FCLoadWorkflow::register_admin_menu_pages();
+		}
 
 		add_menu_page(__('Workflows', 'oasiswf'),
 						__('Workflows', 'oasiswf'),
@@ -572,7 +674,7 @@ class FCLoadWorkflow
 						array('FCLoadWorkflow','workflow_history'));
 
 
-	    add_action('admin_print_styles', array('FCLoadWorkflow', 'add_css_files'));
+	   add_action('admin_print_styles', array('FCLoadWorkflow', 'add_css_files'));
 		add_action('admin_print_scripts', array('FCLoadWorkflow', 'add_js_files'));
 		add_action('admin_footer', array('FCLoadWorkflow', '_add_js_files'));
 	}

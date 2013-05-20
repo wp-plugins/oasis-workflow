@@ -4,7 +4,7 @@ Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 
 Workflow process for WordPress made simple with Oasis Workflow.
 
@@ -70,21 +70,31 @@ For [Frequently Asked Questions](http://oasisworkflow.com/faqs) plus documentati
 Initial version
 
 = Version 1.0.1 =
-Added Multisite capability.
-Admin can now view another user's inbox and signoff on behave of other users.
-Bug fixes.
+* Added Multisite capability.
+* Admin can now view another user's inbox and signoff on behave of other users.
+* Bug fixes.
 
 = Version 1.0.2 =
-Made WP 3.5 compatible
+* Made WP 3.5 compatible
 
 = Version 1.0.3 =
-Added an option for admin to detach the post from oasis workflow and go back to normal wordpress behavior.
-Added reminder email AFTER certain due date feature.
-Change the post title placeholder to be a link.
-Bug fixes.
+* Added an option for admin to detach the post from oasis workflow and go back to normal wordpress behavior.
+* Added reminder email AFTER certain due date feature.
+* Change the post title placeholder to be a link.
+* Bug fixes.
 
 = Version 1.0.4 =
-Made the assignment step a multi-user step, where multiple users can be assigned the work however only one can claim it.
-Configuration - Roles who are allowed to publish post without going through a workflow.
-Set "publish" as the success step for the publish step.
-Bug fixes.
+* Made the assignment step a multi-user step, where multiple users can be assigned the work however only one can claim it.
+* Configuration - Roles who are allowed to publish post without going through a workflow.
+* Set "publish" as the success step for the publish step.
+* Bug fixes.
+
+= Version 1.0.5 =
+* Multi site enhancements. Moved the Workflow Admin to Network Admin, so workflows can be shared between all the sites.
+* No need to duplicate the workflows for new sites inside a multi site environment.
+* Note: 
+* 1. Workflows previously created in sub sites except the main site will NOT be available anymore. 
+If these workflows are different, they need to be recreated with this upgrade.
+* 2. Make sure to complete all the existing workflows for sub sites, to avoid any unexpected behavior. 
+
+

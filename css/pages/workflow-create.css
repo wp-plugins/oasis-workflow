@@ -89,9 +89,6 @@ div#workflow-edit-icon {
 #widget-text-__i__-title{
 		
 }
-#define-workflow-description{
-	
-}
 .sortable img{margin-top:30px !important;}
 .fc_action{
 	padding-bottom:-15px;
@@ -264,7 +261,7 @@ path { cursor:pointer; }
 .process-lbl{font-weight:bold;font-size:15px;}
 .wfmessage p{line-height:30px;}
 .workflow-lbl{font-weight:bold;font-size:15px;}
-#define-workflow-description{height:100px !important;}
+.define-workflow-textarea{height:100px !important;}
 #start-date, #end-date{background-color:white;width:110px;}
 .save-action-div{margin-top:15px;}
 .fc_error_message{border:1px solid red !important;}

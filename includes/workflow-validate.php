@@ -11,12 +11,16 @@ class FCWorkflowValidate extends FCWorkflowBase
 			$workflow = FCWorkflowCRUD::get_workflow_by_id( $wf_id ) ;
 			$start_date = $workflow->start_date ;
 			$end_date = $workflow->end_date ;
+			/*$auto_submit = $worflow->is_auto_submit;
+			$auto_submit_keywords = $workflow->auto_submit_keywords;*/
 			$graphic = $workflow->wf_info ;
 			$wfinfo = json_decode($graphic) ;
 		}else{
 			$wf_id = $_POST["wf_id"] ;
 			$start_date = FCWorkflowCRUD::format_date_for_db( $_POST["start-date"] ) ;
 			$end_date =  FCWorkflowCRUD::format_date_for_db( $_POST["end-date"] ) ;
+			/*$auto_submit = (isset($_POST["auto-submit"]) && $_POST["auto-submit"]) ? 1 : 0;
+			$auto_submit_keywords = stripcslashes($_POST["auto-submit-keywords"]) ;*/
 			$graphic = stripcslashes($_POST["wf_graphic_data_hi"]) ;
 			$wfinfo = json_decode($graphic) ;
 			$workflow = FCWorkflowCRUD::get_workflow_by_id( $wf_id ) ;
@@ -93,10 +97,10 @@ class FCWorkflowValidate extends FCWorkflowBase
 		$w = "ID <> " . $wf_id . " && ((start_date <= '$start_date' && end_date >= '$start_date') OR (start_date <= '$end_date' && end_date >= '$end_date'))" ;
 
 		if( $workflow->parent_id ){
-			$sql = "SELECT * FROM {$wpdb->prefix}fc_workflows
+			$sql = "SELECT * FROM " . FCUtility::get_workflows_table_name() . "
 					WHERE (ID = $workflow->parent_id || parent_id = $workflow->parent_id) && $w	" ;
 		}else{
-			$sql = "SELECT * FROM {$wpdb->prefix}fc_workflows
+			$sql = "SELECT * FROM " . FCUtility::get_workflows_table_name() . "
 					WHERE (parent_id = $wf_id) && $w " ;
 		}
 
@@ -122,10 +126,10 @@ class FCWorkflowValidate extends FCWorkflowBase
 		$w = "ID <> " . $wf_id . " && ((start_date <= '$start_date' && end_date >= '$start_date') OR (start_date <= '$end_date' && end_date >= '$end_date'))" ;
 
 		if( $workflow->parent_id ){
-			$sql = "SELECT * FROM {$wpdb->prefix}fc_workflows
+			$sql = "SELECT * FROM " . FCUtility::get_workflows_table_name() . "
 					WHERE (ID = $workflow->parent_id || parent_id = $workflow->parent_id) && $w	" ;
 		}else{
-			$sql = "SELECT * FROM {$wpdb->prefix}fc_workflows
+			$sql = "SELECT * FROM " . FCUtility::get_workflows_table_name() . "
 					WHERE (parent_id = $wf_id) && $w " ;
 		}
 

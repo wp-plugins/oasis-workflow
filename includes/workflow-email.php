@@ -128,11 +128,11 @@ class FCWorkflowEmail extends FCWorkflowBase
       global $wpdb;
       if ( $user_id )
       {
-         $wpdb->get_results( "DELETE FROM {$wpdb->prefix}fc_emails WHERE action = 1 and history_id = " . $action_history_id . " and to_user = " . $user_id) ;
+         $wpdb->get_results( "DELETE FROM " . FCUtility::get_emails_table_name() . " WHERE action = 1 and history_id = " . $action_history_id . " and to_user = " . $user_id) ;
       }
       else
       {
-         $wpdb->get_results( "DELETE FROM {$wpdb->prefix}fc_emails WHERE action = 1 and history_id = " . $action_history_id) ;
+         $wpdb->get_results( "DELETE FROM " . FCUtility::get_emails_table_name() . " WHERE action = 1 and history_id = " . $action_history_id) ;
       }
 	}
 }

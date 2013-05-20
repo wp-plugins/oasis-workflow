@@ -33,7 +33,7 @@ class FCWorkflowBase
 	function get_all_workflows( )
 	{
 	   global $wpdb;
-	   $result = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}fc_workflows ORDER BY name desc" );
+	   $result = $wpdb->get_results( "SELECT * FROM " . FCUtility::get_workflows_table_name() . " ORDER BY name desc" );
 
 	   return $result;
 
@@ -42,7 +42,7 @@ class FCWorkflowBase
 	function get_workflow_by_id( $id )
 	{
 	   global $wpdb;
-	   $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflows WHERE ID = %d", $id ) );
+	   $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_workflows_table_name() . " WHERE ID = %d", $id ) );
 
 	   return $result;
 	}
@@ -50,7 +50,15 @@ class FCWorkflowBase
 	function get_workflow_by_validity( $valid )
 	{
 	   global $wpdb;
-	   $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflows WHERE is_valid = %d ORDER BY ID desc", $valid) );
+	   $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_workflows_table_name() . " WHERE is_valid = %d ORDER BY ID desc", $valid) );
+
+	   return $result;
+	}
+
+	function get_workflow_by_auto_submit( $auto_submit )
+	{
+	   global $wpdb;
+	   $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_workflows_table_name() . " WHERE is_auto_submit = %d AND is_valid = 1 ORDER BY ID desc", $auto_submit) );
 
 	   return $result;
 	}
@@ -59,7 +67,7 @@ class FCWorkflowBase
 	{
 	   global $wpdb;
 
-	   $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflow_steps WHERE ID = %d", $id ) );
+	   $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_workflow_steps_table_name() . " WHERE ID = %d", $id ) );
 
 	   return $result;
 	}
@@ -68,7 +76,7 @@ class FCWorkflowBase
 	{
 	   global $wpdb;
 
-	   $result = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}fc_workflow_steps" );
+	   $result = $wpdb->get_results( "SELECT * FROM " . FCUtility::get_workflow_steps_table_name());
 
 	   return $result;
 
@@ -77,7 +85,7 @@ class FCWorkflowBase
 	function get_action_history($action_status, $step_id, $post_id, $from_id)
 	{
       global $wpdb;
-      $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_action_history WHERE action_status = %s AND step_id = %d AND post_id = %d AND from_id = %d",
+      $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE action_status = %s AND step_id = %d AND post_id = %d AND from_id = %d",
                               $action_status, $step_id, $post_id, $from_id ) );
 
       return $result;
@@ -86,7 +94,7 @@ class FCWorkflowBase
    function get_action_history_by_id ( $id )
    {
       global $wpdb;
-      $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_action_history WHERE ID = %d ORDER BY create_datetime DESC", $id ) );
+      $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE ID = %d ORDER BY create_datetime DESC", $id ) );
 
       return $result;
    }
@@ -94,7 +102,7 @@ class FCWorkflowBase
    function get_action_history_by_from_id ( $from_id )
    {
       global $wpdb;
-      $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_action_history WHERE from_id = %d", $from_id ) );
+      $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE from_id = %d", $from_id ) );
 
       return $result;
    }
@@ -102,7 +110,7 @@ class FCWorkflowBase
    function get_action_history_by_status( $action_status, $post_id )
    {
       global $wpdb;
-      $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_action_history WHERE action_status = %s AND post_id = %d ORDER BY create_datetime DESC", $action_status, $post_id ) );
+      $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE action_status = %s AND post_id = %d ORDER BY create_datetime DESC", $action_status, $post_id ) );
 
       return $result;
    }
@@ -110,7 +118,7 @@ class FCWorkflowBase
    function get_action_history_by_post( $post_id )
    {
       global $wpdb;
-      $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_action_history WHERE post_id = %d ORDER BY create_datetime DESC", $post_id ) );
+      $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE post_id = %d ORDER BY create_datetime DESC", $post_id ) );
 
       return $result;
    }
@@ -118,7 +126,7 @@ class FCWorkflowBase
 	function get_review_action( $review_status, $actor_id, $history_id )
 	{
 	   global $wpdb;
-	   $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_action WHERE review_status = %s AND actor_id = %d AND action_history_id = %d",
+	   $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_table_name() . " WHERE review_status = %s AND actor_id = %d AND action_history_id = %d",
 	            $review_status, $actor_id, $history_id  ) );
 	   return $result;
 	}
@@ -126,21 +134,21 @@ class FCWorkflowBase
 	function get_review_action_by_id ( $id )
 	{
 	   global $wpdb;
-	   $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_action WHERE ID = %d", $id ) );
+	   $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_table_name() . " WHERE ID = %d", $id ) );
 	   return $result;
 	}
 
 	function get_review_action_by_history_id ( $history_id )
 	{
 	   global $wpdb;
-	   $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_action  WHERE action_history_id = %d ORDER BY ID DESC", $history_id ) );
+	   $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_table_name() . " WHERE action_history_id = %d ORDER BY ID DESC", $history_id ) );
 	   return $result;
 	}
 
 	function get_review_action_by_status ( $review_status, $history_id )
 	{
 	   global $wpdb;
-	   $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_action  WHERE review_status = %s AND action_history_id = %d ORDER BY ID DESC", $review_status, $history_id ) );
+	   $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_table_name() . " WHERE review_status = %s AND action_history_id = %d ORDER BY ID DESC", $review_status, $history_id ) );
 	   return $result;
 	}
 
@@ -202,7 +210,7 @@ class FCWorkflowBase
 	function get_new_version($parentid)
 	{
 		global $wpdb;
-		$row = $wpdb->get_row( $wpdb->prepare( "SELECT max(version) as maxversion FROM {$wpdb->prefix}fc_workflows WHERE parent_id=%s OR ID=%s", $parentid, $parentid));
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT max(version) as maxversion FROM " . FCUtility::get_workflows_table_name() . " WHERE parent_id=%s OR ID=%s", $parentid, $parentid));
 		$current_version = $row->maxversion;
 		return $current_version + 1 ;
 	}
@@ -287,9 +295,8 @@ class FCWorkflowBase
 					FROM
 						(SELECT AA.post_id, BB.workflow_id
 							FROM
-							(SELECT * FROM {$wpdb->prefix}fc_action_history WHERE action_status='assignment') AS AA
-							LEFT JOIN
-							{$wpdb->prefix}fc_workflow_steps AS BB
+							(SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE action_status='assignment') AS AA
+							LEFT JOIN " . FCUtility::get_workflow_steps_table_name() . " AS BB
 							ON AA.step_id=BB.ID) as A
 					WHERE A.workflow_id=$wfid" ;
 		$result = $wpdb->get_results( $sql ) ;
@@ -327,9 +334,9 @@ class FCWorkflowBase
 			$w = "WHERE assign_actor_id = $user_id OR actor_id = $user_id" ;
 
 		$sql = "SELECT A.*, B.review_status, B.actor_id, B.reassign_actor_id, B.step_id as review_step_id, B.action_history_id, B.update_datetime FROM
-							(SELECT * FROM {$wpdb->prefix}fc_action_history WHERE action_status = 'assignment') as A
+							(SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE action_status = 'assignment') as A
 							LEFT OUTER JOIN
-							(SELECT * FROM {$wpdb->prefix}fc_action WHERE review_status = 'assignment') as B
+							(SELECT * FROM " . FCUtility::get_action_table_name() . " WHERE review_status = 'assignment') as B
 							ON A.ID = B.action_history_id $w order by A.due_date" ;
 		if( $frm == "rows" )
 			$result = $wpdb->get_results( $sql ) ;
@@ -423,7 +430,7 @@ class FCWorkflowBase
 				$info = json_decode( $workflow->wf_info );
 				$conns = $info->conns ;
 				$stepgpid = FCProcessFlow::get_gpid_dbid( $info, $stepid );
-				$all_path = get_option("oasiswf_path") ;
+				$all_path = get_site_option("oasiswf_path") ;
 				foreach ($all_path as $k => $v) {
 					$path[$v[1]] = $k ;
 				}

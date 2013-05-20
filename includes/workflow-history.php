@@ -69,7 +69,7 @@ class FCWorkflowHistory extends FCWorkflowBase
 		if( $postid )$w .= " AND post_id=" . $postid ;
 		$sql = "SELECT A.* , B.post_title, C.ID as userid, C.display_name as assign_actor, D.step_info, D.workflow_id, D.wf_name, D.version
 					FROM
-						((SELECT * FROM {$wpdb->prefix}fc_action_history WHERE $w) AS A
+						((SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE $w) AS A
 						LEFT JOIN
 						{$wpdb->posts} AS B
 						ON  A.post_id = B.ID
@@ -77,7 +77,7 @@ class FCWorkflowHistory extends FCWorkflowBase
 						{$wpdb->users} AS C
 						ON A.assign_actor_id = C.ID
 						LEFT JOIN
-						(SELECT AA.*, BB.name as wf_name, BB.version FROM {$wpdb->prefix}fc_workflow_steps AS AA LEFT JOIN {$wpdb->prefix}fc_workflows AS BB ON AA.workflow_id = BB.ID) AS D
+						(SELECT AA.*, BB.name as wf_name, BB.version FROM " . FCUtility::get_workflow_steps_table_name() . " AS AA LEFT JOIN " . FCUtility::get_workflows_table_name() . " AS BB ON AA.workflow_id = BB.ID) AS D
 						ON A.step_id = D.ID)
 					{$orderby}
 					" ;
@@ -92,9 +92,8 @@ class FCWorkflowHistory extends FCWorkflowBase
 		if( $postid )$w .= " AND post_id=" . $postid ;
 		$sql = "SELECT A.*
 					FROM
-						((SELECT * FROM {$wpdb->prefix}fc_action_history WHERE $w) AS A
-						LEFT JOIN
-						{$wpdb->prefix}fc_action AS C
+						((SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE $w) AS A
+						LEFT JOIN " . FCUtility::get_action_table_name() . " AS C
 						ON A.ID = C.action_history_id)
 					" ;
 		$result = $wpdb->get_results( $sql ) ;
@@ -117,7 +116,7 @@ class FCWorkflowHistory extends FCWorkflowBase
 	{
 		global $wpdb ;
 		$sql = "SELECT DISTINCT(A.post_id) as wfpostid , B.post_title as title
-					FROM {$wpdb->prefix}fc_action_history AS A
+					FROM " . FCUtility::get_action_history_table_name() . " AS A
 						LEFT JOIN
 						{$wpdb->posts} AS B
 						ON  A.post_id = B.ID

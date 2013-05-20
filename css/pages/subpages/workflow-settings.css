@@ -46,3 +46,13 @@ a.owf_about_link {
 a.owf_about_link:hover {
 	border-bottom-width:1px;
 }
+
+.owf_fieldset {
+	padding: 1em;
+	font: 80%;
+	border: 1px solid;
+}
+
+.owf_fieldset legend {
+	font-weight:bold;
+}

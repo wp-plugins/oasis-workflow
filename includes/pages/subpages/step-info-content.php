@@ -5,7 +5,7 @@ $step_info = "";
 if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 {
    $step_dbid = $_GET["step_dbid"];
-	$step_row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflow_steps WHERE ID = %d" , $step_dbid ) );
+	$step_row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_workflow_steps_table_name() . " WHERE ID = %d" , $step_dbid ) );
 	$step_info = json_decode($step_row->step_info);
 	$process_info = json_decode($step_row->process_info);
 }
@@ -107,7 +107,7 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 			</div>
 			<div class="step-review-chk">
 				<?php
-					$oasiswf_review_decision = get_option( "oasiswf_review" ) ;
+					$oasiswf_review_decision = get_site_option( "oasiswf_review" ) ;
 					if( $oasiswf_review_decision ) {
 						$stl = "style='margin-top:5px;'" ;
 						foreach ( $oasiswf_review_decision as $k => $v ) {
@@ -137,7 +137,7 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 						<select id="assign-placeholder" style="width:150px;">
 							<option value=" "></option>
 							<?php
-							$placeholders = get_option( "oasiswf_placeholders" ) ;
+							$placeholders = get_site_option( "oasiswf_placeholders" ) ;
 							if( $placeholders ){
 								foreach ($placeholders as $k => $v ) {
 									echo "<option value='$k'>{$v}</option>" ;
@@ -184,7 +184,7 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 						<select id="reminder-placeholder" style="width:150px;">
 							<option value=" "></option>
 							<?php
-							$placeholders = get_option( "oasiswf_placeholders" ) ;
+							$placeholders = get_site_option( "oasiswf_placeholders" ) ;
 							if( $placeholders ){
 								foreach ($placeholders as $k => $v ) {
 									echo "<option value='$k'>{$v}</option>" ;

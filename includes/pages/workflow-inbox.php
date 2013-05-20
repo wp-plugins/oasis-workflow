@@ -53,7 +53,7 @@ FCUtility::owf_donation();
 			</tfoot>
 			<tbody id="coupon-list">
 				<?php
-					$wfstatus = get_option( "oasiswf_status" ) ;
+					$wfstatus = get_site_option( "oasiswf_status" ) ;
 					$sspace = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" ;
 					if($wfactions):
 						$count = 0;

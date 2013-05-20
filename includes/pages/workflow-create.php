@@ -27,7 +27,7 @@ echo "<script type='text/javascript'>
 	if (is_object($workflow)){?>
 		<h2><label id="page_top_lbl"><?php echo $workflow->name . " (" . $workflow->version .")" ;?></label></h2>
 	<?php }?>
-	<form id="wf-form" method="post" action="<?php echo admin_url('admin.php?page=oasiswf-admin');?>" >
+	<form id="wf-form" method="post" action="<?php echo network_admin_url('admin.php?page=oasiswf-admin');?>" >
 		<div style="margin-bottom:10px;">
 			<div id='fc_message' <?php echo  ($workflow_message) ? "class='updated fc_error_message'" : "";?> >
 				<p><?php echo $workflow_message ; ?></p>
@@ -46,7 +46,7 @@ echo "<script type='text/javascript'>
 							<?php
 								if($wfeditable){
 									echo '<ul id="wfsortable">';
-									$fw_process = get_option('oasiswf_process');
+									$fw_process = get_site_option('oasiswf_process');
 									foreach ($fw_process as $k => $v) {
 										echo "<li class='widget'>
 												<div class='widget-wf-process'>" . __($k) . "</div>
@@ -73,6 +73,8 @@ echo "<script type='text/javascript'>
 							$dec = "";
 							$startdate = "";
 							$enddate = "";
+							$auto_submit = 0;
+							$auto_submit_keywords = "";
 							if($workflow){
 								$title = $workflow->name;
 								$dec = $workflow->description;
@@ -87,6 +89,14 @@ echo "<script type='text/javascript'>
 									}
 									$startdate = $create_workflow->format_date_for_display( $able_start_date ) ;
 								}
+								/*
+								$auto_submit = $workflow->is_auto_submit;
+								$keyword_array = @unserialize( $workflow->auto_submit_keywords );
+								if ($keyword_array !== false)
+								{
+									$auto_submit_keywords = implode(',', $keyword_array['keywords']);
+								}
+								*/
 							}
 						?>
 						<div class="move-div" id="workflow-define-div">
@@ -109,7 +119,7 @@ echo "<script type='text/javascript'>
 								</tr>
 								<tr>
 									<td>
-										<textarea id="define-workflow-description" name="define-workflow-description"
+										<textarea id="define-workflow-description" name="define-workflow-description" class="define-workflow-textarea"
 									 		cols="20" rows="10"><?php echo $dec;?></textarea>
 									</td>
 								</tr>
@@ -136,6 +146,34 @@ echo "<script type='text/javascript'>
 									</td>
 								</tr>
 							</table>
+							<!--
+							<div class="div-line"></div>
+							<table>
+								<tr>
+									<td colspan="2">
+									   <?php
+   				                  $str="" ;
+   				                  if( $auto_submit == 1 )$str = "checked=true" ;
+   				               ?>
+   									<label><input type="checkbox" name="auto-submit"
+   											value="1" <?php echo $str;?> />&nbsp;&nbsp;<?php echo __("Enable Auto Submit?") ;?>
+   									</label>
+									</td>
+								</tr>
+								<tr height="20px;"><td>&nbsp;</td><td>&nbsp;</td></tr>
+								<tr>
+									<td style="vertical-align: top;">
+										<label><?php echo  __("Keywords for Auto Submit : <br>&nbsp;(comma separated) ");?></label>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<textarea id="auto-submit-keywords" name="auto-submit-keywords" class="define-workflow-textarea"
+									 		cols="20" rows="5"><?php echo $auto_submit_keywords;?></textarea>
+									</td>
+								</tr>
+							</table>
+							-->
 						</div>
 					</div>
 				</div>

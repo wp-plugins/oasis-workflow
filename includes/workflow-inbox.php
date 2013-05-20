@@ -49,8 +49,7 @@ class FCWorkflowInbox extends FCWorkflowBase
 	{
 		global $wpdb;
 		$action = FCWorkflowInbox::get_action_history_by_id( $actionid ) ;
-		$w = "WHERE action_status = 'assignment' AND post_id = {$action->post_id}" ;
-		$rows = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}fc_action_history $w") ;
+		$rows = $wpdb->get_results("SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE action_status = 'assignment' AND post_id = {$action->post_id}") ;
 		if( count($rows) > 1 )return $rows;
 		return false;
 	}
@@ -115,7 +114,7 @@ class FCWorkflowInbox extends FCWorkflowBase
 				$iid = FCWorkflowInbox::insert_to_table( $action_history_table, $data ) ;
 				if( $iid ){
 					$wpdb->update($action_history_table, array( "action_status" => "reassigned" ), array( "ID" => $_POST["oasiswf"] ) ) ;
-					$wpdb->get_results("DELETE FROM {$wpdb->prefix}fc_emails WHERE action=1  AND to_user = " . get_current_user_id() . " AND history_id=" . $_POST["oasiswf"]) ;
+					$wpdb->get_results("DELETE FROM " . FCUtility::get_emails_table_name() . " WHERE action=1  AND to_user = " . get_current_user_id() . " AND history_id=" . $_POST["oasiswf"]) ;
 					FCWorkflowEmail::send_step_email($iid, $_POST["reassign_id"]) ; // send mail to the actor .
 					echo $iid ;
 				}
@@ -137,7 +136,7 @@ class FCWorkflowInbox extends FCWorkflowBase
 					$wpdb->update($action_table, array( "review_status" => "reassigned" ), array( "ID" => $reviewId ) ) ;
 					$data = array("to_id" => $r_iid, "sign_off_date" => current_time("mysql")) ;
 					update_option("reassign_{$reviewId}", $data) ;
-					$wpdb->get_results("DELETE FROM {$wpdb->prefix}fc_emails WHERE action=1 AND to_user = " . get_current_user_id() . " AND history_id=" . $_POST["oasiswf"]) ;
+					$wpdb->get_results("DELETE FROM " . FCUtility::get_emails_table_name() . " WHERE action=1 AND to_user = " . get_current_user_id() . " AND history_id=" . $_POST["oasiswf"]) ;
 					FCWorkflowEmail::send_step_email($_POST["oasiswf"], $_POST["reassign_id"]) ; // send mail to the actor .
 					echo $r_iid ;
 				}
@@ -162,11 +161,11 @@ class FCWorkflowInbox extends FCWorkflowBase
 		$order_by = " ORDER BY USERS.DISPLAY_NAME";
 		$sql = "SELECT distinct USERS.ID, USERS.display_name FROM
 					(SELECT U1.ID, U1.display_name FROM {$wpdb->users} AS U1
-					LEFT JOIN {$wpdb->prefix}fc_action_history AS AH ON U1.ID = AH.assign_actor_id
+					LEFT JOIN " . FCUtility::get_action_history_table_name() . " AS AH ON U1.ID = AH.assign_actor_id
 					WHERE AH.action_status = 'assignment'
 					UNION
 					SELECT U2.ID, U2.display_name FROM {$wpdb->users} AS U2
-					LEFT JOIN {$wpdb->prefix}fc_action AS A ON U2.ID = A.actor_id
+					LEFT JOIN " . FCUtility::get_action_table_name() . " AS A ON U2.ID = A.actor_id
 					WHERE A.review_status = 'assignment') USERS
 					{$order_by} ";
 

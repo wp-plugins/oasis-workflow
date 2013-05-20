@@ -153,7 +153,7 @@ jQuery(document).ready(function() {
 	jQuery("#step-select").change(function(){
 		stepProcess = "" ;
 		data = {
-				action: 'get_user_in_step' ,
+				action: 'get_users_in_step' ,
 				stepid: jQuery(this).val()
 			   };
 		

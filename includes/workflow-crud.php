@@ -12,6 +12,12 @@ class FCWorkflowCRUD extends FCWorkflowBase
 		$graphic = stripcslashes($_POST["wf_graphic_data_hi"]) ;
 		$startdate = FCWorkflowCRUD::format_date_for_db( $_POST["start-date"] ) ;
 		$enddate = FCWorkflowCRUD::format_date_for_db( $_POST["end-date"] ) ;
+		/*
+		$auto_submit = (isset($_POST["auto-submit"]) && $_POST["auto-submit"]) ? 1 : 0;
+		$auto_submit_keywords = explode(',', stripcslashes($_POST["auto-submit-keywords"])) ;
+		$keyword_array = array('keywords' => $auto_submit_keywords);
+		*/
+
 
 		$workflow_message = FCWorkflowValidate::check_workflow_validate() ;
 		$workflow_table = FCUtility::get_workflows_table_name();
@@ -23,6 +29,8 @@ class FCWorkflowCRUD extends FCWorkflowBase
 									'wf_info' => $graphic,
 									'start_date' => $startdate,
 									'end_date' => $enddate,
+								   /*'is_auto_submit' => $auto_submit,
+								   'auto_submit_keywords' => serialize($keyword_array),*/
 									'is_valid' => $valid,
 									'update_datetime' => current_time('mysql')
 								),
@@ -34,12 +42,12 @@ class FCWorkflowCRUD extends FCWorkflowBase
 			$deleted_steps = explode( "@", $_POST["deleted_step_ids"] ) ;
 			for( $i = 0; $i < count( $deleted_steps ) -1 ; $i++ )
 			{
-				$wpdb->get_results( "DELETE FROM {$wpdb->prefix}fc_workflow_steps WHERE ID = " . $deleted_steps[$i] ) ;
+				$wpdb->get_results( "DELETE FROM " . FCUtility::get_workflow_steps_table_name() . " WHERE ID = " . $deleted_steps[$i] ) ;
 			}
 		}
 
 		if( !$workflow_message )
-			wp_redirect( admin_url( 'admin.php?page=oasiswf-admin' ) );
+			wp_redirect( network_admin_url( 'admin.php?page=oasiswf-admin' ) );
 	}
 
 	static function as_save()
@@ -52,6 +60,8 @@ class FCWorkflowCRUD extends FCWorkflowBase
 			$data = array(
 						'name' => stripcslashes( trim( $wf->name )),
 						'description' => stripcslashes( $wf->description ),
+					   /*'is_auto_submit' => $wf->is_auto_submit,
+			 	      'auto_submit_keywords' => $wf->auto_submit_keywords,*/
 						'version' => $newVersion,
 						'parent_id' => $parentId,
 						'create_datetime' => current_time('mysql')
@@ -79,7 +89,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 							),
 							array("ID" => $newWfId ) ) ;
 
-			wp_redirect( admin_url( 'admin.php?page=oasiswf-admin&wf_id=' . $newWfId ) );
+			wp_redirect( network_admin_url( 'admin.php?page=oasiswf-admin&wf_id=' . $newWfId ) );
 		}
 	}
 
@@ -118,7 +128,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 						<tr height="50px">
 							<td width="85px;">Path</td>
 							<th width="7px">:</th>';
-							$oasiswf_path = get_option( "oasiswf_path" ) ;
+							$oasiswf_path = get_site_option( "oasiswf_path" ) ;
 							if($oasiswf_path){
 								foreach ($oasiswf_path as $k => $v) {
 									$str .= '<td width="110px;">
@@ -202,7 +212,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 	{
 		global $wpdb;
 		$name = strtolower($_POST["name"]);
-		$result = $wpdb->get_row( $wpdb->prepare( "SELECT count(*) count FROM {$wpdb->prefix}fc_workflows WHERE LOWER(name) = %s", $name ) );
+		$result = $wpdb->get_row( $wpdb->prepare( "SELECT count(*) count FROM " . FCUtility::get_workflows_table_name() . " WHERE LOWER(name) = %s", $name ) );
 		echo $result->count;
 		exit();
 	}
@@ -228,7 +238,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 		global $wpdb ;
 		$workflow_step_table = FCUtility::get_workflow_steps_table_name();
 
-		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fc_workflow_steps WHERE ID = %d" , $_POST["stepid"] ));
+		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_workflow_steps_table_name() . " WHERE ID = %d" , $_POST["stepid"] ));
 		if(	$result ) {
 			$result = $wpdb->update(
 						$workflow_step_table,
@@ -251,7 +261,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 							'workflow_id' => $_POST["wfid"],
 						)
 					);
-			$insert_row = $wpdb->get_row("SELECT max(ID) as maxid FROM {$wpdb->prefix}fc_workflow_steps");
+			$insert_row = $wpdb->get_row("SELECT max(ID) as maxid FROM " . FCUtility::get_workflow_steps_table_name());
 			$stepId = $insert_row->maxid ;
 		}
 
@@ -284,7 +294,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 		$workflow = FCWorkflowCRUD::get_workflow_by_id( $wfid ) ;
 		if( $workflow->version == 1 )return false;
 		$parent_id = ( $workflow->parent_id ) ? $workflow->parent_id : $wfid ;
-		$sql = "SELECT * FROM {$wpdb->prefix}fc_workflows WHERE version=" .  ( $workflow->version - 1 ) . " && (parent_id = " . $parent_id . " || ID = " . $parent_id .  " )" ;
+		$sql = "SELECT * FROM " . FCUtility::get_workflows_table_name() . " WHERE version=" .  ( $workflow->version - 1 ) . " && (parent_id = " . $parent_id . " || ID = " . $parent_id .  " )" ;
 		$previous_workflow = $wpdb->get_row( $sql ) ;
 		if( $previous_workflow ){
 			if( $field_name )
@@ -327,7 +337,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 		$info = $wfinfo ;
 		$conns = $info->conns ;
 		$stepgpid = FCWorkflowCRUD::get_gpid_dbid( $info, $stepid );
-		$all_path = get_option("oasiswf_path") ;
+		$all_path = get_site_option("oasiswf_path") ;
 		foreach ($all_path as $k => $v) {
 			$path[$v[1]] = $k ;
 		}

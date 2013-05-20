@@ -51,11 +51,11 @@ class FCProcessFlow extends FCWorkflowBase
 
 	}
 
-	static function get_first_step_in_wf()
+	static function get_first_step_in_wf_internal($workflow_id)
 	{
-		$steps = FCProcessFlow::get_first_last_step($_POST["wf_id"]) ;
+		$steps = FCProcessFlow::get_first_last_step($workflow_id) ;
 
-		$workflow = FCProcessFlow::get_workflow_by_id( $_POST["wf_id"] ) ;
+		$workflow = FCProcessFlow::get_workflow_by_id( $workflow_id ) ;
 		$wfinfo = json_decode( $workflow->wf_info ) ;
 		if( $wfinfo->first_step && count($wfinfo->first_step) == 1 ){
 			$step_db_id = FCProcessFlow::get_gpid_dbid($wfinfo, $wfinfo->first_step[0]) ;
@@ -63,47 +63,74 @@ class FCProcessFlow extends FCWorkflowBase
 			$process = FCProcessFlow::get_gpid_dbid($wfinfo, $wfinfo->first_step[0], "process") ;
 			unset($steps["first"]) ;
 			$steps["first"][] = array($step_db_id, $step_lbl, $process) ;
-			echo json_encode($steps) ;
+			return $steps;
 		}
 		else{
-			echo "wrong" ;
+			return null;
 		}
-
-		exit();
 	}
 
-	static function get_user_in_step()
+	static function get_first_step_in_wf()
 	{
-		if( $_POST["stepid"] == "nodefine" ){
-			echo "" ;
-			exit();
+      $workflowId = $_POST["wf_id"];
+      $steps = FCProcessFlow::get_first_step_in_wf_internal($workflowId);
+      if ($steps != null)
+      {
+         echo json_encode($steps) ;
+      }
+      else
+      {
+         echo "wrong" ;
+      }
+      exit();
+	}
+
+
+	static function get_users_in_step_internal($step_id)
+	{
+		if( $step_id == "nodefine" ){
+			return null ;
 		}
 
-		$wf_info = FCProcessFlow::get_step_by_id( $_POST["stepid"] ) ;
+		$result = null;
+		$wf_info = FCProcessFlow::get_step_by_id( $step_id ) ;
 		if($wf_info){
 			$step_info= json_decode( $wf_info->step_info ) ;
 			$users = FCProcessFlow::get_users_by_role( $step_info->assignee ) ;
 			if($users){
 				$result["users"] = $users ;
 				$result["process"] = $step_info->process ;
-				echo json_encode( $result );
-			}else{
-				echo "no users found";
 			}
 		}
-		exit();
+		return $result;
+	}
+
+	static function get_users_in_step()
+	{
+	   $stepId = $_POST["stepid"];
+      $users = FCProcessFlow::get_users_in_step_internal($stepId);
+      if ($users != null)
+      {
+         echo json_encode( $users );
+      }
+      else
+      {
+         echo "no users found";
+      }
+
+      exit();
 	}
 
 	static function save_action($data, $actors, $actionid=null, $actionfrm=null)
 	{
 	   // reminder days BEFORE the due date
-		$reminder_days = get_option("oasiswf_reminder_days") ;
+		$reminder_days = get_site_option("oasiswf_reminder_days") ;
 		if ($reminder_days) {
 		   $data["reminder_date"] = FCProcessFlow::get_pre_next_date( $data["due_date"], "pre", $reminder_days) ;
 		}
 
 		// reminder days AFTER the due date
-		$reminder_days_after = get_option("oasiswf_reminder_days_after") ;
+		$reminder_days_after = get_site_option("oasiswf_reminder_days_after") ;
 		if ($reminder_days_after) {
 		   $data["reminder_date_after"] = FCProcessFlow::get_pre_next_date( $data["due_date"], "next", $reminder_days_after) ;
 		}
@@ -158,23 +185,23 @@ class FCProcessFlow extends FCWorkflowBase
 		return $iid ;
 	}
 
-	static function submit_post_to_workflow()
+	static function submit_post_to_workflow_internal($stepId, $postId, $actors, $dueDate, $userComments)
 	{
 		$userId = get_current_user_id() ;
 
-		$comments[] = array( "send_id" => $userId, "comment" => stripcslashes($_POST["hi_comment"]) ) ;
+		$comments[] = array( "send_id" => $userId, "comment" => stripcslashes($userComments) ) ;
 		$saveComments = json_encode( $comments ) ;
 
 		//--- post create and sign off by admin ----
-		$post = get_post($_POST["post_ID"]) ;
+		$post = get_post($postId) ;
 		$auserid= get_current_user_id() ;
 		$auser = FCProcessFlow::get_user_name($auserid) ;
 		$acomments[] = array( "send_id" => "System", "comment" => "Post/Page was submitted to the workflow by " . $auser ) ;
 		$adata = array(
 					'action_status' => "submitted",
 					'comment' => json_encode( $acomments ) ,
-					'step_id' => $_POST["hi_step_id"],
-					'post_id' => $_POST["post_ID"],
+					'step_id' => $stepId,
+					'post_id' => $postId,
 					'from_id' => '',
 					'due_date' => '',
 					'create_datetime' => $post->post_date
@@ -184,16 +211,29 @@ class FCProcessFlow extends FCWorkflowBase
 		$data = array(
 					'action_status' => "assignment",
 					'comment' => $saveComments,
-					'step_id' => $_POST["hi_step_id"],
-					'post_id' => $_POST["post_ID"],
+					'step_id' => $stepId,
+					'post_id' => $postId,
 					'from_id' => $aiid,
-					'due_date' => FCProcessFlow::format_date_for_db( $_POST["hi_due_date"] ),
+					'due_date' => FCProcessFlow::format_date_for_db( $dueDate ),
 					'create_datetime' => current_time('mysql')
 				);
 
-		$iid = FCProcessFlow::save_action( $data, $_POST["hi_actor_ids"]) ;
-		update_option( "workflow_" . $iid, $userId ) ;
+		$iid = FCProcessFlow::save_action( $data, $actors) ;
+		update_post_meta($postId, "oasis_is_in_workflow", 1); // set the post meta to 1, specifying that the post is in a workflow.
+		// update_option( "workflow_" . $iid, $userId ) ;
 	}
+
+   static function submit_post_to_workflow()
+   {
+      $stepId = $_POST["hi_step_id"];
+      $postId = $_POST["post_ID"];
+      $actors = $_POST["hi_actor_ids"];
+      $dueDate = $_POST["hi_due_date"];
+      $comments = $_POST["hi_comment"];
+
+      FCProcessFlow::submit_post_to_workflow_internal($stepId, $postId, $actors, $dueDate, $comments);
+
+   }
 
 	//----------------review process-------------------------
 	static function review_result_process_internal($ddata, $actionId, $result)
@@ -404,6 +444,7 @@ class FCProcessFlow extends FCWorkflowBase
 			}
 			echo $iid;
 		}
+		update_post_meta($_POST["post_id"], "oasis_is_in_workflow", 0); // set the post meta to 0, specifying that the post is out of a workflow.
 		exit();
 	}
 
@@ -457,6 +498,7 @@ class FCProcessFlow extends FCWorkflowBase
 			//---------------------------------------------
 			echo $iid;
 		}
+		update_post_meta($_POST["post_id"], "oasis_is_in_workflow", 0); // set the post meta to 0, specifying that the post is out of a workflow.
 		exit() ;
 	}
 
@@ -561,6 +603,7 @@ class FCProcessFlow extends FCWorkflowBase
 			$wpdb->update($action_history_table, array( "action_status" => "aborted" ), array( "ID" => $_POST["exitId"] ) ) ;
 			echo $iid ;
 		}
+		update_post_meta($action->post_id, "oasis_is_in_workflow", 0); // set the post meta to 0, specifying that the post is out of a workflow.
 		exit() ;
 	}
 
