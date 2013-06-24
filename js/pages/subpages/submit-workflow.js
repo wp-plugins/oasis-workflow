@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
 	//------main function-------------
 	function load_setting(){		
 		jQuery("#publishing-action").append("<input type='button' id='workflow_submit' class='button button-primary button-large'" +
-											" value='Submit to Workflow' style='float:left;' />").css({"width": "100%"});
+											" value='" + owf_submit_workflow_vars.submitToWorkflowButton + "' style='float:left;' />").css({"width": "100%"});
 		jQuery("#post").append(
 							"<input type='hidden' id='hi_workflow_id' name='hi_workflow_id' />" +
 							"<input type='hidden' id='hi_step_id' name='hi_step_id' />" +
@@ -100,12 +100,12 @@ jQuery(document).ready(function() {
 		jQuery.post(ajaxurl, data, function( response ) {
 			jQuery("#step-loading-span").removeClass("loading");
 			if(response == "nodefine"){
-				alert("All steps are not defined.\n Please check the workflow.");
+				alert(owf_submit_workflow_vars.allStepsNotDefined);
 				jQuery("#workflow-select").val("");
 				return;
 			}
 			if(response == "wrong"){
-				alert("The selected workflow is not valid.\n Please check this workflow.");
+				alert(owf_submit_workflow_vars.notValidWorkflow);
 				jQuery("#workflow-select").val("");
 				return;
 			}			
@@ -139,7 +139,7 @@ jQuery(document).ready(function() {
 				}
 				else
 				{
-					alert("No users found for the given role"); // no users are defined 
+					alert(owf_submit_workflow_vars.noUsersDefined); // no users are defined 
 				}
 				stepProcess = result["process"] ;
 			}
@@ -164,7 +164,7 @@ jQuery(document).ready(function() {
 		var t = jQuery('#actors-list-select option:selected').text();
 		if(option_exist_chk(v)){
 			if(jQuery("#actors-set-select option").length == 1 && stepProcess == "publish" ){
-				alert("You can select multiple users only for review step.\n Selected step is " + stepProcess + " step.");
+				alert(owf_submit_workflow_vars.multipleUsers + " " + stepProcess + " " + owf_submit_workflow_vars.step);
 				return;
 			}
 			jQuery('#actors-set-select').append('<option value=' + v + '>' + t + '</option>');
@@ -188,24 +188,24 @@ jQuery(document).ready(function() {
 	//------------save-------------------
 	jQuery("#submitSave").click(function(){	
 		if(!jQuery("#workflow-select").val()){
-			alert("Please select a workflow.") ;
+			alert(owf_submit_workflow_vars.selectWorkflow) ;
 			return false;
 		}
 		
 		if(!jQuery("#step-select").val()){
-			alert("Please select a step.") ;
+			alert(owf_submit_workflow_vars.selectStep) ;
 			return false;
 		}
 		
 		if(jQuery("#step-select").val() == "nodefine"){
-			alert("This step is not defined.") ;
+			alert(owf_submit_workflow_vars.stepNotDefined) ;
 			return false;
 		}
 		
 		var actors = assign_actor_chk() ;
 		if(!actors)return;
 		if(!chk_due_date("due-date")){
-			alert("Please enter a due date.");
+			alert(owf_submit_workflow_vars.dueDateRequired);
 			return false;
 		}
 		
@@ -231,7 +231,7 @@ jQuery(document).ready(function() {
 		}else{
 			var optionNum = jQuery("#actors-set-select option").length ;
 			if(!optionNum){
-				alert("No assigned actor(s).") ;
+				alert(owf_submit_workflow_vars.noAssignedActors) ;
 				return false;
 			}
 			var multi_actors = "", i = 1;

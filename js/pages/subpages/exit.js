@@ -1,10 +1,10 @@
 jQuery(document).ready(function() {
 	if( exit_wfid ){
-		jQuery("#publishing-action").append("<a href='#' id='exit_link' style='float:left;margin-top:10px;'>Abort workflow</a><span class='loading' style='display:none;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>").css({"width":"100%"});
+		jQuery("#publishing-action").append("<a href='#' id='exit_link' style='float:right;margin-top:10px;'>". owf_workflow_exit_vars.abortWorkflow. "</a><span class='loading' style='display:none;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>").css({"width":"100%"});
 		jQuery('.error').hide() ;
 	}
 	jQuery("#exit_link").live("click", function(){
-		if(!confirm("Are you sure to abort the workflow?"))return ;
+		if(!confirm(owf_workflow_exit_vars.abortWorkflowConfirm))return ;
 		data = {
 				action: 'exit_post_from_workflow' ,
 				exitId: exit_wfid,

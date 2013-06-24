@@ -5,14 +5,14 @@ class FCWorkflowInbox extends FCWorkflowBase
 	{
 		echo "<tr>";
 		echo "<th scope='col' class='manage-column check-column' ><input type='checkbox'></th>";
-		echo "<th width='300px'>" . __("Post/Page") . "</th>";
-		echo "<th>" . __("Type") . "</th>";
-		echo "<th>" . __("Author") . "</th>";
-		echo "<th>" . __("Workflow") . "</th>";
-		echo "<th>" . __("Step") . "</th>";
-		echo "<th>" . __("Status") . "</th>";
-		echo "<th>" . __("Due Date") . "</th>";
-		echo "<th>" . __("Comments") . "</th>";
+		echo "<th width='300px'>" . __("Post/Page", "oasisworkflow") . "</th>";
+		echo "<th>" . __("Type", "oasisworkflow") . "</th>";
+		echo "<th>" . __("Author", "oasisworkflow") . "</th>";
+		echo "<th>" . __("Workflow", "oasisworkflow") . "</th>";
+		echo "<th>" . __("Step", "oasisworkflow") . "</th>";
+		echo "<th>" . __("Status", "oasisworkflow") . "</th>";
+		echo "<th>" . __("Due Date", "oasisworkflow") . "</th>";
+		echo "<th>" . __("Comments", "oasisworkflow") . "</th>";
 		echo "</tr>";
 	}
 
@@ -28,7 +28,7 @@ class FCWorkflowInbox extends FCWorkflowBase
 	static function get_step_signoff_content()
 	{
 		ob_start() ;
-		FCWorkflowActions::include_files( "submit-step" ) ;
+	   include( OASISWF_PATH . "includes/pages/subpages/submit-step.php" ) ;
 		$result = ob_get_contents();
 		ob_end_clean();
 		echo $result;
@@ -84,8 +84,8 @@ class FCWorkflowInbox extends FCWorkflowBase
 					//$data["comment"] = "" ;
 				}else{
 					$data["action_status"] = "claim_cancel" ;
-					$title = __("Task claimed") ;
-					$message = __('Another user has claimed the task for the article "' . $post_title . '", so please ignore it.') ;
+					$title = __("Task claimed", "oasisworkflow") ;
+					$message = __('Another user has claimed the task for the article "' . $post_title . '", so please ignore it.', "oasisworkflow") ;
 					FCWorkflowEmail::send_mail($action->assign_actor_id, $title, $message) ;
 					FCWorkflowEmail::delete_step_email($action->ID, $action->assign_actor_id);
 					//$data["comment"] = "" ;

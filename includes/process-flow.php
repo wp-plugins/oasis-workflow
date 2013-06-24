@@ -5,16 +5,20 @@
 
 class FCProcessFlow extends FCWorkflowBase
 {
-	static function post_page_check()
+	static function workflow_submit_check($selected_user)
 	{
-		//-------submit----------
+		//-------inbox----------
+		$page_var = isset($_GET['page']) ? $_GET["page"] : "";
+		if ( $page_var == 'oasiswf-inbox') return "inbox";
+
+	   //-------submit----------
 		$post_var = isset($_GET['post']) ? $_GET["post"] : "";
 		$rows = FCProcessFlow::get_action_history_by_status( "assignment", $post_var ) ;
 		if( count( $rows ) == 0 )return "submit" ;
 
-		//-------sign------------
+		//-------sign off------------
 		if( isset($_GET['post']) && $_GET["post"] && isset($_GET['action']) && $_GET["action"] == "edit"){
-			$row = FCProcessFlow::get_assigned_post( $_GET["post"], null, "row" ) ;
+			$row = FCProcessFlow::get_assigned_post( $_GET["post"], $selected_user, "row" ) ;
 			if($row){
 				return $row->ID ;
 			}
@@ -395,7 +399,7 @@ class FCProcessFlow extends FCWorkflowBase
 			//------post status chage----------
 			FCProcessFlow::copy_step_status_to_post($_POST["post_ID"], $action->step_id, $_POST["review_result"]) ;
 		}
-		echo "sucess";
+		echo "success";
 		exit();
 	}
 	//-----------------------------------------------------------

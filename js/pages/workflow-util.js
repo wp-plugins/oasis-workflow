@@ -1,13 +1,9 @@
 function add_option_to_select(obj,dt,lbl,vl)
 {
 	var sel = jQuery("#" + obj).find('option');
-	
 	sel.remove();
-	
 	var appendStr = "";
-	
 	if(!jQuery("#"+obj).attr("size"))appendStr = "<option></option>";
-	
 	if(typeof(dt)=="object" && numKeys(dt)>0 && lbl)
 	{		
 		for(var k in dt)
@@ -32,7 +28,6 @@ function add_option_to_select(obj,dt,lbl,vl)
 		}
 		jQuery('#'+obj).append(appendStr);
 	}
-	
 }
 
 
@@ -73,7 +68,7 @@ function chk_due_date(id1)
 	var c_y = c_datetime.getFullYear() ;	
 	var arr_date = d_date.split("/") ;	
 	if( (c_y*10000 + c_m*100 + c_d*1) > (arr_date[2]*10000 + arr_date[0]*100 + arr_date[1]*1) ){
-		alert("Due date cannot be in the past.");
+		alert(owf_workflow_util_vars.dueDateInPast);
 		return false ;
 	}
 	return true;

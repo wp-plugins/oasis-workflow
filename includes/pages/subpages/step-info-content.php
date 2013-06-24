@@ -11,17 +11,17 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 }
 ?>
 <div id="step-setting" class="popup-div">
-	<div class="dialog-title"><strong><?php echo __("Step Information");?></strong></div>
+	<div class="dialog-title"><strong><?php echo __("Step Information", "oasisworkflow");?></strong></div>
 	<div id="step-setting-content" style="overflow:auto;" >
 		<p class="step-name">
-			<label><?php echo __("Step Name :")?> </label><input type="text" id="step-name" name="step-name" /></span>
+			<label><?php echo __("Step Name :", "oasisworkflow")?> </label><input type="text" id="step-name" name="step-name" /></span>
 		</p>
 		<div class="step-assignee" style="height:120px;">
 			<div style="margin-left:0px;">
-				<label><?php echo __("Assignee(s) :") ;?> </label>
+				<label><?php echo __("Assignee(s) :", "oasisworkflow") ;?> </label>
 			</div>
 			<div class="step-assignee-list" >
-				<label>Available</label><br class="clear">
+				<label><?php echo __("Available", "oasisworkflow"); ?></label><br class="clear">
 				<p>
 					<select id="step-role-list" name="step-role-list" size=10>
 						<?php
@@ -37,7 +37,7 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 				<a href="#" id="step-assignee-unset-point"><img src="<?php echo OASISWF_URL . "img/role-unset.png";?>" style="border:0px;" /></a>
 			</div>
 			<div class="step-assignee-list">
-				<label><?php echo __("Assigned") ;?></label><br class="clear">
+				<label><?php echo __("Assigned", "oasisworkflow") ;?></label><br class="clear">
 				<p>
 					<select id="step-role-set-list" name="step-role-set-list" size=10>
 						<?php
@@ -53,10 +53,10 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 		</div>
 		<br class="clear">
 		<p class="step-status">
-			<label><?php echo __("Status :") ;?></label>
+			<label><?php echo __("Status :", "oasisworkflow") ;?></label>
 			<div style="float:left;margin-top:-15px;">
 				<div style="float:left;text-align:center;">
-					<label>On Success</label><br><br>
+					<label><?php echo __("On Success", "oasisworkflow"); ?></label><br><br>
 					<?php
 					if (isset($_GET['process_name']) && $_GET['process_name'] != "publish")
 					{
@@ -78,13 +78,13 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
    				else // if step is publish, then success step has to be "publish"
    				{
    				?>
-						<div id="step_status_publish"><?php echo __("publish"); ?></div>
+						<div id="step_status_publish">publish</div>
 					<?php
    				}
 					?>
 				</div>
 				<div style="float:left;margin-left:50px;text-align:center;">
-					<label>On Failure</label><br><br>
+					<label><?php echo __("On Failure", "oasisworkflow"); ?></label><br><br>
 					<select id="step-failure-status-select" style="width:150px;margin-top:-5px;">
 						<option value=""></option>
 						<?php
@@ -103,7 +103,7 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 		</p>
 		<div class="step-review" style="display:none;">
 			<div class="step-review-lb">
-				<label><?php echo __("Review Decision : ") ;?></label>
+				<label><?php echo __("Review Decision : ", "oasisworkflow") ;?></label>
 			</div>
 			<div class="step-review-chk">
 				<?php
@@ -123,16 +123,16 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 			<br class="clear">
 		</div>
 		<div class="first_step" >
-			<label><?php echo __("Is first step? : ") ;?></label>
+			<label><?php echo __("Is first step? : ", "oasisworkflow") ;?></label>
 			<span><input type="checkbox" id="first_step_check" /></span>
 			<br class="clear">
 		</div>
-		<a href="#" class="more-show" id="more-show" style="color:blue;"><?php echo __("Advanced details");?></a>
+		<a href="#" class="more-show" id="more-show" style="color:blue;"><?php echo __("Advanced details", "oasisworkflow");?></a>
 		<form>
 			<div id="wf-email-define" style="display:none;margin-top:40px;">
-				<h3 style="margin:10px 0 20px 0;"><?php echo __("Assignment Email") ;?></h3>
+				<h3 style="margin:10px 0 20px 0;"><?php echo __("Assignment Email", "oasisworkflow") ;?></h3>
 				<div>
-					<div style="float:left;width:130px;"><label><?php echo __("Placeholder : ") ;?></label></div>
+					<div style="float:left;width:130px;"><label><?php echo __("Placeholder : ", "oasisworkflow") ;?></label></div>
 					<div style="float:left;">
 						<select id="assign-placeholder" style="width:150px;">
 							<option value=" "></option>
@@ -145,12 +145,12 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 							}
 							?>
 						</select>
-						<input type="button" class="button-primary placeholder-add-bt" value="Add" style="margin-left:20px;" />
+						<input type="button" class="button-primary placeholder-add-bt" value="<?php echo __("Add", "oasisworkflow") ;?>" style="margin-left:20px;" />
 					</div>
 					<br class="clear">
 				</div>
 				<p>
-					<label >Email subject : </label>
+					<label ><?php echo __("Email subject : ", "oasisworkflow") ;?></label>
 					<?php
 					$assignment_subject = "";
 					$assignment_content = "";
@@ -167,7 +167,7 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 					<input type="text" id="assignment-email-subject" name="assignment-email-subject" value="<?php echo $assignment_subject;?>" />
 				</p>
 				<div style="width:100%;height:250px;">
-					<div style="float:left;"><label><?php echo __("Email message : ") ;?></label></div>
+					<div style="float:left;"><label><?php echo __("Email message : ", "oasisworkflow") ;?></label></div>
 					<div style="float:left;" id="assignment-email-content-div">
 						<textarea id="assignment-email-content" name="assignment-email-content"
 							style="width:500px;height:200px;"><?php echo $assignment_content;?></textarea>
@@ -176,10 +176,10 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 				</div>
 				<br class="clear">
 				<div style="margin:30px 0 20px 0;">
-					<h3><?php echo __("Reminder Email") ;?></h3>
+					<h3><?php echo __("Reminder Email", "oasisworkflow") ;?></h3>
 				</div>
 				<div>
-					<div style="float:left;width:130px;"><label><?php echo __("Placeholder : ") ;?></label></div>
+					<div style="float:left;width:130px;"><label><?php echo __("Placeholder : ", "oasisworkflow") ;?></label></div>
 					<div style="float:left;">
 						<select id="reminder-placeholder" style="width:150px;">
 							<option value=" "></option>
@@ -197,11 +197,11 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 					<br class="clear">
 				</div>
 				<p>
-					<label><?php echo __("Email subject : ") ;?></label>
+					<label><?php echo __("Email subject : ", "oasisworkflow") ;?></label>
 					<input type="text" id="reminder-email-subject" name="reminder-email-subject" value="<?php echo $reminder_subject?>" />
 				</p>
 				<div style="width:100%;height:250px;">
-					<div style="float:left;"><label><?php echo __("Email message : ") ;?></label></div>
+					<div style="float:left;"><label><?php echo __("Email message : ", "oasisworkflow") ;?></label></div>
 					<div style="float:left;">
 						<textarea id="reminder-email-content" name="reminder-email-content"
 							style="width:500px;height:200px;"><?php echo $reminder_content;?></textarea>
@@ -218,10 +218,32 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 	<br class="clear">
 	<p class="step-set">
 		<?php if( $_GET["editable"] ):?>
-			<input type="button" id="stepSave" class="button-primary" value="<?php echo __("Save") ;?>"  />
+			<input type="button" id="stepSave" class="button-primary" value="<?php echo __("Save", "oasisworkflow") ;?>"  />
 			<span>&nbsp;</span>
 		<?php endif;?>
-			<a href="#" id="stepCancel" style="color:blue;margin-top:5px;"><?php echo __("Cancel") ;?></a>
+			<a href="#" id="stepCancel" style="color:blue;margin-top:5px;"><?php echo __("Cancel", "oasisworkflow") ;?></a>
 	</p>
 	<br class="clear">
 </div>
+<script type='text/javascript'>
+   jQuery(document).ready(function() {
+   	var step_gpid = jQuery("#step_gpid-hi").val() ;
+   	var lbl = jQuery(document).find( "#" + step_gpid + " label" ).html() ;
+   	jQuery("#step-name").val(lbl) ;
+   	var process_name = jQuery(document).find( "#" + step_gpid ).attr("process-name") ;
+   	if(process_name != "review"){
+   		jQuery("#step-setting-content").css("height","420px");
+   	}else{
+   		jQuery("#step-setting-content").css("height","420px");
+   	}
+   	//jQuery(".step-review").hide();
+   	//setting_db_step_data();
+   	if(jQuery("#" + step_gpid).attr("first_step") == "yes")jQuery("#first_step_check").attr("checked", true);
+
+   	makeWhizzyWig("assignment-email-content","all");
+   	makeWhizzyWig("reminder-email-content","all");
+
+   	jQuery("#TB_window").css({"top":"53%"});
+
+   });
+</script>

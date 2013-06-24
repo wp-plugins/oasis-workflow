@@ -40,7 +40,7 @@ echo "<script type='text/javascript'>
 					<div class="postbox" >
 						<div class="handlediv" title="Click to toggle"><br></div>
 						<h3 style="padding:7px;">
-							<span class="process-lbl"><?php echo __('Processes');?></span>
+							<span class="process-lbl"><?php echo __('Processes', "oasisworkflow");?></span>
 						</h3>
 						<div class="move-div">
 							<?php
@@ -49,13 +49,13 @@ echo "<script type='text/javascript'>
 									$fw_process = get_site_option('oasiswf_process');
 									foreach ($fw_process as $k => $v) {
 										echo "<li class='widget'>
-												<div class='widget-wf-process'>" . __($k) . "</div>
+												<div class='widget-wf-process'>" . __($k, "oasisworkflow") . "</div>
 											 </li>";
 									}
 									echo '</ul>';
 								}else{
 									echo "<ul class='wfeditable'><li class='widget wfmessage'><p>";
-									echo __("Processes are not available, since there are items (post/pages) in the workflow.&nbsp;&nbsp;&nbsp; If you want to edit the workflow,&nbsp;&nbsp; please &nbsp;<a href='#' id='save_as_link'>save it as a new version");
+									echo __("Processes are not available, since there are items (post/pages) in the workflow.&nbsp;&nbsp;&nbsp; If you want to edit the workflow,&nbsp;&nbsp; please ", "oasisworkflow") . "&nbsp;<a href='#' id='save_as_link'>" . __("save it as a new version", "oasisworkflow");
 									echo "</a></p></li><ul>";
 								}
 							?>
@@ -66,7 +66,7 @@ echo "<script type='text/javascript'>
 					<div class="postbox" >
 						<div class="handlediv" title="Click to toggle"><br></div>
 						<h3 style="padding:7px;">
-							<span class="workflow-lbl"><?php echo  __("Workflow Info");?></span>
+							<span class="workflow-lbl"><?php echo  __("Workflow Info", "oasisworkflow");?></span>
 						</h3>
 						<?php
 							$title = "";
@@ -103,7 +103,7 @@ echo "<script type='text/javascript'>
 							<table>
 								<tr>
 									<td>
-										<label><?php echo  __("Title : ");?></label>
+										<label><?php echo  __("Title : ", "oasisworkflow");?></label>
 									</td>
 								</tr>
 								<tr>
@@ -114,7 +114,7 @@ echo "<script type='text/javascript'>
 								<tr height="20px;"><td>&nbsp;</td><td>&nbsp;</td></tr>
 								<tr>
 									<td style="vertical-align: top;">
-										<label><?php echo  __("Description : ");?></label>
+										<label><?php echo  __("Description : ", "oasisworkflow");?></label>
 									</td>
 								</tr>
 								<tr>
@@ -127,21 +127,21 @@ echo "<script type='text/javascript'>
 							<div class="div-line"></div>
 							<table>
 								<tr>
-									<td width="50%"><label><?php echo  __("Start Date :");?></label></td>
-									<td><label><?php echo  __("End date :");?></label></td>
+									<td width="50%"><label><?php echo  __("Start Date :", "oasisworkflow");?></label></td>
+									<td><label><?php echo  __("End date :", "oasisworkflow");?></label></td>
 								</tr>
 								<tr><td></td><td></td></tr>
 								<tr>
 									<td>
 										<input class="date_input" id="start-date" name="start-date" readonly value="<?php echo $startdate ;?>" />
 										<?php if($wfeditable):?>
-											<button class="date-clear"><?php echo __("clear") ;?></button>
+											<button class="date-clear"><?php echo __("clear", "oasisworkflow") ;?></button>
 											<script type="text/javascript">jQuery(function() {jQuery( "#start-date" ).datepicker({onSelect: function(dateText, inst) {jQuery(this).css("background-color", "white");}});});</script>
 										<?php endif;?>
 									</td>
 									<td>
 										<input class="date_input" id="end-date" name="end-date" readonly value="<?php echo $enddate ;?>" />
-										<button class="date-clear"><?php echo __("clear") ;?></button>
+										<button class="date-clear"><?php echo __("clear", "oasisworkflow") ;?></button>
 										<script type="text/javascript">jQuery(function() {jQuery( "#end-date" ).datepicker({onSelect: function(dateText, inst) {jQuery(this).css("background-color", "white");}});});</script>
 									</td>
 								</tr>
@@ -156,14 +156,14 @@ echo "<script type='text/javascript'>
    				                  if( $auto_submit == 1 )$str = "checked=true" ;
    				               ?>
    									<label><input type="checkbox" name="auto-submit"
-   											value="1" <?php echo $str;?> />&nbsp;&nbsp;<?php echo __("Enable Auto Submit?") ;?>
+   											value="1" <?php echo $str;?> />&nbsp;&nbsp;<?php echo __("Enable Auto Submit?", "oasisworkflow") ;?>
    									</label>
 									</td>
 								</tr>
 								<tr height="20px;"><td>&nbsp;</td><td>&nbsp;</td></tr>
 								<tr>
 									<td style="vertical-align: top;">
-										<label><?php echo  __("Keywords for Auto Submit : <br>&nbsp;(comma separated) ");?></label>
+										<label><?php echo  __("Keywords for Auto Submit : <br>&nbsp;(comma separated) ", "oasisworkflow");?></label>
 									</td>
 								</tr>
 								<tr>
@@ -183,12 +183,12 @@ echo "<script type='text/javascript'>
 		</div>
 		<div class="save-action-div">
 			<?php if($wfeditable){?>
-				<input type="button" value="<?php echo __(" Save ") ?>" class="button-primary workflow-save-bt" >
+				<input type="button" value="<?php echo __("Save", "oasisworkflow") ?>" class="button-primary workflow-save-bt" >
 				<span class="save_loading">&nbsp;</span>
-				<a href="#" id="delete-form">Clear Workflow</a>
+				<a href="#" id="delete-form"><?php echo __("Clear Workflow", "oasisworkflow") ?></a>
 			<?php }else{?>
-				<input type="button" value="<?php echo __(" Save as new version ") ?>" class="button-primary workflow-assave-bt" >
-				<input type="button" value="<?php echo __(" Save ") ?>" class="button-primary workflow-save-bt" >
+				<input type="button" value="<?php echo __("Save as new version", "oasisworkflow") ?>" class="button-primary workflow-assave-bt" >
+				<input type="button" value="<?php echo __("Save", "oasisworkflow") ?>" class="button-primary workflow-save-bt" >
 				<span class="save_loading">&nbsp;</span>
 			<?php }?>
 		</div>
@@ -205,19 +205,19 @@ echo "<script type='text/javascript'>
 echo "<div id='connection-setting'>{$create_workflow->connection_setting_html()}</div>" ;?>
 <ul id="connectionMenu" class="contextMenu">
 	<div>Conn Menu</div>
-	<li class="edit" id="connEdit" ><a href="#edit"><?php echo __("Edit") ?></a></li>
-	<li class="delete" id="connDelete"><a href="#delete"><?php echo __("Delete") ?></a></li>
-	<li class="quit separator" id="connQuit"><a href="#quit"><?php echo __("Quit") ?></a></li>
+	<li class="edit" id="connEdit" ><a href="#edit"><?php echo __("Edit", "oasisworkflow") ?></a></li>
+	<li class="delete" id="connDelete"><a href="#delete"><?php echo __("Delete", "oasisworkflow") ?></a></li>
+	<li class="quit separator" id="connQuit"><a href="#quit"><?php echo __("Quit", "oasisworkflow") ?></a></li>
 </ul>
 <ul id="stepMenu" class="contextMenu">
 	<div>Step Menu</div>
 	<li class="edit" id="stepEdit">
 		<a class="thickbox"
-			alt="<?php echo site_url('wp-load.php?wf-popup=step');?>"><?php echo __("Edit") ?></a></li>
+			alt="<?php echo site_url('wp-load.php?wf-popup=step');?>"><?php echo __("Edit", "oasisworkflow") ?></a></li>
 	<?php if($wfeditable):?>
-		<li class="delete" id="stepDelete"><a href="#delete"><?php echo __("Delete") ?></a></li>
+		<li class="delete" id="stepDelete"><a href="#delete"><?php echo __("Delete", "oasisworkflow") ?></a></li>
 	<?php endif;?>
-	<li class="quit separator" id="stepQuit"><a href="#quit"><?php echo __("Quit") ?></a></li>
+	<li class="quit separator" id="stepQuit"><a href="#quit"><?php echo __("Quit", "oasisworkflow") ?></a></li>
 </ul>
 <?php echo "<div id='new-workflow-create-check'>{$create_workflow->new_workflow_create_check_html()}</div>" ;?>
 <script type="text/javascript">
@@ -236,9 +236,6 @@ echo "<div id='connection-setting'>{$create_workflow->connection_setting_html()}
 	function call_modal(param){
 		jQuery('.contextMenu').hide();
 		jQuery('#'+param).modal();
-	}
-	function close_modal(){
-		jQuery.modal.close();
 	}
 
 	function show_workflow_create_modal(){

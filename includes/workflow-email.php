@@ -64,11 +64,11 @@ class FCWorkflowEmail extends FCWorkflowBase
 			$dueDate = FCWorkflowBase::format_date_for_display ($actionStep->due_date);
          if ($comment->comment != "")
          {
-			   $commentStr .= "<p><strong>Additionally,</strong> {$nameStr} added the following comments:</p>" ;
+			   $commentStr .= "<p><strong>" . __('Additionally,', "oasisworkflow") . "</strong> {$nameStr} " . __('added the following comments', "oasisworkflow") . ":</p>" ;
 			   $commentStr .= "<p>" . nl2br($comment->comment) . "</p>" ;
          }
-			$commentStr .= "<p>Sign off date : {$signOffDate}</p>" ;
-			$commentStr .= "<p>Due date : {$dueDate} </p>" ;
+			$commentStr .= "<p>" . __('Sign off date', "oasisworkflow") . " : {$signOffDate}</p>" ;
+			$commentStr .= "<p>" . __('Due date', "oasisworkflow") . " : {$dueDate} </p>" ;
 
 		}
 		return $commentStr ;

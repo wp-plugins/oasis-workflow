@@ -12,13 +12,13 @@ FCUtility::owf_donation();
 ?>
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-posts-post"><br></div>
-	<h2><?php echo __("Inbox"); ?></h2>
+	<h2><?php echo __("Inbox", "oasisworkflow"); ?></h2>
 	<div id="workflow-inbox">
 		<div class="tablenav">
 		<?php if ( $current_user_role == "administrator" ){?>
 			<div class="alignleft actions">
 				<select id="inbox_filter">
-				<option value=<?php echo $current_user_id;?> selected="selected"><?php echo __("View inbox of ")?></option>
+				<option value=<?php echo $current_user_id;?> selected="selected"><?php echo __("View inbox of ", "oasisworkflow")?></option>
 					<?php
 					$assigned_users = $inbox_workflow->get_assigned_users();
 					if( $assigned_users )
@@ -35,7 +35,7 @@ FCUtility::owf_donation();
 				</select>
 
 				<a href="javascript:window.open('<?php echo admin_url('admin.php?page=oasiswf-inbox&user=')?>' + jQuery('#inbox_filter').val(), '_self')">
-					<input type="button" class="button-secondary action" value="<?php echo __("Show"); ?>" />
+					<input type="button" class="button-secondary action" value="<?php echo __("Show", "oasisworkflow"); ?>" />
 				</a>
 			</div>
 		<?php }?>
@@ -91,22 +91,22 @@ FCUtility::owf_donation();
 										}else{
 											echo "<div class='row-actions'>" ;
 											if($posteditable){
-												echo "<span><a href='post.php?post={$wfaction->post_id}&action=edit&oasiswf={$wfaction->ID}' class='edit' real={$wfaction->post_id}>Edit</a></span>&nbsp;|&nbsp;" ;
+												echo "<span><a href='post.php?post={$wfaction->post_id}&action=edit&oasiswf={$wfaction->ID}&user={$selected_user}' class='edit' real={$wfaction->post_id}>" . __("Edit", "oasisworkflow"). "</a></span>&nbsp;|&nbsp;" ;
 												echo "<span>
-															<a href='#' class='editinline' real='{$post->post_type}'>" . __("Quick Edit") . "</a>
+															<a href='#' class='editinline' real='{$post->post_type}'>" . __("Quick Edit", "oasisworkflow") . "</a>
 															<span class='loading'>$sspace</span>
 													</span>&nbsp;|&nbsp; ";
 											}
 
-												echo "<span><a href='" . get_permalink($wfaction->post_id) . "'>" . __("View") . "</a></span>&nbsp;|&nbsp;";
+												echo "<span><a href='" . get_permalink($wfaction->post_id) . "'>" . __("View", "oasisworkflow") . "</a></span>&nbsp;|&nbsp;";
 											if($posteditable){
 												echo "<span>
-														<a href='#' wfid='$wfaction->ID' postid='$wfaction->post_id' class='quick_sign_off'>" . __("Sign Off") . "</a>
+														<a href='#' wfid='$wfaction->ID' postid='$wfaction->post_id' class='quick_sign_off'>" . __("Sign Off", "oasisworkflow") . "</a>
 														<span class='loading'>$sspace</span>
 													</span>&nbsp;|&nbsp;" ;
 											}
 												echo "<span>
-														<a href='#' wfid='$wfaction->ID' class='reassign'>" . __("Reassign") . "</a>
+														<a href='#' wfid='$wfaction->ID' class='reassign'>" . __("Reassign", "oasisworkflow") . "</a>
 														<span class='loading'>$sspace</span>
 													</span>
 												</div>";
@@ -137,7 +137,7 @@ FCUtility::owf_donation();
 						echo "<tr>" ;
 						echo "<td class='hurry-td' colspan='9'>
 								<label class='hurray-lbl'>";
-						echo __("Hurray! No assignments");
+						echo __("Hurray! No assignments", "oasisworkflow");
 						echo "</label></td>" ;
 						echo "</tr>" ;
 					endif;

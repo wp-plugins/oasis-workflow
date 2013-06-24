@@ -3,22 +3,21 @@ class FCWorkflowActions
 {
 	function __construct()
 	{
-		add_action( 'admin_footer-post-new.php', array( 'FCWorkflowActions' , 'workflow_submit_popup' ) ) ;
-		add_action( 'admin_footer-post.php', array( 'FCWorkflowActions' , 'step_signoff_popup' ) ) ;
+		add_action( 'admin_footer', array( 'FCWorkflowActions' , 'step_signoff_popup' ) ) ;
 		add_filter( 'redirect_post_location', array('FCWorkflowActions', 'workflow_submit_save' ), '', 2 ) ;
 		add_action( 'admin_menu', array( 'FCWorkflowActions', 'create_meta_box' ) );
 		add_action( 'oasiswf_email_schedule', array( 'FCWorkflowActions', 'send_reminder_email' ) ) ;
-		/* add_action( 'oasiswf_auto_submit_schedule', array( 'FCWorkflowActions', 'auto_submit_articles' ) ) ;*/
-		add_action("trash_post", array( 'FCWorkflowActions', 'when_post_trash_delete' ) ) ;
+		add_action( 'trash_post', array( 'FCWorkflowActions', 'when_post_trash_delete' ) ) ;
 	}
 
 	static function create_meta_box(){
 
 		global $chkResult ;
 
-		$chkResult = FCProcessFlow::post_page_check();
+		$selected_user = isset($_GET['user']) ? $_GET['user'] : "";
+		$chkResult = FCProcessFlow::workflow_submit_check($selected_user);
 
-		if( $chkResult && $chkResult != "submit" ){
+		if( $chkResult && $chkResult != "submit" && $chkResult != "inbox" ){
 			$post = get_post( $_GET["post"] ) ;
 			$mbox = array(
 			    'id' => 'graphic',
@@ -35,24 +34,17 @@ class FCWorkflowActions
 		include( OASISWF_PATH . "includes/pages/subpages/history-graphic.php" ) ;
 	}
 
-	static function include_files($page, $css=null, $js=null)
-	{
-		$css = ( $css ) ? $css : $page ;
-		$js = ( $js ) ? $js : $page ;
-		include( OASISWF_PATH . "includes/pages/subpages/{$page}.php" ) ;
-		echo "<link rel='stylesheet' href='" . OASISWF_URL . "css/lib/modal/basic.css' type='text/css' />";
-		echo "<link rel='stylesheet' href='" . OASISWF_URL . "css/lib/calendar/datepicker.css' type='text/css' />";
-		echo "<link rel='stylesheet' href='" . OASISWF_URL . "css/pages/subpages/{$css}.css' type='text/css' />";
-		echo "<script type='text/javascript' src = '" . admin_url('load-scripts.php?load=jquery-ui-core, jquery-ui-datepicker') . "' ></script>";
-		echo "<script type='text/javascript' src='" . OASISWF_URL . "js/lib/modal/jquery.simplemodal.js' ></script>";
-		echo "<script type='text/javascript' src='" . OASISWF_URL . "js/pages/subpages/parent.js' ></script>";
-		echo "<script type='text/javascript' src='" . OASISWF_URL . "js/pages/subpages/{$js}.js' ></script>";
-	}
-
 	static function workflow_submit_popup()
 	{
 		if( get_site_option("oasiswf_activate_workflow") == "active" ){
-			FCWorkflowActions::include_files( "submit-workflow" ) ;
+
+			wp_enqueue_script( 'owf_submit_workflow',
+			                   OASISWF_URL. 'js/pages/subpages/submit-workflow.js',
+			                   array('jquery'),
+			                   '1.0.6',
+			                   true);
+         FCWorkflowActions::localize_submit_workflow_script();
+
 			$role = FCProcessFlow::get_current_user_role() ;
 			$skip_workflow_roles = get_site_option('oasiswf_skip_workflow_roles') ;
 			if( is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles) ){ // do not hide the ootb publish section for skip_workflow_roles option
@@ -64,33 +56,67 @@ class FCWorkflowActions
 	static function step_signoff_popup()
 	{
 		global $wpdb, $chkResult;
+		$selected_user = isset($_GET['user']) ? $_GET["user"] : null;
+		$chkResult = FCProcessFlow::workflow_submit_check($selected_user);
 		if( get_site_option("oasiswf_activate_workflow") == "active" ){
-			if( $chkResult == "submit" ){
-				FCWorkflowActions::include_files( "submit-workflow" ) ;
+
+			if( $chkResult == "inbox" ){
+            wp_enqueue_script( 'owf_submit_step',
+                        OASISWF_URL. 'js/pages/subpages/submit-step.js',
+                         array('jquery'),
+                         '1.0.6',
+                         true);
+            FCWorkflowActions::localize_submit_step_script();
+			}
+		   else if( $chkResult == "submit" ){
+			   include( OASISWF_PATH . "includes/pages/subpages/submit-workflow.php" ) ;
+			   wp_enqueue_script( 'owf_submit_workflow',
+			                   OASISWF_URL. 'js/pages/subpages/submit-workflow.js',
+			                   array('jquery'),
+			                   '1.0.6',
+			                   true);
+            FCWorkflowActions::localize_submit_workflow_script();
 			}else{
 				if( is_numeric( $chkResult ) ){
-					FCWorkflowActions::include_files( "submit-step" ) ;
+				   include( OASISWF_PATH . "includes/pages/subpages/submit-step.php" ) ;
+               wp_enqueue_script( 'owf_submit_step',
+                           OASISWF_URL. 'js/pages/subpages/submit-step.js',
+                            array('jquery'),
+                            '1.0.6',
+                            true);
+               FCWorkflowActions::localize_submit_step_script();
+
 				}
 			}
 
-         $role = FCProcessFlow::get_current_user_role() ;
-         $row = $wpdb->get_row("SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE post_id = {$_GET["post"]} AND action_status = 'assignment'") ;
+		   if( isset($_GET['post']) && $_GET["post"] && isset($_GET['action']) && $_GET["action"] == "edit")
+			{
+            $role = FCProcessFlow::get_current_user_role() ;
+            $row = $wpdb->get_row("SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE post_id = {$_GET["post"]} AND action_status = 'assignment'") ;
 
-         // do not hide the ootb publish section for skip_workflow_roles option, but hide it if the post is in the workflow
-         $skip_workflow_roles = get_site_option('oasiswf_skip_workflow_roles') ;
-         if( (is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles )) || $row){
-            FCWorkflowActions::ootb_publish_section_hide() ;
-         }
+            // do not hide the ootb publish section for skip_workflow_roles option, but hide it if the post is in the workflow
+            $skip_workflow_roles = get_site_option('oasiswf_skip_workflow_roles') ;
+            if( (is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles )) || $row){
+               FCWorkflowActions::ootb_publish_section_hide() ;
+            }
 
-			//--------generate exit link---------
+   			//--------generate abort workflow link---------
 
-			if( $role == "administrator" ){
-				if( $row ){
-					echo "<link rel='stylesheet' href='" . OASISWF_URL . "css/pages/page.css' type='text/css' />";
-					echo "<script type='text/javascript'>var exit_wfid = $row->ID ;</script>" ;
-					echo "<script type='text/javascript' src='" . OASISWF_URL . "js/pages/subpages/exit.js' ></script>";
+   			if( $role == "administrator" ){
+   				if( $row ){
+   					echo "<script type='text/javascript'>var exit_wfid = $row->ID ;</script>" ;
+                  wp_enqueue_script( 'owf-abort-workflow',
+                            OASISWF_URL. 'js/pages/subpages/exit.js',
+                            '',
+                      		 '1.0.6',
+                            true);
 
-				}
+                  wp_localize_script( 'owf-workflow-exit', 'owf_workflow_exit_vars', array(
+            						'abortWorkflow' => __( 'Abort workflow', 'oasisworkflow' ),
+                  				'abortWorkflowConfirm' => __( 'Are you sure to abort the workflow?', 'oasisworkflow' )
+                          ));
+   				}
+   			}
 			}
 		}
 	}
@@ -234,6 +260,40 @@ class FCWorkflowActions
 			}
 			$wpdb->get_results("DELETE FROM " . FCUtility::get_action_history_table_name() . " WHERE post_id = " . $postid) ;
 		}
+	}
+
+	static function localize_submit_workflow_script()
+	{
+      wp_localize_script( 'owf_submit_workflow', 'owf_submit_workflow_vars', array(
+				'submitToWorkflowButton' => __( 'Submit to Workflow', 'oasisworkflow' ),
+				'allStepsNotDefined' => __( 'All steps are not defined.\n Please check the workflow.', 'oasisworkflow' ),
+				'notValidWorkflow' => __( 'The selected workflow is not valid.\n Please check this workflow.', 'oasisworkflow' ),
+				'noUsersDefined' => __( 'No users found for the given role.', 'oasisworkflow' ),
+				'multipleUsers' => __( 'You can select multiple users only for review step.\n Selected step is', 'oasisworkflow' ),
+   			'step' => __( 'step.', 'oasisworkflow' ),
+   			'selectWorkflow' => __( 'Please select a workflow.', 'oasisworkflow' ),
+   			'selectStep' => __( 'Please select a step.', 'oasisworkflow' ),
+            'stepNotDefined' => __( 'This step is not defined.', 'oasisworkflow' ),
+            'dueDateRequired' => __( 'Please enter a due date.', 'oasisworkflow' ),
+            'noAssignedActors' => __( 'No assigned actor(s).', 'oasisworkflow' )
+      ));
+	}
+
+	static function localize_submit_step_script()
+	{
+      wp_localize_script( 'owf_submit_step', 'owf_submit_step_vars', array(
+				'signOffButton' => __( 'Sign Off', 'oasisworkflow' ),
+				'inboxButton' => __( 'Go to Workflow Inbox', 'oasisworkflow' ),
+				'firstStepMessage' => __( 'This is the first step in the workflow.</br> Do you really want to cancel the post/page from the workflow?', 'oasisworkflow' ),
+				'lastStepMessage' => __( 'This is the last step in the workflow. Are you sure to complete the workflow?', 'oasisworkflow' ),
+				'noUsersFound' => __( 'No users found for the given role.', 'oasisworkflow' ),
+   			'decisionSelectMessage' => __( 'Please select an action.', 'oasisworkflow' ),
+   			'selectStep' => __( 'Please select a step.', 'oasisworkflow' ),
+            'dueDateRequired' => __( 'Please enter a due date.', 'oasisworkflow' ),
+            'noAssignedActors' => __( 'No assigned actor(s).', 'oasisworkflow' ),
+				'multipleUsers' => __( 'You can select multiple users only for review step.\n Selected step is', 'oasisworkflow' ),
+				'step' => __( 'step.', 'oasisworkflow' )
+      ));
 	}
 }
 add_action('wp_ajax_get_first_step_in_wf', array( 'FCProcessFlow', 'get_first_step_in_wf' ) );

@@ -16,6 +16,15 @@ class FCWorkflowBase
 		endforeach;
 	}
 
+	function get_user_role( $user_id )
+	{
+		global $wp_roles;
+		foreach ( $wp_roles->role_names as $role => $name ) :
+			if ( user_can( $user_id, $role ) )
+				return $role ;
+		endforeach;
+	}
+
 	function get_menu_position()
 	{
 		global $menu ;
@@ -274,12 +283,10 @@ class FCWorkflowBase
 		$page_links = paginate_links( array(
 			'base' => $base,
 			'format' => '',
-			'prev_text' => __('&laquo;'),
-			'next_text' => __('&raquo;'),
 			'total' => $allpages,
 			'current' => $pagenum
 		));
-		$page_links_text = sprintf( '<span class="displaying-num">' . __( 'Displaying %s&#8211;%s of %s' ) . '</span>%s',
+		$page_links_text = sprintf( '<span class="displaying-num">' . __( 'Displaying %s-%s of %s', "oasisworkflow" ) . '</span>%s',
 				number_format_i18n( ( $pagenum - 1 ) * $per_page + 1 ),
 				number_format_i18n( min( $pagenum * $per_page, $count_posts ) ),
 				number_format_i18n( $count_posts ),
@@ -321,7 +328,7 @@ class FCWorkflowBase
 	function get_assigned_post($postid = null, $selected_user = null, $frm = "rows")
 	{
 		global $wpdb;
-		if ( $selected_user ){
+		if ( is_numeric( $selected_user )){
 			$user_id = $selected_user;
 		}
 		else {

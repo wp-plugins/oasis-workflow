@@ -108,17 +108,17 @@ class FCWorkflowCRUD extends FCWorkflowBase
 
 	static function connection_setting_html()
 	{
-		$str = '<div class="dialog-title"><strong>Connection Settings</strong></div>
+		$str = '<div class="dialog-title"><strong>' . __("Connection Settings", "oasisworkflow") . '</strong></div>
 				<div class="connection-status">
 					<table width="100%" style="text-align:left;">
 						<tr>
-							<td width="150px;" height="30px;">Current Connection :</td>
-							<td width="55px;" style="boeder:1px solid red;">Source - </td>
+							<td width="150px;" height="30px;">' . __("Current Connection", "oasisworkflow") . ' :</td>
+							<td width="55px;">' . __("Source", "oasisworkflow") . ' - </td>
 							<td><label id="source_name_lbl"></label></td>
 						</tr>
 						<tr>
 							<td></td>
-							<td>Target&nbsp;- </td>
+							<td>' . __("Target", "oasisworkflow") . ' - </td>
 							<td><label id="target_name_lbl"></label></td>
 						</tr>
 					</table>
@@ -126,7 +126,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 				<div style="margin-bottom:15px;">
 					<table width="100%" style="text-align:left;">
 						<tr height="50px">
-							<td width="85px;">Path</td>
+							<td width="85px;">' . __("Path", "oasisworkflow") . '</td>
 							<th width="7px">:</th>';
 							$oasiswf_path = get_site_option( "oasiswf_path" ) ;
 							if($oasiswf_path){
@@ -139,22 +139,22 @@ class FCWorkflowCRUD extends FCWorkflowBase
 				$str .=	'</tr>
 						<tr><td colspan=4></td></tr>
 						<tr>
-							<td>Connector</td>
+							<td>' . __("Connector", "oasisworkflow") . '</td>
 							<th>:</th>
-							<td><input type="radio" id="link-rdo-straight" name="link-rdo" value="straight"  /> Straight </td>
-							<td><input type="radio" id="link-rdo-machine" name="link-rdo" value="machine" /> StateMachine </td>
+							<td><input type="radio" id="link-rdo-straight" name="link-rdo" value="straight"  /> ' . __("Straight", "oasisworkflow") . '  </td>
+							<td><input type="radio" id="link-rdo-machine" name="link-rdo" value="machine" /> ' . __("StateMachine", "oasisworkflow") . '  </td>
 						</tr>
 						<tr height="40px">
 							<th></th>
 							<td></td>
-							<td><input type="radio" id="link-rdo-flowchart" name="link-rdo" value="flowchart"  /> Flowchart </td>
-							<td><input type="radio" id="link-rdo-bezier" name="link-rdo" value="bezier"  /> Bezier </td>
+							<td><input type="radio" id="link-rdo-flowchart" name="link-rdo" value="flowchart"  /> ' . __("Flowchart", "oasisworkflow") . ' </td>
+							<td><input type="radio" id="link-rdo-bezier" name="link-rdo" value="bezier"  /> ' . __("Bezier", "oasisworkflow") . ' </td>
 						</tr>
 					</table>
 				</div>
 				<p class="changed-data-set">
-					<input type="button" id="connection-setting-save" class="button-primary" value="Save" />
-					<a href="#" id="connection-setting-cancel" style="margin-right:45px;">Cancel</a>
+					<input type="button" id="connection-setting-save" class="button-primary" value="' . __("Save", "oasisworkflow") . '" />
+					<a href="#" id="connection-setting-cancel" style="margin-right:45px;">' . __("Cancel", "oasisworkflow") . '</a>
 				</p>
 				<br class="clear" />
 			    ';
@@ -163,11 +163,11 @@ class FCWorkflowCRUD extends FCWorkflowBase
 
 	static function new_workflow_create_check_html()
 	{
-		$str = '<div class="dialog-title"><strong>' . __("Create New Workflow") . '</strong></div>
+		$str = '<div class="dialog-title"><strong>' . __("Create New Workflow", "oasisworkflow") . '</strong></div>
 				<table style="margin-top:15px;">
 					<tr>
 						<td width="90px">
-							<label>' . __("Title : ") . '</label>
+							<label>' . __("Title : ", "oasisworkflow") . '</label>
 						</td>
 						<td>
 							<input type="text"  id="new-workflow-title" style="width:350px;" />
@@ -177,7 +177,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 					<tr height="20px;"><td>&nbsp;</td><td>&nbsp;</td></tr>
 					<tr>
 						<td style="vertical-align: top;">
-							<label>' . __("Description : ") . '</label>
+							<label>' . __("Description : ", "oasisworkflow") . '</label>
 						</td>
 						<td>
 							<textarea id="new-workflow-description" cols="20" rows="10" style="height:100px;width:350px;"></textarea>
@@ -186,9 +186,9 @@ class FCWorkflowCRUD extends FCWorkflowBase
 
 				</table>
 				<p class="changed-data-set">
-					<input type="button" id="new-create-wf-save" class="button-primary" value="Save" />
+					<input type="button" id="new-create-wf-save" class="button-primary" value="' . __("Save", "oasisworkflow"). '" />
 					<span>&nbsp;</span>
-					<a href="javascript:window.history.back()" id="new-create-wf-cancel">Cancel</a>
+					<a href="javascript:window.history.back()" id="new-create-wf-cancel">' . __("Cancel", "oasisworkflow"). '</a>
 				</p>
 				<br class="clear" />
 			    ';

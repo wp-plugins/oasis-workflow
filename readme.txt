@@ -4,7 +4,7 @@ Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 
 Workflow process for WordPress made simple with Oasis Workflow.
 
@@ -93,8 +93,12 @@ Initial version
 * Multi site enhancements. Moved the Workflow Admin to Network Admin, so workflows can be shared between all the sites.
 * No need to duplicate the workflows for new sites inside a multi site environment.
 * Note: 
-* Workflows previously created in sub sites except the main site will NOT be available anymore. 
+* 1. Workflows previously created in sub sites except the main site will NOT be available anymore. 
 If these workflows are different, they need to be recreated with this upgrade.
-* Make sure to complete all the existing workflows for sub sites, to avoid any unexpected behavior. 
+* 2. Make sure to complete all the existing workflows for sub sites, to avoid any unexpected behavior. 
 
+= Version 1.0.6 =
+* Internationalization(I18N) and localization (L10N) support added.
+* Bug fixes.
+* minor enhancements
 

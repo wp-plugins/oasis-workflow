@@ -1,20 +1,19 @@
 <?php
 $selected_post = isset( $_GET['post'] ) ? $_GET["post"] : "";
 $histories = $history_workflow->get_workflow_history_all( $selected_post );
-$count_posts = $history_workflow->get_history_count();
+$count_posts = $history_workflow->get_history_count($selected_post);
 $pagenum = (isset( $_GET['paged'] ) && $_GET["paged"]) ? $_GET["paged"] : 1;
-$per_page = 150;
+$per_page = 25;
 ?>
 <style type="text/css">.wrap, .wrap h2{font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;}</style>
-<script type='text/javascript' src='<?php echo OASISWF_URL . "js/pages/workflow-inbox.js";?>' ></script>
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-posts-post"><br></div>
-	<h2><?php echo __("Workflow History") ;?></h2>
+	<h2><?php echo __("Workflow History", "oasisworkflow") ;?></h2>
 	<div id="view-workflow" class="workflow-history">
 		<div class="tablenav">
 			<div class="alignleft actions">
 				<select id="post_filter">
-					<option selected="selected"><?php echo __("View Post/Page Workflow History")?></option>
+					<option selected="selected"><?php echo __("View Post/Page Workflow History", "oasisworkflow")?></option>
 					<?php
 					$wf_posts = $history_workflow->get_workflow_posts();
 					if( $wf_posts )
@@ -30,7 +29,7 @@ $per_page = 150;
 				</select>
 
 				<a href="javascript:window.open('<?php echo admin_url('admin.php?page=oasiswf-history&post=')?>' + jQuery('#post_filter').val(), '_self')">
-					<input type="button" class="button-secondary action" value="<?php echo __("Filter"); ?>" />
+					<input type="button" class="button-secondary action" value="<?php echo __("Filter", "oasisworkflow"); ?>" />
 				</a>
 			</div>
 			<div class="tablenav-pages">
@@ -129,7 +128,7 @@ $per_page = 150;
 					else:
 						echo "<tr>" ;
 						echo "<td colspan='9' class='no-found-td'><lavel>";
-						echo __("No workflow history data found.");
+						echo __("No workflow history data found.", "oasisworkflow");
 						echo "</label></td>";
 						echo "</tr>" ;
 					endif;

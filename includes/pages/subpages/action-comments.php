@@ -1,6 +1,3 @@
-<link rel='stylesheet' href='<?php echo OASISWF_URL . "css/lib/modal/basic.css";?>' type='text/css' />
-<link rel='stylesheet' href='<?php echo OASISWF_URL . "css/pages/subpages/actioncomment.css";?>' type='text/css' />
-<script type='text/javascript' src='<?php echo OASISWF_URL . "js/lib/modal/jquery.simplemodal.js";?>' ></script>
 <?php
 	$action = FCWorkflowInbox::get_action_history_by_id( $_POST["actionid"] ) ;
 	$signoffdate = $action->create_datetime ;
@@ -27,7 +24,7 @@
 	}
 ?>
 <div class="info-setting" id="stepcomment-setting" style="display:none;">
-	<div class="dialog-title"><strong><?php echo __("Comment(s)") ;?></strong></div>
+	<div class="dialog-title"><strong><?php echo __("Comment(s)", "oasisworkflow") ;?></strong></div>
 	<div>
 		<?php
 		foreach ($comments as $comment) {
@@ -40,15 +37,17 @@
 			}
 		?>
 			<div class="comment-part">
-				<label><strong><?php echo __("User : ") ;?></strong> <?php echo $lbl ;?></label>
-				<label style="float:right;margin-right:15px;"><strong><?php echo __("Sign off date : ") ;?></strong> <?php echo $signoffdate;?></label>
+				<label><strong><?php echo __("User : ", "oasisworkflow") ;?></strong> <?php echo $lbl ;?></label>
+				<label id="signoffDate"><strong><?php echo __("Sign off date : ", "oasisworkflow") ;?></strong>
+				   <?php echo FCWorkflowBase::format_date_for_display($signoffdate, "-", "datetime");?>
+				</label>
 				<br class="clear">
 			</div>
 			<p><?php echo nl2br($comment->comment);?></p>
 			<div class="comment-split-line"></div>
 		<?php }?>
 		<div class="changed-data-set">
-			<a href="#" id="commentCancel"><?php echo __("Cancel") ;?></a>
+			<a href="#" id="commentCancel"><?php echo __("Cancel", "oasisworkflow") ;?></a>
 		</div>
 		<br class="clear">
 	</div>

@@ -13,23 +13,23 @@ if( $oasiswf ){
 }
 ?>
 <div class="info-setting" id="new-step-submit-div" style="display:none;">
-	<div class="dialog-title"><strong><?php echo __("Sign Off") ;?></strong></div>
+	<div class="dialog-title"><strong><?php echo __("Sign Off", "oasisworkflow") ;?></strong></div>
 	<div id="message_div"></div>
 	<div>
 		<div class="select-part">
-			<label><?php echo __("Action : ") ;?></label>
+			<label><?php echo __("Action : ", "oasisworkflow") ;?></label>
 			<select id="decision-select" style="width:200px;">
 				<option></option>
-				<option value="complete"><?php echo ( $process == "review" ) ? __("Approved") :  __("Complete") ;?></option>
-				<option value="unable"><?php echo ( $process == "review" ) ? __("Reject") :  __("Unable to Complete") ;?></option>
+				<option value="complete"><?php echo ( $process == "review" ) ? __("Approved", "oasisworkflow") :  __("Complete", "oasisworkflow") ;?></option>
+				<option value="unable"><?php echo ( $process == "review" ) ? __("Reject", "oasisworkflow") :  __("Unable to Complete", "oasisworkflow") ;?></option>
 			</select>
 			<br class="clear">
 		</div>
 
 		<div id="immediately-div">
 			<?php if($success_status == "publish"):?>
-				<label><?php echo __("Publish");?> : </label>
-				<input type="checkbox" id="immediately-chk" checked=true />&nbsp;&nbsp;<?php echo __("Immediately") ;?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<label><?php echo __("Publish", "oasisworkflow");?> : </label>
+				<input type="checkbox" id="immediately-chk" checked=true />&nbsp;&nbsp;<?php echo __("Immediately", "oasisworkflow") ;?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<span id="immediately-span" style="display:none;">
 					<?php FCProcessFlow::get_immediately_content($success_status);?>
 				</span>
@@ -39,23 +39,23 @@ if( $oasiswf ){
 
 		<div id="sum_step_info">
 			<div class="select-info">
-				<label><?php echo __("Step : ") ;?></label>
+				<label><?php echo __("Step : ", "oasisworkflow") ;?></label>
 				<select id="step-select" name="step-select" style="width:150px;">
 					<option></option>
 				</select><span id="step-loading-span"></span>
 				<br class="clear">
 			</div>
 			<div id="one-actors-div" class="select-info">
-				<label><?php echo __("Assign actor : ") ;?></label>
+				<label><?php echo __("Assign actor : ", "oasisworkflow") ;?></label>
 				<select id="actor-one-select" name="actor-one-select" style="width:150px;" real="assign-loading-span"></select>
 				<span class="assign-loading-span">&nbsp;</span>
 				<br class="clear">
 			</div>
 			<div id="multi-actors-div" class="select-info" style="height:120px;">
-				<label><?php echo __("Assign actor(s) :") ;?></label>
+				<label><?php echo __("Assign actor(s) :", "oasisworkflow") ;?></label>
 				<div class="select-actors-div">
 					<div class="select-actors-list" >
-						<label><?php echo __("Available") ;?></label>
+						<label><?php echo __("Available", "oasisworkflow") ;?></label>
 						<span class="assign-loading-span" style="float:right;margin-top:-18px;">&nbsp;</span>
 						<br class="clear">
 						<p>
@@ -67,7 +67,7 @@ if( $oasiswf ){
 						<a href="#" id="assignee-unset-point"><img src="<?php echo OASISWF_URL . "img/role-unset.png";?>" style="border:0px;" /></a>
 					</div>
 					<div class="select-actors-list">
-						<label><?php echo __("Assigned") ;?></label><br class="clear">
+						<label><?php echo __("Assigned", "oasisworkflow") ;?></label><br class="clear">
 						<p>
 							<select id="actors-set-select" name="actors-set-select" size=10></select>
 						</p>
@@ -75,16 +75,16 @@ if( $oasiswf ){
 				</div>
 			</div>
 			<div class="text-info" style="margin-top:30px;">
-				<label style="float:left;margin-top:5px;"><?php echo __("Due Date : ") ;?></label>
+				<label style="float:left;margin-top:5px;"><?php echo __("Due Date : ", "oasisworkflow") ;?></label>
 				<div style="float:left;">
 					<input class="date_input" id="due-date" value=""/>
-			        <button class="date-clear"><?php echo __("clear") ;?></button>
+			        <button class="date-clear"><?php echo __("clear", "oasisworkflow") ;?></button>
 				</div>
 				<br class="clear">
 			</div>
 		</div>
 			<div class="text-info" id="comments-div">
-				<label style="float:left;"><?php echo __("Comments : ") ;?></label>
+				<label style="float:left;"><?php echo __("Comments : ", "oasisworkflow") ;?></label>
 				<div style="float:left;">
 					<textarea id="comments" style="height:100px;width:400px;margin-top:10px;" ></textarea>
 				</div>
@@ -92,11 +92,11 @@ if( $oasiswf ){
 			</div>
 
 		<div class="changed-data-set">
-			<input type="button" id="submitSave" class="button-primary" value="<?php echo __("Sign Off") ;?>" />
-			<input type="button" id="cancelSave" class="button-primary" value="<?php echo __("Sign Off") ;?>" />
-			<input type="button" id="completeSave" class="button-primary" value="<?php echo __("Sign Off") ;?>" />
+			<input type="button" id="submitSave" class="button-primary" value="<?php echo __("Sign Off", "oasisworkflow") ;?>" />
+			<input type="button" id="cancelSave" class="button-primary" value="<?php echo __("Sign Off", "oasisworkflow") ;?>" />
+			<input type="button" id="completeSave" class="button-primary" value="<?php echo __("Sign Off", "oasisworkflow") ;?>" />
 			<span>&nbsp;</span>
-			<a href="#" id="submitCancel"><?php echo __("Cancel") ;?></a>
+			<a href="#" id="submitCancel"><?php echo __("Cancel", "oasisworkflow") ;?></a>
 		</div>
 		<br class="clear">
 	</div>

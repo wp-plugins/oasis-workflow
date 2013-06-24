@@ -60,12 +60,12 @@ $auto_submit_post_count = $auto_submit_settings['auto_submit_post_count'];
 ?>
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-posts-post"><br></div>
-	<h2><?php echo __("Settings"); ?></h2>
+	<h2><?php echo __("Settings", "oasisworkflow"); ?></h2>
 	<?php if( isset($_POST['page_action']) && $_POST["page_action"] == "submit" ):?>
-		<div class="message"><?php echo __("Settings saved successfully.");?></div>
+		<div class="message"><?php echo __("Settings saved successfully.", "oasisworkflow");?></div>
 	<?php endif;?>
 	<?php if( isset($_POST['page_action']) && $_POST["page_action"] == "auto_submit" ):?>
-		<div class="message"><?php echo __("Auto submit completed successfully. " . $submitted_posts_count . " posts/page submitted.");?></div>
+		<div class="message"><?php echo __("Auto submit completed successfully. " . $submitted_posts_count . " posts/page submitted.", "oasisworkflow");?></div>
 	<?php endif;?>
 	<form id="wf_settings_form" method="post">
 		<div id="workflow-setting">
@@ -76,28 +76,28 @@ $auto_submit_post_count = $auto_submit_settings['auto_submit_post_count'];
    				if( get_site_option("oasiswf_activate_workflow") == "active" )$str = "checked=true" ;
    				?>
 					<label><input type="checkbox" name="activate_workflow_process"
-						value="active" <?php echo $str;?> />&nbsp;&nbsp;<?php echo __("Activate Workflow process ?") ;?>
+						value="active" <?php echo $str;?> />&nbsp;&nbsp;<?php echo __("Activate Workflow process ?", "oasisworkflow") ;?>
 					</label>
 				</div>
 				<div class="select-info" style="padding: 10px;">
 					<label>
 						<input type="checkbox" id="chk_reminder_day"	<?php echo ($reminder_day) ? "checked" : "" ;?> />
-						&nbsp;&nbsp;<?php echo __(" Send Reminder Email") ;?>
+						&nbsp;&nbsp;<?php echo __(" Send Reminder Email", "oasisworkflow") ;?>
 					</label>
 					<input type="text" id="reminder_days" name="reminder_days" size="4" class="reminder_days" value="<?php echo $reminder_day;?>" maxlength=2 />
-					<?php echo __("day(s) before due date.");?>
+					<?php echo __("day(s) before due date.", "oasisworkflow");?>
 				</div>
 				<div class="select-info" style="padding: 10px;">
 					<label>
 						<input type="checkbox" id="chk_reminder_day_after"	<?php echo ($reminder_day_after) ? "checked" : "" ;?> />
-						&nbsp;&nbsp;<?php echo __(" Send Reminder Email") ;?>
+						&nbsp;&nbsp;<?php echo __(" Send Reminder Email", "oasisworkflow") ;?>
 					</label>
 					<input type="text" id="reminder_days_after" name="reminder_days_after" size="4" class="reminder_days" value="<?php echo $reminder_day_after;?>" maxlength=2 />
-					<?php echo __("day(s) after due date.");?>
+					<?php echo __("day(s) after due date.", "oasisworkflow");?>
 				</div>
 				<div class="select-info" style="padding: 10px;">
 					<div>
-						<label><?php echo __("Which role(s) can skip the workflow and use the out of the box options?")?></label>
+						<label><?php echo __("Which role(s) can skip the workflow and use the out of the box options?", "oasisworkflow")?></label>
 					</div>
     				<select name="skip_workflow_roles[]" id="skip_workflow_roles[]" size="6" multiple="multiple">
     				   <?php FCUtility::owf_dropdown_roles_multi($skip_workflow_roles); ?>
@@ -106,12 +106,12 @@ $auto_submit_post_count = $auto_submit_settings['auto_submit_post_count'];
 				<!-- hide these settings -->
 				<!--
 				<fieldset class="owf_fieldset">
-					<legend><?php echo __("Auto Submit Settings")?></legend>
+					<legend><?php echo __("Auto Submit Settings", "oasisworkflow")?></legend>
 					<ol>
    					<li>
          				<div class="select-info" style="padding: 10px;">
          					<div>
-         						<label><?php echo __("Post/Page status(es)")?></label>
+         						<label><?php echo __("Post/Page status(es)", "oasisworkflow")?></label>
          					</div>
              				<select name="auto_submit_stati[]" id="auto_submit_stati[]" size="6" multiple="multiple">
              				   <?php FCUtility::owf_dropdown_post_status_multi($auto_submit_stati); ?>
@@ -121,17 +121,17 @@ $auto_submit_post_count = $auto_submit_settings['auto_submit_post_count'];
       				<li>
          				<div class="select-info" style="padding: 10px;">
          					<label>
-        						   <?php echo __("Set Due date as current date + ") ;?>
+        						   <?php echo __("Set Due date as current date + ", "oasisworkflow") ;?>
          					</label>
          					<input type="text" id="auto_submit_due_days" name="auto_submit_due_days" size="4" class="auto_submit_due_days" value="<?php echo $auto_submit_due_days;?>" maxlength=2 />
-         					<?php echo __("day(s).");?>
+         					<?php echo __("day(s).", "oasisworkflow");?>
          				</div>
       				</li>
       				<li>
          				<div class="select-info" style="padding: 10px;">
          					<div>
             					<label>
-           						   <?php echo __("Auto submit comments") ;?>
+           						   <?php echo __("Auto submit comments", "oasisworkflow") ;?>
             					</label>
             				</div>
          					<textarea id="auto_submit_comment" name="auto_submit_comment" size="4" class="auto_submit_comment"
@@ -141,12 +141,12 @@ $auto_submit_post_count = $auto_submit_settings['auto_submit_post_count'];
       				<li>
          				<div class="select-info" style="padding: 10px;">
          					<label>
-        						   <?php echo __("Process ") ;?>
+        						   <?php echo __("Process ", "oasisworkflow") ;?>
          					</label>
          					<input type="text" id="auto_submit_post_count" name="auto_submit_post_count" size="8" class="auto_submit_post_count" value="<?php echo $auto_submit_post_count;?>" maxlength=4 />
-         					<?php echo __("posts/pages at one time.");?>
+         					<?php echo __("posts/pages at one time.", "oasisworkflow");?>
          					</br/>
-         					<?php echo __("(Limit the number of posts/pages to be processed at one time for optimum server performance.)");?>
+         					<?php echo __("(Limit the number of posts/pages to be processed at one time for optimum server performance.)", "oasisworkflow");?>
          				</div>
       				</li>
    				</ol>
@@ -155,11 +155,11 @@ $auto_submit_post_count = $auto_submit_settings['auto_submit_post_count'];
 				<div id="owf_settings_button_bar">
 					<input type="submit" id="settingSave"
 						class="button button-primary button-large"
-						value="<?php echo __("Save") ;?>" />
+						value="<?php echo __("Save", "oasisworkflow") ;?>" />
 				<!--
 					<input type="button" id="autoSubmitBtn"
 						class="button button-primary button-large"
-						value="<?php echo __("Trigger Auto Submit") ;?>" />
+						value="<?php echo __("Trigger Auto Submit", "oasisworkflow") ;?>" />
  				-->
 					<input type="hidden"
 						name="page_action" id="page_action" value="submit" />
@@ -171,12 +171,12 @@ $auto_submit_post_count = $auto_submit_settings['auto_submit_post_count'];
 		<div class="owf-sidebar">
 			<div class="postbox" style="float: left;">
 				<h3 style="cursor: default;">
-					<span><?php _e("About this Plugin:", 'owf'); ?> </span>
+					<span><?php _e("About this Plugin:", "oasisworkflow"); ?> </span>
 				</h3>
 				<div class="inside">
-					<a class="owf_about_link" style="background-image:url(<?php echo OASISWF_URL . '/img/nugget-solutions.png'; ?>);" target="_blank" href="http://www.nuggetsolutions.com/"><?php _e("Author's website", 'owf'); ?>
-					</a> <a class="owf_about_link" style="background-image:url(<?php echo OASISWF_URL . 'img/publish.gif'; ?>);" target="_blank" href="http://oasisworkflow.com/"><?php _e('Plugin webpage', 'owf'); ?>
-					</a> <a class="owf_about_link" style="background-image:url(<?php echo OASISWF_URL . '/img/faq-icon.png'; ?>);" target="_blank" href="http://oasisworkflow.com/faq/"><?php _e('FAQ', 'owf'); ?>
+					<a class="owf_about_link" style="background-image:url(<?php echo OASISWF_URL . '/img/nugget-solutions.png'; ?>);" target="_blank" href="http://www.nuggetsolutions.com/"><?php _e("Author's website", "oasisworkflow"); ?>
+					</a> <a class="owf_about_link" style="background-image:url(<?php echo OASISWF_URL . 'img/publish.gif'; ?>);" target="_blank" href="http://oasisworkflow.com/"><?php _e('Plugin webpage', "oasisworkflow"); ?>
+					</a> <a class="owf_about_link" style="background-image:url(<?php echo OASISWF_URL . '/img/faq-icon.png'; ?>);" target="_blank" href="http://oasisworkflow.com/faq/"><?php _e('FAQ', "oasisworkflow"); ?>
 					</a>
 					<hr />
 					<div style="text-align: center;">

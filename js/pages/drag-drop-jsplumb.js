@@ -200,7 +200,7 @@ var jQueryCgmp = jQuery.noConflict();
 			   if( temp[c[i].targetId + "_" + c[i].sourceId] && c[i].paintStyleInUse.strokeStyle == temp[c[i].targetId + "_" + c[i].sourceId] ){
 				   var slbl = jQuery("#" + c[i].sourceId).children("label").html() ;
 				   var tlbl = jQuery("#" + c[i].targetId).children("label").html() ;
-				   alert("The path between " + slbl + " step and " + tlbl + " step is incorrect.") ;
+				   alert(drag_drop_jsplumb_vars.pathBetween + " " + slbl + " " + drag_drop_jsplumb_vars.stepAnd + " " + tlbl + " " + drag_drop_jsplumb_vars.incorrect) ;
 				   return false;
 			   }
 		   }
@@ -294,7 +294,7 @@ var jQueryCgmp = jQuery.noConflict();
 	    	
 	    	edit_conn_setting() ; //We can know what it isn't new the connection after saving .
 	    	set_step_chaned_status() ; // We can know what workflow graphic was changed.
-	    	close_modal(); 
+	    	jQuery.modal.close(); 
 	    });    
 	    var reconnect = function(p, c){
 		    	jsPlumb.connect({
@@ -355,7 +355,7 @@ var jQueryCgmp = jQuery.noConflict();
 	    	if(newconnection)
 	    		jsPlumb.detach(wfConn);    	
 	    	edit_conn_setting() ; //We can know what it isn't new the connection after cancel .
-	    	close_modal();
+	    	jQuery.modal.close();
 	    });
 	     
 	    
@@ -372,7 +372,7 @@ var jQueryCgmp = jQuery.noConflict();
 	        	jQuery(selectedStep).remove();
 	        	jQuery("#stepMenu").hide();
 	    	}else{
-	    		if(!confirm("This step is already defined.\nDo you really want to remove this step?")){
+	    		if(!confirm(drag_drop_jsplumb_vars.removeStep)){
 	    			jQuery("#stepMenu").hide();
 	    			return ;
 	    		}
@@ -409,7 +409,7 @@ var jQueryCgmp = jQuery.noConflict();
 	    
 	    //---------delete form-----------------
 	    jQuery("#delete-form").click(function(){
-	    	if(!confirm("Do you really want to clear all the steps?"))return ;
+	    	if(!confirm(drag_drop_jsplumb_vars.clearAllSteps))return ;
 	    	jQuery(".fc_action .w").each(function(){	
 	    		if(jQuery(this).attr("db-id") != "nodefine"){
 	    			set_deleted_step(jQuery(this).attr("db-id")); //We save stepid after dedeting.

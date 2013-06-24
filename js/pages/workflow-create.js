@@ -1,7 +1,7 @@
 var jQueryCgmp = jQuery.noConflict();
 (function (jQuery) {
 	jQuery(document).ready(function() {	
-		var chaned_step_chk = false ;
+		var changed_step_chk = false ;
 		var deleted_step = new Array(); // IDs of Deleted step
 		
 		//----------new workflow load-----------
@@ -24,7 +24,7 @@ var jQueryCgmp = jQuery.noConflict();
 			jQuery.post(ajaxurl, check_for_duplicate_data, function( response ) {
 				jQuery(".changed-data-set span").removeClass("loading");
 				if(response > 0){
-					alert("There is an existing workflow with the same name. Please choose another name.");
+					alert(owf_workflow_create_vars.alreadyExistWorkflow);
 				}
 				else {
 					jQuery.post(ajaxurl, create_data, function( response ) {
@@ -35,19 +35,19 @@ var jQueryCgmp = jQuery.noConflict();
 							jQuery("#define-workflow-description").val(jQuery("#new-workflow-description").val());
 							jQuery("#page_top_lbl").html(jQuery("#new-workflow-title").val() + " (1)") ;
 						}
-						close_modal();
+						jQuery.modal.close();
 					});		
 				}
 			});
 		});
 		//------------changed workflow check----------
 		set_step_chaned_status = function(){
-	    	chaned_step_chk = true;
+	    	changed_step_chk = true;
 	    }
 			//----window colse-----
 		window.onbeforeunload = function(){
-	    	if( chaned_step_chk ){
-	    		return "You have unsaved changed workflow." ; 
+	    	if( changed_step_chk ){
+	    		return owf_workflow_create_vars.unsavedChanges ; 
 	    	}
 	    }
 		//------------workflow save-------------	
@@ -82,7 +82,7 @@ var jQueryCgmp = jQuery.noConflict();
 	    		}
 	    		jQuery("#deleted_step_ids").val(delIdStr) ;
 	    	}
-	    	chaned_step_chk = false;
+	    	changed_step_chk = false;
 	    	
 	    	var action_url = jQuery("#wf-form").attr("action") ;
 	    	jQuery("#wf-form").attr("action", action_url + "&wf_id=" + jQuery("#wf_id").val()) ;

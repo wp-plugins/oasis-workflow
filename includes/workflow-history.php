@@ -37,27 +37,27 @@ class FCWorkflowHistory extends FCWorkflowBase
 		echo "<th scope='col' class='manage-column check-column' ><input type='checkbox'></th>";
 		echo "<th scope='col' class='sorted $post_order_class'>
 				<a href='admin.php?page=oasiswf-history&orderby=post_title&order=$order" . $wherepost . "'>
-					<span>". __("Title") . "</span>
+					<span>". __("Title", "oasisworkflow") . "</span>
 					<span class='sorting-indicator'></span>
 				</a>
 			</th>" ;
-		echo "<th>" . __("Actor") . "</th>" ;
+		echo "<th>" . __("Actor", "oasisworkflow") . "</th>" ;
 		echo "<th scope='col' class='sorted $wf_order_class'>
 				<a href='admin.php?page=oasiswf-history&orderby=wf_name&order=$order" . $wherepost . "'>
-					<span>". __("Workflow(version)") . "</span>
+					<span>". __("Workflow(version)", "oasisworkflow") . "</span>
 					<span class='sorting-indicator'></span>
 				</a>
 			</th>" ;
-		echo "<th>" . __("Step") . "</th>";
+		echo "<th>" . __("Step", "oasisworkflow") . "</th>";
 		echo "<th scope='col' class='sorted $create_date_order_class'>
 				<a href='admin.php?page=oasiswf-history&orderby=create_datetime&order=$order" . $wherepost . "'>
-					<span>". __("Assigned date") . "</span>
+					<span>". __("Assigned date", "oasisworkflow") . "</span>
 					<span class='sorting-indicator'></span>
 				</a>
 			</th>" ;
-		echo "<th scope='col'>". __("Sign Off Date") . "</th>" ;
-		echo "<th scope='col'>". __("Result") . "</th>" ;
-		echo "<th scope='col' class='history-comment' width='70px'>". __("Comments") . "</th>" ;
+		echo "<th scope='col'>". __("Sign Off Date", "oasisworkflow") . "</th>" ;
+		echo "<th scope='col'>". __("Result", "oasisworkflow") . "</th>" ;
+		echo "<th scope='col' class='history-comment' width='70px'>". __("Comments", "oasisworkflow") . "</th>" ;
 		echo "</tr>";
 	}
 

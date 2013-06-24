@@ -3,12 +3,12 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Easily create graphical workflows to manage your work.
- Version: 1.0.5
+ Version: 1.0.6
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
-
+ Text Domain: oasis-workflow
 ----------------------------------------------------------------------
-Copyright 2011-2012 Nugget Solutions Inc.
+Copyright 2011-2013 Nugget Solutions Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,15 +28,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.5' );
-define( 'OASISWF_DB_VERSION','1.0.5');
+define( 'OASISWF_VERSION' , '1.0.6' );
+define( 'OASISWF_DB_VERSION','1.0.6');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
 define( 'OASISWF_URL' , plugins_url( '/', __FILE__ ) );
 define( 'OASISWF_SETTINGS_PAGE' , add_query_arg( 'page', 'ef-settings', get_admin_url( null, 'admin.php' ) ) );
 define( 'OASISWF_SITE_URL' , site_url() );
-load_plugin_textdomain('oasiswf-textdomain', false, basename( dirname( __FILE__ ) ) . '/languages' );
+load_plugin_textdomain('oasisworkflow', false, basename( dirname( __FILE__ ) ) . '/languages' );
 
 //Initialization
 class FCInitialization
@@ -147,38 +147,30 @@ class FCInitialization
 			);
 
 			$oasiswf_path_info = array(
-				'success' => array('Success', 'blue'),
-				'failure' => array('Failure', 'red')
+				'success' => array(__('Success','oasisworkflow'), 'blue'),
+				'failure' => array(__('Failure','oasisworkflow'), 'red')
 			);
 
 			$oasiswf_status = array(
-				'assignment' => __('In Progress'),
-				'review' => __('In Review'),
-				'publish' => __('Ready to Publish')
+				'assignment' => __('In Progress', "oasisworkflow"),
+				'review' => __('In Review', "oasisworkflow"),
+				'publish' => __('Ready to Publish', "oasisworkflow")
 			);
 			$oasiswf_review_decision = array(
-				'everyone' => __('Everyone should approve'),
-				'atleast' => __('Atleast 50% should approve'),
-				'more' => __('More that 50% should approve'),
-				'anyone' => __('Anyone should approve'),
+				'everyone' => __('Everyone should approve', "oasisworkflow"),
+				'atleast' => __('Atleast 50% should approve', "oasisworkflow"),
+				'more' => __('More that 50% should approve', "oasisworkflow"),
+				'anyone' => __('Anyone should approve', "oasisworkflow"),
 			);
 
 			$oasiswf_placeholders = array(
-				'%first_name%' => __('first name'),
-				'%last_name%' => __('last name'),
-				'%post_title%' => __('post title')
+				'%first_name%' => __('first name', "oasisworkflow"),
+				'%last_name%' => __('last name', "oasisworkflow"),
+				'%post_title%' => __('post title', "oasisworkflow")
 			);
 
 	      $skip_workflow_roles = array("administrator");
 
-	      /*
-         $auto_submit_settings = array(
-            'auto_submit_stati' => array("draft","pending"),
-            'auto_submit_due_days' => "1",
-            'auto_submit_comment' => "Auto submitted",
-            'auto_submit_post_count' => "10"
-         );
-			*/
          FCInitialization::install_admin_database();
 			update_site_option('oasiswf_info', $oasiswf_info) ;
 			update_site_option('oasiswf_process', $oasiswf_process_info) ;
@@ -187,7 +179,6 @@ class FCInitialization
 			update_site_option('oasiswf_review', $oasiswf_review_decision) ;
 			update_site_option('oasiswf_placeholders', $oasiswf_placeholders) ;
          update_site_option("oasiswf_skip_workflow_roles", $skip_workflow_roles) ;
-         /*update_site_option("oasiswf_auto_submit_settings", $auto_submit_settings) ;*/
 
 		}
 		else if ( OASISWF_VERSION != $pluginOptions['version'] )
@@ -197,10 +188,6 @@ class FCInitialization
 
 		if ( !wp_next_scheduled('oasiswf_email_schedule') )
 			wp_schedule_event(time(), 'daily', 'oasiswf_email_schedule');
-      /*
-		if ( !wp_next_scheduled('oasiswf_auto_submit_schedule') )
-			wp_schedule_event(time(), 'hourly', 'oasiswf_auto_submit_schedule');
-		*/
 	}
 
 	function run_for_site( )
@@ -216,28 +203,28 @@ class FCInitialization
 			FCInitialization::upgrade_database_101();
 			FCInitialization::upgrade_database_103();
 			FCInitialization::upgrade_database_104();
-			FCInitialization::upgrade_database_105();
 		}
 		else if ($pluginOptions['version'] == "1.0.1")
 		{
 			FCInitialization::upgrade_database_103();
 			FCInitialization::upgrade_database_104();
-			FCInitialization::upgrade_database_105();
 		}
 		else if ($pluginOptions['version'] == "1.0.2")
 		{
 			FCInitialization::upgrade_database_103();
 			FCInitialization::upgrade_database_104();
-			FCInitialization::upgrade_database_105();
 		}
 		else if ($pluginOptions['version'] == "1.0.3")
 		{
 			FCInitialization::upgrade_database_104();
-			FCInitialization::upgrade_database_105();
 		}
 		else if ($pluginOptions['version'] == "1.0.4")
 		{
-			FCInitialization::upgrade_database_105();
+			// nothing to upgrade
+		}
+		else if ($pluginOptions['version'] == "1.0.5")
+		{
+			// nothing to upgrade
 		}
 
 		// update the version value
@@ -271,11 +258,6 @@ class FCInitialization
 		if (get_site_option('oasiswf_reminder_days_after')) {
 		   delete_site_option('oasiswf_reminder_days_after');
 		}
-      /*
-		if (get_site_option('oasiswf_auto_submit_settings')) {
-		   delete_site_option('oasiswf_auto_submit_settings');
-		}
-		*/
 
 		$wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name like 'workflow_%'") ;
 		$wpdb->query("DROP TABLE IF EXISTS " . FCUtility::get_workflows_table_name());
@@ -370,26 +352,6 @@ class FCInitialization
 	   // modify option name to prefix with oasiswf
 	   delete_option('activate_workflow');
 	   update_site_option("oasiswf_activate_workflow", "active") ;
-	}
-
-	function upgrade_database_105()
-	{
-	   /*
-		global $wpdb;
-		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
-      $auto_submit_settings = array(
-         'auto_submit_stati' => array("draft","pending"),
-         'auto_submit_due_days' => "1",
-         'auto_submit_comment' => "Auto submitted",
-         'auto_submit_post_count' => "10"
-      );
-   	update_site_option("oasiswf_auto_submit_settings", $auto_submit_settings) ;
-
-		$table_name = FCUtility::get_workflows_table_name();
-		$wpdb->query("ALTER TABLE {$table_name} ADD COLUMN is_auto_submit int(2) NOT NULL default 0 AFTER end_date");
-		$wpdb->query("ALTER TABLE {$table_name} ADD COLUMN auto_submit_keywords mediumtext AFTER is_auto_submit");
-		*/
 	}
 
 	function install_admin_database()
@@ -524,55 +486,8 @@ class FCInitialization
 		 * Mail schedule remove
 		 */
 		wp_clear_scheduled_hook( 'oasiswf_email_schedule' );
-
-		/*
-		 * Auto Submit schedule remove
-		 */
-		wp_clear_scheduled_hook( 'oasiswf_auto_submit_schedule' );
 	}
 
-	static function add_css_file($stylesheet_arr)
-	{
-		if(is_array($stylesheet_arr))
-		{
-			foreach($stylesheet_arr as $stylesheet)
-			{
-				$myStyleDir = WP_PLUGIN_DIR. '/oasis-workflow/css/'.$stylesheet.'.css';
-				$myStyleUrl = WP_PLUGIN_URL. '/oasis-workflow/css/'.$stylesheet.'.css';
-				wp_register_style('fc_'.$stylesheet, $myStyleUrl);
-				wp_enqueue_style( 'fc_'.$stylesheet);
-			}
-		}
-	}
-
-	static function add_js_file($jsfile_arr)
-	{
-		if(is_array($jsfile_arr))
-		{
-			foreach($jsfile_arr as $jsfile)
-			{
-				$myJsDir = WP_PLUGIN_DIR . '/oasis-workflow/js/'.$jsfile.'.js';
-				$myJsUrl = WP_PLUGIN_URL. '/oasis-workflow/js/'.$jsfile.'.js';
-				wp_register_script('fc_'.$jsfile, $myJsUrl);
-				wp_enqueue_script( 'fc_'.$jsfile);
-			}
-		}
-	}
-
-	static function add_online_js_file($jsfile_arr)
-	{
-		if(is_array($jsfile_arr))
-		{
-			foreach($jsfile_arr as $k => $v )
-			{
-				if( isset($v['online']) && $v["dev"] == "online" )
-					$myJsUrl = $v["file"];
-				else
-					$myJsUrl = WP_PLUGIN_URL. '/oasis-workflow/js/' . $v["file"] .'.js';
-				wp_register_script($k, $myJsUrl);
-			}
-		}
-	}
 }
 
 $initialization=new FCInitialization();
@@ -609,35 +524,35 @@ class FCLoadWorkflow
 
 	   add_action('admin_print_styles', array('FCLoadWorkflow', 'add_css_files'));
 		add_action('admin_print_scripts', array('FCLoadWorkflow', 'add_js_files'));
-		add_action('admin_footer', array('FCLoadWorkflow', '_add_js_files'));
+		add_action('admin_footer', array('FCLoadWorkflow', 'load_js_files_footer'));
    }
 
 	function register_admin_menu_pages()
 	{
-		add_menu_page(__('Workflow Admin', 'oasiswf'),
-					  	__('Workflow Admin', 'oasiswf'),
+		add_menu_page(__('Workflow Admin', 'oasisworkflow'),
+					  	__('Workflow Admin', 'oasisworkflow'),
 						'activate_plugins',
 						'oasiswf-admin',
 						array('FCLoadWorkflow','list_workflows'),
 						'');
 
 	    add_submenu_page('oasiswf-admin',
-	    				__('Edit Workflows', 'oasiswf'),
-	    				__('Edit Workflows', 'oasiswf'),
+	    				__('Edit Workflows', 'oasisworkflow'),
+	    				__('Edit Workflows', 'oasisworkflow'),
 	    				'activate_plugins',
 	    				'oasiswf-admin',
 	    				array('FCLoadWorkflow','list_workflows'));
 
 	    add_submenu_page('oasiswf-admin',
-	    				__('New Workflow', 'oasiswf'),
-	    				__('New Workflow', 'oasiswf'),
+	    				__('New Workflow', 'oasisworkflow'),
+	    				__('New Workflow', 'oasisworkflow'),
 	    				'activate_plugins',
 	    				'oasiswf-add',
 	    				array('FCLoadWorkflow','create_workflow'));
 
 	    add_submenu_page('oasiswf-admin',
-	    				__('Settings', 'oasiswf'),
-	    				__('Settings', 'oasiswf'),
+	    				__('Settings', 'oasisworkflow'),
+	    				__('Settings', 'oasisworkflow'),
 	    				'activate_plugins',
 	    				'oasiswf-setting',
 	    				array('FCLoadWorkflow','workflow_settings'));
@@ -653,22 +568,22 @@ class FCLoadWorkflow
 		   FCLoadWorkflow::register_admin_menu_pages();
 		}
 
-		add_menu_page(__('Workflows', 'oasiswf'),
-						__('Workflows', 'oasiswf'),
+		add_menu_page(__('Workflows', 'oasisworkflow'),
+						__('Workflows', 'oasisworkflow'),
 						$current_role,
 						'oasiswf-inbox',
 						array('FCLoadWorkflow','workflow_inbox'),'', $position);
 
 		 add_submenu_page('oasiswf-inbox',
-	    				__('Inbox', 'oasiswf'),
-	    				__('Inbox', 'oasiswf'),
+	    				__('Inbox', 'oasisworkflow'),
+	    				__('Inbox', 'oasisworkflow'),
 	    				$current_role,
 	    				'oasiswf-inbox',
 	    				array('FCLoadWorkflow','workflow_inbox'));
 
 		add_submenu_page('oasiswf-inbox',
-						__('Workflow History', 'oasiswf'),
-						__('Workflow History', 'oasiswf'),
+						__('Workflow History', 'oasisworkflow'),
+						__('Workflow History', 'oasisworkflow'),
 						$current_role,
 						'oasiswf-history',
 						array('FCLoadWorkflow','workflow_history'));
@@ -676,7 +591,7 @@ class FCLoadWorkflow
 
 	   add_action('admin_print_styles', array('FCLoadWorkflow', 'add_css_files'));
 		add_action('admin_print_scripts', array('FCLoadWorkflow', 'add_js_files'));
-		add_action('admin_footer', array('FCLoadWorkflow', '_add_js_files'));
+		add_action('admin_footer', array('FCLoadWorkflow', 'load_js_files_footer'));
 	}
 
 	function create_workflow()
@@ -714,85 +629,133 @@ class FCLoadWorkflow
 
 	function add_css_files($page)
 	{
-		if( isset($_GET['page']) && $_GET["page"] == "oasiswf"){
-			$stylesheet_arr=array('pages/page');
-			FCInitialization::add_css_file($stylesheet_arr);
-		}
-		if( (isset($_GET['page']) && $_GET["page"] == "oasiswf-add") || (isset($_GET['wf_id']) && $_GET["wf_id"])){
-			$stylesheet_arr=array('pages/workflow-create','pages/contextMenu','lib/modal/basic','lib/calendar/datepicker');
-			wp_enqueue_style( 'thickbox' );
-			FCInitialization::add_css_file($stylesheet_arr);
-		}
+   	wp_enqueue_style( 'thickbox' );
+	   wp_enqueue_style( 'owf-css',
+   	                   OASISWF_URL. 'css/pages/context-menu.css',
+   	                   false,
+   	                   '1.0.6',
+                         'all');
 
-		if( isset($_GET['page']) && $_GET["page"] == "oasiswf-history" ){
-			$stylesheet_arr = array('pages/oasiswf-history');
-			FCInitialization::add_css_file($stylesheet_arr);
-		}
+	   wp_enqueue_style( 'owf-modal-css',
+   	                   OASISWF_URL. 'css/lib/modal/simple-modal.css',
+   	                   false,
+   	                   '1.0.6',
+                         'all');
 
-		if( isset($_GET['page']) && $_GET["page"] == "oasiswf-inbox" ){
-			$stylesheet_arr = array('pages/page','pages/workflow-inbox');
-			FCInitialization::add_css_file($stylesheet_arr);
-		}
+	   wp_enqueue_style( 'owf-calendar-css',
+   	                   OASISWF_URL. 'css/lib/calendar/datepicker.css',
+   	                   false,
+   	                   '1.0.6',
+                         'all');
 
-		if( isset($_GET['page']) && $_GET["page"] == "oasiswf-setting" ){
-			$stylesheet_arr = array('pages/subpages/workflow-settings');
-			FCInitialization::add_css_file($stylesheet_arr);
-		}
-
-		if( isset($_GET['page']) && $_GET["page"] == "oasiswf-admin" ){
-			$stylesheet_arr = array('pages/workflow-list');
-			FCInitialization::add_css_file($stylesheet_arr);
-		}
+	   wp_enqueue_style( 'owf-oasis-workflow-css',
+   	                   OASISWF_URL. 'css/pages/oasis-workflow.css',
+   	                   false,
+   	                   '1.0.6',
+                         'all');
 	}
 
 	function add_js_files()
 	{
-		if( isset($_GET['page']) && $_GET["page"] == "oasiswf" ){
-			$jsfile_arr = array('pages/workflow-list');
-			FCInitialization::add_js_file($jsfile_arr);
-		}
-		if( isset($_GET['page']) && $_GET["page"] == "oasiswf-add" ||
-			isset($_GET['wf_id']) && $_GET["wf_id"] ){
-			$jsfiles = array(
-							'drag-drop-jsplumb' => array('file' => 'pages/drag-drop-jsplumb'),
-							'workflow-create' => array('file' => 'pages/workflow-create'),
-							'jsPlumb-1.3.9-all-min' => array('file' => 'lib/jquery.jsPlumb-1.3.9-all-min'),
-							'jquery-json-2.3' => array('file' => 'lib/jquery.json-2.3'),
-							'jquery-simplemodal' => array('file' => 'lib/modal/jquery.simplemodal')
-						) ;
-			FCInitialization::add_online_js_file($jsfiles);
-			echo "<script type='text/javascript'>
-						var wf_structure_data = '' ;
-						var wfeditable = '' ;
-						var wfPluginUrl  = '" . OASISWF_URL . "' ;
-					</script>";
+		echo "<script type='text/javascript'>
+					var wf_structure_data = '' ;
+					var wfeditable = '' ;
+					var wfPluginUrl  = '" . OASISWF_URL . "' ;
+				</script>";
 
-		}
+		if( isset($_GET['page']) && ($_GET["page"] == "oasiswf-inbox" ||
+		      $_GET["page"] == "oasiswf-history" ))
+		{
+			wp_enqueue_script( 'owf-workflow-inbox',
+			                   OASISWF_URL. 'js/pages/workflow-inbox.js',
+			                   array('jquery'),
+			                   '1.0.6');
 
-		if( isset($_GET['page']) && $_GET["page"] == "oasiswf-inbox" ){
-			$jsfile_arr = array('pages/workflow-inbox');
-			FCInitialization::add_js_file($jsfile_arr);
 		}
 	}
 
-	function _add_js_files()
+	function load_js_files_footer()
 	{
-		if( (isset($_GET['page']) && $_GET["page"] == "oasiswf-add") ||
-		(isset($_GET['wf_id']) && $_GET["wf_id"] )){
-			wp_enqueue_script( 'thickbox' );
-			wp_enqueue_script( 'jquery-ui-core' ) ;
-			wp_enqueue_script( 'jquery-ui-widget' ) ;
-			wp_enqueue_script( 'jquery-ui-mouse' ) ;
-			wp_enqueue_script( 'jquery-ui-draggable' ) ;
-			wp_enqueue_script( 'jquery-ui-droppable' ) ;
-			wp_enqueue_script( 'jquery-ui-sortable' ) ;
-			wp_enqueue_script( 'drag-drop-jsplumb' ) ;
-			wp_enqueue_script( 'workflow-create' ) ;
-			wp_enqueue_script( 'jsPlumb-1.3.9-all-min' ) ;
-			wp_enqueue_script( 'jquery-json-2.3' ) ;
-			wp_enqueue_script( 'jquery-simplemodal' ) ;
-			wp_enqueue_script( 'jquery-ui-datepicker' ) ;
+		wp_enqueue_script( 'thickbox' );
+		wp_enqueue_script( 'jquery-ui-core' ) ;
+		wp_enqueue_script( 'jquery-ui-widget' ) ;
+		wp_enqueue_script( 'jquery-ui-mouse' ) ;
+		wp_enqueue_script( 'jquery-ui-sortable' ) ;
+		wp_enqueue_script( 'jquery-ui-datepicker' ) ;
+		wp_enqueue_script( 'jquery-json',
+		                   OASISWF_URL. 'js/lib/jquery.json.js',
+		                   '',
+		                   '2.3',
+		                   true);
+
+		wp_enqueue_script( 'jquery-ui-draggable' ) ;
+		wp_enqueue_script( 'jquery-ui-droppable' ) ;
+		if(( isset($_GET['page']) && ($_GET["page"] == "oasiswf-admin"  || $_GET["page"] == "oasiswf-add")) ||
+		   (isset($_GET['oasiswf']) && $_GET["oasiswf"] ))
+		{
+   		wp_enqueue_script( 'jsPlumb',
+   		                   OASISWF_URL. 'js/lib/jquery.jsPlumb-all-min.js',
+   		                   array('thickbox', 'jquery-ui-core', 'jquery-ui-draggable', 'jquery-ui-droppable'),
+   		                   '1.3.9',
+   		                   true);
+   		wp_enqueue_script( 'drag-drop-jsplumb',
+   		                   OASISWF_URL. 'js/pages/drag-drop-jsplumb.js',
+   		                   array('jsPlumb'),
+   		                   '1.0.6',
+   		                   true ) ;
+         wp_localize_script( 'drag-drop-jsplumb', 'drag_drop_jsplumb_vars', array(
+   						'clearAllSteps' => __( 'Do you really want to clear all the steps?', 'oasisworkflow' ),
+         				'removeStep' => __( 'This step is already defined.\nDo you really want to remove this step?', 'oasisworkflow' ),
+         				'pathBetween' => __( 'The path between', 'oasisworkflow' ),
+         				'stepAnd' => __( 'step and', 'oasisworkflow' ),
+         				'incorrect' => __( 'step is incorrect.', 'oasisworkflow' ),
+                 ));
 		}
+
+		wp_enqueue_script( 'owf-workflow-create',
+		                   OASISWF_URL. 'js/pages/workflow-create.js',
+		                   '',
+		                   '1.0.6',
+		                   true);
+      wp_localize_script( 'owf-workflow-create', 'owf_workflow_create_vars', array(
+						'alreadyExistWorkflow' => __( 'There is an existing workflow with the same name. Please choose another name.', 'oasisworkflow' ),
+      				'unsavedChanges' => __( 'You have unsaved changes.', 'oasisworkflow' )
+              ));
+
+	   wp_enqueue_script( 'jquery-simplemodal',
+		                   OASISWF_URL. 'js/lib/modal/jquery.simplemodal.js',
+		                   array('thickbox'),
+		                   '1.4.4',
+		                   true);
+
+		wp_enqueue_script( 'owf-workflow-util',
+		                   OASISWF_URL. 'js/pages/workflow-util.js',
+		                   '',
+		                   '1.0.6',
+		                   true);
+      wp_localize_script( 'owf-workflow-util', 'owf_workflow_util_vars', array(
+						'dueDateInPast' => __( 'Due date cannot be in the past.', 'oasisworkflow' )
+             ));
+
+      wp_enqueue_script( 'text-edit-whizzywig',
+                      OASISWF_URL. 'js/lib/textedit/whizzywig63.js',
+                      '',
+                      '63',
+                      true);
+
+      wp_enqueue_script( 'owf-workflow-step-info',
+                      OASISWF_URL. 'js/pages/subpages/step-info.js',
+                      array('text-edit-whizzywig'),
+                      '1.0.6',
+                      true);
+      wp_localize_script( 'owf-workflow-step-info', 'owf_workflow_step_info_vars', array(
+						'stepNameRequired' => __( 'Step name is required.', 'oasisworkflow' ),
+      				'stepNameAlreadyExists' => __( 'Step name already exists. Please use a different name.', 'oasisworkflow' ),
+      				'selectAssignees' => __( 'Please select assignee(s).', 'oasisworkflow' ),
+                  'statusOnSuccess' => __( 'Please select status on success.', 'oasisworkflow' ),
+                  'statusOnFailure' => __( 'Please select status on failure.', 'oasisworkflow' )
+            ));
+
 	}
 }
 

@@ -1,7 +1,12 @@
 <link rel='stylesheet' href='<?php echo OASISWF_URL . "css/pages/workflow-create.css";?>' type='text/css' />
-<?php wp_enqueue_script( 'jquery-ui-droppable' ) ;?>
-<script type='text/javascript' src='<?php echo OASISWF_URL . "js/lib/jquery.jsPlumb-1.3.9-all-min.js";?>' ></script>
-<script type='text/javascript' src='<?php echo OASISWF_URL . "js/pages/subpages/history_graphic.js";?>' ></script>
+<?php
+wp_enqueue_script( 'owf-workflow-history',
+                   OASISWF_URL. 'js/pages/subpages/history_graphic.js',
+                   '',
+                   '1.0.6',
+                   true);
+
+?>
 <?php
 global $wpdb, $chkResult ;
 $sql = "SELECT C.ID, C.wf_info

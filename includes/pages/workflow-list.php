@@ -11,18 +11,18 @@ $per_page=15;
 ?>
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-posts-post"><br></div>
-	<h2>Edit Workflows<a href="admin.php?page=oasiswf-add" class="add-new-h2"><?php echo __("Add New"); ?></a></h2>
+	<h2>Edit Workflows<a href="admin.php?page=oasiswf-add" class="add-new-h2"><?php echo __("Add New", "oasisworkflow"); ?></a></h2>
 	<div id="view-workflow">
 		<div class="tablenav">
 			<ul class="subsubsub">
 				<?php
 				$active_val = isset($wcclass["active"])? $wcclass["active"] : "";
 				$inactive_val = isset($wcclass["inactive"])? $wcclass["inactive"] : "";
-				echo '<li class="all"><a href="admin.php?page=oasiswf-admin"' . $wcclass["all"] . ' >' . __('All') .
+				echo '<li class="all"><a href="admin.php?page=oasiswf-admin"' . $wcclass["all"] . ' >' . __('All', "oasisworkflow") .
 						'<span class="count">(' . $wfcount->wfall . ')</span></a></li>';
-				echo ' | <li class="all"><a href="admin.php?page=oasiswf-admin&action=active"' . $active_val . '>' . __('Active') .
+				echo ' | <li class="all"><a href="admin.php?page=oasiswf-admin&action=active"' . $active_val . '>' . __('Active', "oasisworkflow") .
 						'<span class="count">(' . $wfcount->wfactive . ')</span></a> </li>';
-				echo ' | <li class="all"><a href="admin.php?page=oasiswf-admin&action=inactive"' . $inactive_val . '>' . __('Inactive') .
+				echo ' | <li class="all"><a href="admin.php?page=oasiswf-admin&action=inactive"' . $inactive_val . '>' . __('Inactive', "oasisworkflow") .
 						'<span class="count">(' . $wfcount->wfinactive . ')</span></a> </li>';
 				?>
 			</ul>
@@ -57,9 +57,9 @@ $per_page=15;
 								echo "<td>
 										<a href='admin.php?page=oasiswf-admin&wf_id=" . $wf->ID . "'><strong>{$wf->name}</strong></a>
 										<div class='row-actions'>
-											<span><a href='admin.php?page=oasiswf-admin&wf_id=" . $wf->ID . "'>Edit</a></span>";
+											<span><a href='admin.php?page=oasiswf-admin&wf_id=" . $wf->ID . "'>" . __("Edit", "oasisworkflow") . "</a></span>";
 											if( !$postcount )
-												echo "&nbsp;|&nbsp;<span><a href='admin.php?page=oasiswf-admin&wf_id=" . $wf->ID . "&action=delete'>Delete</span>";
+												echo "&nbsp;|&nbsp;<span><a href='admin.php?page=oasiswf-admin&wf_id=" . $wf->ID . "&action=delete'>" . __("Delete", "oasisworkflow") . "</span>";
 								echo "</div>
 									</td>";
 								echo "<td>{$wf->version}</td>";
@@ -74,10 +74,10 @@ $per_page=15;
 						}
 					else:
 						if( $action == "all" ){
-							$msg = "<label>" . __("You don't have any workflows. Let's go ") ."</label>
-								<a href='admin.php?page=oasiswf-add'>" . __("create one"). "</a> !" ;
+							$msg = "<label>" . __("You don't have any workflows. Let's go ", "oasisworkflow") ."</label>
+								<a href='admin.php?page=oasiswf-add'>" . __("create one", "oasisworkflow"). "</a> !" ;
 						}else{
-							$msg = __("You don't have $action workflows") ;
+							$msg = __("You don't have $action workflows", "oasisworkflow") ;
 						}
 						echo "<tr>" ;
 						echo "<td colspan='8' class='no-found-lbl'>$msg</td>" ;

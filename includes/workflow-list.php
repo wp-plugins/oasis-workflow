@@ -31,13 +31,13 @@ class FCWorkflowList extends FCWorkflowBase
 	{
 		echo "<tr>";
 		echo "<th scope='col' class='manage-column check-column' ><input type='checkbox'></th>";
-		echo "<th>" . __("Title") . "</th>";
-		echo "<th>" . __("Version") . "</th>";
-		echo "<th>" . __("Start Date") . "</th>";
-		echo "<th>" . __("End Date") . "</th>";
-		echo "<th>" . __("Post/Pages in workflow") . "</th>";
-		echo "<th>" . __("Is Valid?") . "</th>";
-		/*echo "<th>" . __("Is Auto Submit?") . "</th>";*/
+		echo "<th>" . __("Title", "oasisworkflow") . "</th>";
+		echo "<th>" . __("Version", "oasisworkflow") . "</th>";
+		echo "<th>" . __("Start Date", "oasisworkflow") . "</th>";
+		echo "<th>" . __("End Date", "oasisworkflow") . "</th>";
+		echo "<th>" . __("Post/Pages in workflow", "oasisworkflow") . "</th>";
+		echo "<th>" . __("Is Valid?", "oasisworkflow") . "</th>";
+		/*echo "<th>" . __("Is Auto Submit?", "oasisworkflow") . "</th>";*/
 		echo "</tr>";
 	}
 

@@ -1,16 +1,15 @@
 jQuery(document).ready(function() {	
-	var step_gpid = "" ;
 	var step_dbid = "" ;
 	var befor_focus = "" ;
 	//-----------tab control--------------
-	jQuery("#step-setting a").mouseover(function(){
+	jQuery("#step-setting a").live("mouseover", function(){
 		jQuery(this).css({"color":"red"});
 	});
-	jQuery("#step-setting a").mouseout(function(){
+	jQuery("#step-setting a").live("mouseout", function(){
 		jQuery(this).css({"color":"blue"});
 	});
 
-	jQuery("#more-show").click(function(){
+	jQuery("#more-show").live("click", function(){
 		if(jQuery("#wf-email-define").css("display")=="block"){
 			jQuery("#wf-email-define").hide();
 			jQuery(this).css({'backgroundPosition': '105px 0px'});			
@@ -21,25 +20,26 @@ jQuery(document).ready(function() {
 		return false;
 	});	
 	
-	jQuery("#step-assignee-set-point").click(function(){
+	jQuery("#step-assignee-set-point").live("click", function(){
 		var v = jQuery('#step-role-list option:selected').val();
 		var t = jQuery('#step-role-list option:selected').text();
 		if(option_exist_chk(v))
 			jQuery('#step-role-set-list').append('<option value=' + v + '>' + t + '</option>');
 	});
 	
-	jQuery("#step-assignee-unset-point").click(function(){
+	jQuery("#step-assignee-unset-point").live("click", function(){
 		var v = jQuery('#step-role-set-list option:selected').val();
 		jQuery("#step-role-set-list option[value='" + v + "']").remove();
 	});
 	
-	jQuery("#stepCancel").click(function(){
+	jQuery("#stepCancel").live("click", function(){
 		popup_remove();
 	});
 	
-	jQuery("#stepSave").click(function(){
+	jQuery("#stepSave").live("click", function(){
 		if(!check_save_data())return;		
 		save_step_data();
+		var step_gpid = jQuery("#step_gpid-hi").val() ;
 		jQuery(document).find("#" + step_gpid + " label").html(jQuery("#step-name").val()) ;
 		if(jQuery("#first_step_check").attr("checked")){
 			jQuery(document).find("#" + step_gpid).attr("first_step", "yes") ;
@@ -54,11 +54,11 @@ jQuery(document).ready(function() {
 		befor_focus = v ;
 	}
 	
-	jQuery("#assignment-email-subject, #reminder-email-subject").click(function(){
+	jQuery("#assignment-email-subject, #reminder-email-subject").live("click", function(){
 		befor_focus = jQuery(this).attr("id");
 	});
 		
-	jQuery(".placeholder-add-bt").click(function(){
+	jQuery(".placeholder-add-bt").live("click", function(){
 		var v = jQuery(this).parent().children("select").val();
 		if(!v) v = "" ;
 		if(befor_focus == "assignment-email-subject" || befor_focus == "reminder-email-subject" ){
@@ -99,23 +99,7 @@ jQuery(document).ready(function() {
 		}
 	});
 		
-	//--------------function--------------------
-	
-	var first_setting = function(){
-		//----function setting------
-		step_gpid = jQuery("#step_gpid-hi").val() ;
-		var lbl = jQuery(document).find( "#" + step_gpid + " label" ).html() ;
-		jQuery("#step-name").val(lbl) ;
-		var process_name = jQuery(document).find( "#" + step_gpid ).attr("process-name") ;
-		if(process_name != "review"){
-			jQuery("#step-setting-content").css("height","420px");
-		}else{
-			jQuery("#step-setting-content").css("height","420px");
-		}
-		//jQuery(".step-review").hide();	
-		//setting_db_step_data();
-		if(jQuery("#" + step_gpid).attr("first_step") == "yes")jQuery("#first_step_check").attr("checked", true);
-	}
+	//--------------functions--------------------
 	
 	var option_exist_chk = function(val){
 		if(jQuery('#step-role-set-list option[value=' + val + ']').length>0){
@@ -132,11 +116,12 @@ jQuery(document).ready(function() {
 	var check_save_data = function(){
 		
 		if(!jQuery("#step-name").val()){
-			alert("Step name is required.");
+			alert(owf_workflow_step_info_vars.stepNameRequired);
 			return false;
 		}
 		
 		var chk = true;
+		var step_gpid = jQuery("#step_gpid-hi").val() ;
 		jQuery(document).find(".fc_action .w").each(function(){
 			var lbl = jQuery(this).children("label").html() ;
 			if(jQuery(this).attr("id") != step_gpid){
@@ -146,23 +131,23 @@ jQuery(document).ready(function() {
 		}) ;
 			
 		if(!chk){
-			alert("Step name already exists. Please use a different step name.") ;
+			alert(owf_workflow_step_info_vars.stepNameAlreadyExists) ;
 			return false ;
 		}
 		
 		var optionNum = jQuery("#step-role-set-list option").length ;
 		if(!optionNum){
-			alert("Please select assignee(s).") ;
+			alert(owf_workflow_step_info_vars.selectAssignees) ;
 			return false ;
 		}
 		
 		if(!jQuery("#step-status-select").val() && !jQuery("#step_status_publish").is(':visible')){
-			alert("Please select status on success.") ;
+			alert(owf_workflow_step_info_vars.statusOnSuccess) ;
 			return false ;
 		}
 		
 		if(!jQuery("#step-failure-status-select").val()){
-			alert("Please select status on failure.") ;
+			alert(owf_workflow_step_info_varsstatusOnFailure) ;
 			return false ;
 		}
 		
@@ -174,6 +159,7 @@ jQuery(document).ready(function() {
 		var processinfo = {} ;
 		var assignee = {} ;
 		//-------step info--------
+		var step_gpid = jQuery("#step_gpid-hi").val() ;
 		stepinfo["process"] = jQuery(document).find("#" + step_gpid ).attr("process-name") ;
 		stepinfo["step_name"] = jQuery("#step-name").val() ;
 		jQuery('select#step-role-set-list').find('option').each(function() {
@@ -205,6 +191,7 @@ jQuery(document).ready(function() {
 	
 	var save_step_data = function(){
 		var savedata = new Array() ;
+		var step_gpid = jQuery("#step_gpid-hi").val() ;
 		savedata = get_step_data();
 		jQuery(".step-set span").addClass("loading");
 		data = {
@@ -222,13 +209,4 @@ jQuery(document).ready(function() {
 			jQuery(document).find("#" + step_gpid ).attr({"db-id": response}) ;			
 		});
 	}
-	
-	//-------------loading-----------------
-	first_setting();	
-	//make_editor = function(){		
-		makeWhizzyWig("assignment-email-content","all");
-		makeWhizzyWig("reminder-email-content","all");
-	//}
-	//setTimeout("make_editor()", 500);
-	jQuery("#TB_window").css({"top":"53%"});
 });
