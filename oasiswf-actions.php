@@ -111,7 +111,7 @@ class FCWorkflowActions
                       		 '1.0.6',
                             true);
 
-                  wp_localize_script( 'owf-workflow-exit', 'owf_workflow_exit_vars', array(
+                  wp_localize_script( 'owf-abort-workflow', 'owf_abort_workflow_vars', array(
             						'abortWorkflow' => __( 'Abort workflow', 'oasisworkflow' ),
                   				'abortWorkflowConfirm' => __( 'Are you sure to abort the workflow?', 'oasisworkflow' )
                           ));
