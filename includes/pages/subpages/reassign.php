@@ -28,6 +28,7 @@ $role_users = get_users( $args ) ;
 		<a href="#" id="reassignCancel" style="color:blue;"><?php echo __("Cancel", "oasisworkflow") ;?></a>
 	</p>
 	<input type="hidden" id="action_history_id" name="action_history_id" value=<?php echo $history_id ;?> />
+	<input type="hidden" id="task_user_inbox" name="task_user_inbox" value=<?php echo $task_user ;?> />
 	<br class="clear">
 </div>
 <script type='text/javascript'>
@@ -53,7 +54,8 @@ jQuery(document).ready(function() {
 			data = {
 					action: 'reset_assign_actor' ,
 					oasiswf: jQuery("#action_history_id").val(),
-					reassign_id: jQuery("#reassign_actors").val()
+					reassign_id: jQuery("#reassign_actors").val(),
+					task_user: jQuery('#task_user_inbox').val()
 				   };
 			jQuery.post(ajaxurl, data, function( response ) {
 				if( response && isNaN(response)){
