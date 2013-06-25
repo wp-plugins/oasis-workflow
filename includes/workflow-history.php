@@ -191,7 +191,7 @@ class FCWorkflowHistory extends FCWorkflowBase
 
 	static function get_review_signoff_status($row, $review_row)
 	{
-		if( $review_row->review_status == "reassigned" )return "reassigned" ;
+		if( $review_row->review_status == "reassigned" )return "Reassigned" ;
 
 		$fromStep = $row->step_id ;
 		$toStep = $review_row->step_id ;
