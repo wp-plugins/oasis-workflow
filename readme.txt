@@ -45,6 +45,8 @@ You can find the complete list of features on the [support](http://oasisworkflow
 
 [youtube http://www.youtube.com/watch?v=PPBJns2p-zU]
 
+[youtube http://www.youtube.com/watch?v=SuOCBf_mLpc]
+
 == Installation ==
 
 1. Download the plugin zip file to your desktop
