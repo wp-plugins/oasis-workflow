@@ -199,7 +199,7 @@ jQuery(document).ready(function() {
 		});
 	});	
 	//--------------------------------	
-	jQuery("#assignee-set-point").click(function(){
+	jQuery("#assignee-set-point").live("click", function(){
 		
 		var v = jQuery('#actors-list-select option:selected').val();
 		var t = jQuery('#actors-list-select option:selected').text();
@@ -213,7 +213,7 @@ jQuery(document).ready(function() {
 		return false;
 	});
 	
-	jQuery("#assignee-unset-point").click(function(){
+	jQuery("#assignee-unset-point").live("click", function(){
 		var v = jQuery('#actors-set-select option:selected').val();
 		jQuery("#actors-set-select option[value='" + v + "']").remove();
 		return false;
