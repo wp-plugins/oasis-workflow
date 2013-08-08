@@ -195,6 +195,10 @@ class FCWorkflowBase
                            $user_role ) );
 
             foreach ( $users as $user ) {
+              $current_user = get_current_user_id();
+              if ($user->ID == $current_user) { // exclude the current user from the user list
+                 continue;
+              }			
               $userObj = new WP_User( $user->ID );
               if ( !empty( $userObj->roles ) && is_array( $userObj->roles ) ) {
 	               foreach ( $userObj->roles as $userrole )
