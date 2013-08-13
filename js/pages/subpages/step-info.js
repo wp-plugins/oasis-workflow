@@ -50,25 +50,48 @@ jQuery(document).ready(function() {
 		
 	});
 	//--------placeholders-------------------
-	currently_focus_even  = function(v){
-		befor_focus = v ;
-	}
-	
-	jQuery("#assignment-email-subject, #reminder-email-subject").live("click", function(){
-		befor_focus = jQuery(this).attr("id");
+	// assignment subject
+	jQuery("#addPlaceholderAssignmentSubj").live("click", function(){
+		if (jQuery(this).parent().children("select").val() == '') {
+			alert(owf_workflow_step_info_vars.selectPlaceholder);
+			return false;
+		}
+		var v = jQuery(this).parent().children("select").val() + " "; //add a space after the placeholder
+		jQuery("#assignment-email-subject").insertAtCaret(v);
 	});
-		
-	jQuery(".placeholder-add-bt").live("click", function(){
-		var v = jQuery(this).parent().children("select").val();
-		if(!v) v = "" ;
-		if(befor_focus == "assignment-email-subject" || befor_focus == "reminder-email-subject" ){
-			jQuery("#"+befor_focus).insertAtCaret(v);
+	
+	// assignment message
+	jQuery("#addPlaceholderAssignmentMsg").live("click", function(){
+		if (jQuery(this).parent().children("select").val() == '') {
+			alert(owf_workflow_step_info_vars.selectPlaceholder);
+			return false;
+		}		
+		var v = jQuery(this).parent().children("select").val() + " "; //add a space after the placeholder
+		jQuery("#addPlaceholderReminderMsg").focus();
+		c('assignment-email-content');
+		insHTML(v);
+	});	
+	
+	// reminder subject
+	jQuery("#addPlaceholderReminderSubj").live("click", function(){
+		if (jQuery(this).parent().children("select").val() == '') {
+			alert(owf_workflow_step_info_vars.selectPlaceholder);
+			return false;
 		}
-		
-		if(befor_focus == "assignment-email-content" || befor_focus == "reminder-email-content" ){
-			c(befor_focus);
-			insHTML(v);	
-		}
+		var v = jQuery(this).parent().children("select").val() + " "; //add a space after the placeholder
+		jQuery("#reminder-email-subject").insertAtCaret(v);
+	});
+	
+	// reminder message
+	jQuery("#addPlaceholderReminderMsg").live("click", function(){
+		if (jQuery(this).parent().children("select").val() == '') {
+			alert(owf_workflow_step_info_vars.selectPlaceholder);
+			return false;
+		}		
+		var v = jQuery(this).parent().children("select").val() + " "; //add a space after the placeholder
+		jQuery("#addPlaceholderReminderMsg").focus();
+		c('reminder-email-content');
+		insHTML(v);
 	});
 	
 	jQuery.fn.extend({
@@ -202,7 +225,7 @@ jQuery(document).ready(function() {
 				stepname: jQuery("#step-name").val(), 
 				act: jQuery(document).find( "#" + step_gpid ).attr("real"),
 				stepinfo : savedata[0],
-				processinfo : savedata[1],
+				processinfo : savedata[1]
 			   };
 		jQuery.post(ajaxurl, data, function( response ) {
 			jQuery(".step-set span").removeClass("loading");

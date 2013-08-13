@@ -155,7 +155,9 @@ jQuery(document).ready(function() {
 		stepProcess = "" ;
 		data = {
 				action: 'get_users_in_step' ,
-				stepid: jQuery(this).val()
+				stepid: jQuery(this).val(),
+				postid: jQuery("#hi_post_id").val(),
+				decision: jQuery("#decision-select").val() 				
 			   };
 		
 		jQuery("#actors-list-select").find('option').remove() ;

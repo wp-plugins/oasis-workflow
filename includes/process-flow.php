@@ -90,7 +90,7 @@ class FCProcessFlow extends FCWorkflowBase
 	}
 
 
-	static function get_users_in_step_internal($step_id)
+	static function get_users_in_step_internal($step_id, $postId=null, $decision=null)
 	{
 		if( $step_id == "nodefine" ){
 			return null ;
@@ -100,7 +100,7 @@ class FCProcessFlow extends FCWorkflowBase
 		$wf_info = FCProcessFlow::get_step_by_id( $step_id ) ;
 		if($wf_info){
 			$step_info= json_decode( $wf_info->step_info ) ;
-			$users = FCProcessFlow::get_users_by_role( $step_info->assignee ) ;
+			$users = FCProcessFlow::get_users_by_role( $step_info->assignee, $postId, $decision ) ;
 			if($users){
 				$result["users"] = $users ;
 				$result["process"] = $step_info->process ;
@@ -112,7 +112,9 @@ class FCProcessFlow extends FCWorkflowBase
 	static function get_users_in_step()
 	{
 	   $stepId = $_POST["stepid"];
-      $users = FCProcessFlow::get_users_in_step_internal($stepId);
+	   $postId = isset($_POST["postid"]) ? $_POST["postid"] : null;
+	   $decision = $_POST["decision"];
+      $users = FCProcessFlow::get_users_in_step_internal($stepId, $postId, $decision);
       if ($users != null)
       {
          echo json_encode( $users );

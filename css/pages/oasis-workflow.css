@@ -1,6 +1,3 @@
-.wrap, .wrap h2, #connection-setting{
-   font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
-}
 .loading{
    background-image: url( "../../img/ajax-loader.gif");
    background-position: 50% 80%;

@@ -362,7 +362,7 @@ jQuery(document).ready(function() {
 		data = {
 				action: 'get_reassign_content',
 				oasiswf: jQuery(this).attr("wfid"),
-				task_user: task_user,
+				task_user: task_user
 			   };
 		
 		jQuery(this).parent().children(".loading").show();

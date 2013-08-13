@@ -92,7 +92,7 @@ jQuery(document).ready(function() {
 		
 		data = {
 				action: 'get_first_step_in_wf' ,
-				wf_id: jQuery(this).val(),
+				wf_id: jQuery(this).val()
 			   };
 		
 		jQuery("#step-loading-span").addClass("loading");
@@ -124,6 +124,7 @@ jQuery(document).ready(function() {
 		data = {
 				action: 'get_users_in_step' ,
 				stepid: jQuery(this).val(),
+				decision: 'complete' // it will always be success on submit 
 			   };	
 		
 		

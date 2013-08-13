@@ -3,7 +3,7 @@
 wp_enqueue_script( 'owf-workflow-history',
                    OASISWF_URL. 'js/pages/subpages/history_graphic.js',
                    '',
-                   '1.0.6',
+                   OASISWF_VERSION,
                    true);
 
 ?>

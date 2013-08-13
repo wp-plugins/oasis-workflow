@@ -135,7 +135,7 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 					<div style="float:left;width:130px;"><label><?php echo __("Placeholder : ", "oasisworkflow") ;?></label></div>
 					<div style="float:left;">
 						<select id="assign-placeholder" style="width:150px;">
-							<option value=" "></option>
+							<option value=""><?php echo __("--Select--", "oasisworkflow") ;?></option>
 							<?php
 							$placeholders = get_site_option( "oasiswf_placeholders" ) ;
 							if( $placeholders ){
@@ -145,7 +145,8 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 							}
 							?>
 						</select>
-						<input type="button" class="button-primary placeholder-add-bt" value="<?php echo __("Add", "oasisworkflow") ;?>" style="margin-left:20px;" />
+						<input type="button" id="addPlaceholderAssignmentSubj" class="button-primary placeholder-add-bt" value="<?php echo __("Add to subject", "oasisworkflow") ;?>" style="margin-left:20px;" />
+						<input type="button" id="addPlaceholderAssignmentMsg" class="button-primary placeholder-add-bt" value="<?php echo __("Add to message", "oasisworkflow") ;?>" style="margin-left:20px;" />
 					</div>
 					<br class="clear">
 				</div>
@@ -182,7 +183,7 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 					<div style="float:left;width:130px;"><label><?php echo __("Placeholder : ", "oasisworkflow") ;?></label></div>
 					<div style="float:left;">
 						<select id="reminder-placeholder" style="width:150px;">
-							<option value=" "></option>
+							<option value=""><?php echo __("--Select--", "oasisworkflow") ;?></option>
 							<?php
 							$placeholders = get_site_option( "oasiswf_placeholders" ) ;
 							if( $placeholders ){
@@ -192,7 +193,8 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 							}
 							?>
 						</select>
-						<input type="button" class="button-primary placeholder-add-bt" value="Add" style="margin-left:20px;" />
+						<input type="button" id="addPlaceholderReminderSubj" class="button-primary placeholder-add-bt" value="<?php echo __("Add to subject", "oasisworkflow") ;?>" style="margin-left:20px;" />
+						<input type="button" id="addPlaceholderReminderMsg" class="button-primary placeholder-add-bt" value="<?php echo __("Add to message", "oasisworkflow") ;?>" style="margin-left:20px;" />
 					</div>
 					<br class="clear">
 				</div>

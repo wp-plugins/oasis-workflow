@@ -17,7 +17,7 @@ class FCWorkflowEmail extends FCWorkflowBase
 		wp_mail($user->data->user_email, $title, $message, $h) ;
 	}
 
-	static function get_step_mail_content($stepid, $touserid, $postid)
+	static function get_step_mail_content($actionid, $stepid, $touserid, $postid)
 	{
 		$step = FCProcessFlow::get_step_by_id( $stepid ) ;
 
@@ -29,16 +29,26 @@ class FCWorkflowEmail extends FCWorkflowBase
 
 		$post = get_post( $postid ) ;
 		$post_title = $post->post_title ;
+		$post_url = admin_url( 'post.php?post=' . $postid . '&action=edit&oasiswf=' . $actionid );
+      $blog_name = '[' . get_bloginfo( 'name' ) . '] ';
 
 		if( $step && $post ){
 			$messages = json_decode( $step->process_info ) ;
 
 			if( !$messages )return false;
 
+   		$post_link = '';
+   		$message_content = trim($messages->assign_content);
+   		if (empty($message_content)) {
+   		   $post_link = '<a href=' . $post_url . ' target="_blank">' . $post_title . '</a>';
+   		}
+   		$messages->assign_subject = (!empty($messages->assign_subject)) ? $blog_name . $messages->assign_subject : $blog_name . __("You have an assignment", "oasisworkflow");
+   		$messages->assign_content = (!empty($message_content)) ? $messages->assign_content : __("You have an assignment related to post - " . $post_link, "oasisworkflow");
+
+
 			foreach ($messages as $k => $v) {
 				$v = str_replace("%first_name%", $first_name, $v);
 				$v = str_replace("%last_name%", $last_name, $v);
-				$post_url = admin_url( 'post.php?post=' . $postid . '&action=edit' );
 				$v = str_replace("%post_title%", '<a href=' . $post_url . ' target="_blank">' . $post_title . '</a>', $v);
 				$messages->$k = $v ;
 			}
@@ -79,7 +89,7 @@ class FCWorkflowEmail extends FCWorkflowBase
 		$actionStep = FCProcessFlow::get_action_history_by_id( $actionid ) ;
 		$touserid = ( $touserid ) ? $touserid : $actionStep->assign_actor_id ;
 		$fromuserid = get_current_user_id() ;
-		$mails = FCWorkflowEmail::get_step_mail_content($actionStep->step_id, $touserid, $actionStep->post_id) ;
+		$mails = FCWorkflowEmail::get_step_mail_content($actionid, $actionStep->step_id, $touserid, $actionStep->post_id) ;
 		$comment = FCWorkflowEmail::get_step_comment_content($actionid) ;
 
 		$data = array(

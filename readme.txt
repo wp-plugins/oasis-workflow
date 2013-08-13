@@ -4,7 +4,7 @@ Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 
 Workflow process for WordPress made simple with Oasis Workflow.
 
@@ -99,6 +99,10 @@ If these workflows are different, they need to be recreated with this upgrade.
 
 = Version 1.0.6 =
 * Internationalization(I18N) and localization (L10N) support added.
+* Bug fixes.
+* minor enhancements
+
+= Version 1.0.7 =
 * Bug fixes.
 * minor enhancements
 

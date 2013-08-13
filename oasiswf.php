@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Easily create graphical workflows to manage your work.
- Version: 1.0.6
+ Version: 1.0.7
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.6' );
-define( 'OASISWF_DB_VERSION','1.0.6');
+define( 'OASISWF_VERSION' , '1.0.7' );
+define( 'OASISWF_DB_VERSION','1.0.7');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -223,6 +223,10 @@ class FCInitialization
 			// nothing to upgrade
 		}
 		else if ($pluginOptions['version'] == "1.0.5")
+		{
+			// nothing to upgrade
+		}
+		else if ($pluginOptions['version'] == "1.0.6")
 		{
 			// nothing to upgrade
 		}
@@ -633,25 +637,25 @@ class FCLoadWorkflow
 	   wp_enqueue_style( 'owf-css',
    	                   OASISWF_URL. 'css/pages/context-menu.css',
    	                   false,
-   	                   '1.0.6',
+   	                   OASISWF_VERSION,
                          'all');
 
 	   wp_enqueue_style( 'owf-modal-css',
    	                   OASISWF_URL. 'css/lib/modal/simple-modal.css',
    	                   false,
-   	                   '1.0.6',
+   	                   OASISWF_VERSION,
                          'all');
 
 	   wp_enqueue_style( 'owf-calendar-css',
    	                   OASISWF_URL. 'css/lib/calendar/datepicker.css',
    	                   false,
-   	                   '1.0.6',
+   	                   OASISWF_VERSION,
                          'all');
 
 	   wp_enqueue_style( 'owf-oasis-workflow-css',
    	                   OASISWF_URL. 'css/pages/oasis-workflow.css',
    	                   false,
-   	                   '1.0.6',
+   	                   OASISWF_VERSION,
                          'all');
 	}
 
@@ -669,7 +673,7 @@ class FCLoadWorkflow
 			wp_enqueue_script( 'owf-workflow-inbox',
 			                   OASISWF_URL. 'js/pages/workflow-inbox.js',
 			                   array('jquery'),
-			                   '1.0.6');
+			                   OASISWF_VERSION);
 
 		}
 	}
@@ -701,7 +705,7 @@ class FCLoadWorkflow
    		wp_enqueue_script( 'drag-drop-jsplumb',
    		                   OASISWF_URL. 'js/pages/drag-drop-jsplumb.js',
    		                   array('jsPlumb'),
-   		                   '1.0.6',
+   		                   OASISWF_VERSION,
    		                   true ) ;
          wp_localize_script( 'drag-drop-jsplumb', 'drag_drop_jsplumb_vars', array(
    						'clearAllSteps' => __( 'Do you really want to clear all the steps?', 'oasisworkflow' ),
@@ -715,7 +719,7 @@ class FCLoadWorkflow
 		wp_enqueue_script( 'owf-workflow-create',
 		                   OASISWF_URL. 'js/pages/workflow-create.js',
 		                   '',
-		                   '1.0.6',
+		                   OASISWF_VERSION,
 		                   true);
       wp_localize_script( 'owf-workflow-create', 'owf_workflow_create_vars', array(
 						'alreadyExistWorkflow' => __( 'There is an existing workflow with the same name. Please choose another name.', 'oasisworkflow' ),
@@ -731,7 +735,7 @@ class FCLoadWorkflow
 		wp_enqueue_script( 'owf-workflow-util',
 		                   OASISWF_URL. 'js/pages/workflow-util.js',
 		                   '',
-		                   '1.0.6',
+		                   OASISWF_VERSION,
 		                   true);
       wp_localize_script( 'owf-workflow-util', 'owf_workflow_util_vars', array(
 						'dueDateInPast' => __( 'Due date cannot be in the past.', 'oasisworkflow' )
@@ -746,14 +750,15 @@ class FCLoadWorkflow
       wp_enqueue_script( 'owf-workflow-step-info',
                       OASISWF_URL. 'js/pages/subpages/step-info.js',
                       array('text-edit-whizzywig'),
-                      '1.0.6',
+                      OASISWF_VERSION,
                       true);
       wp_localize_script( 'owf-workflow-step-info', 'owf_workflow_step_info_vars', array(
 						'stepNameRequired' => __( 'Step name is required.', 'oasisworkflow' ),
       				'stepNameAlreadyExists' => __( 'Step name already exists. Please use a different name.', 'oasisworkflow' ),
       				'selectAssignees' => __( 'Please select assignee(s).', 'oasisworkflow' ),
                   'statusOnSuccess' => __( 'Please select status on success.', 'oasisworkflow' ),
-                  'statusOnFailure' => __( 'Please select status on failure.', 'oasisworkflow' )
+                  'statusOnFailure' => __( 'Please select status on failure.', 'oasisworkflow' ),
+      				'selectPlaceholder' => __('Please select a placeholder.', 'oasisworkflow' )
             ));
 
 	}

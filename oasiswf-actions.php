@@ -41,7 +41,7 @@ class FCWorkflowActions
 			wp_enqueue_script( 'owf_submit_workflow',
 			                   OASISWF_URL. 'js/pages/subpages/submit-workflow.js',
 			                   array('jquery'),
-			                   '1.0.6',
+			                   OASISWF_VERSION,
 			                   true);
          FCWorkflowActions::localize_submit_workflow_script();
 
@@ -64,7 +64,7 @@ class FCWorkflowActions
             wp_enqueue_script( 'owf_submit_step',
                         OASISWF_URL. 'js/pages/subpages/submit-step.js',
                          array('jquery'),
-                         '1.0.6',
+                         OASISWF_VERSION,
                          true);
             FCWorkflowActions::localize_submit_step_script();
 			}
@@ -73,7 +73,7 @@ class FCWorkflowActions
 			   wp_enqueue_script( 'owf_submit_workflow',
 			                   OASISWF_URL. 'js/pages/subpages/submit-workflow.js',
 			                   array('jquery'),
-			                   '1.0.6',
+			                   OASISWF_VERSION,
 			                   true);
             FCWorkflowActions::localize_submit_workflow_script();
 			}else{
@@ -82,7 +82,7 @@ class FCWorkflowActions
                wp_enqueue_script( 'owf_submit_step',
                            OASISWF_URL. 'js/pages/subpages/submit-step.js',
                             array('jquery'),
-                            '1.0.6',
+                            OASISWF_VERSION,
                             true);
                FCWorkflowActions::localize_submit_step_script();
 
@@ -108,7 +108,7 @@ class FCWorkflowActions
                   wp_enqueue_script( 'owf-abort-workflow',
                             OASISWF_URL. 'js/pages/subpages/exit.js',
                             '',
-                      		 '1.0.6',
+                      		 OASISWF_VERSION,
                             true);
 
                   wp_localize_script( 'owf-abort-workflow', 'owf_abort_workflow_vars', array(
