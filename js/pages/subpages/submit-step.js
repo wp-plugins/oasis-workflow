@@ -359,7 +359,7 @@ jQuery(document).ready(function() {
 			}
 			else {
 				modal_close() ;
-				location.reload();
+				jQuery("#publish").click();
 			}
 		});		
 	});	

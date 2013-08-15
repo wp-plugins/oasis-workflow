@@ -100,6 +100,9 @@ class FCProcessFlow extends FCWorkflowBase
 		$wf_info = FCProcessFlow::get_step_by_id( $step_id ) ;
 		if($wf_info){
 			$step_info= json_decode( $wf_info->step_info ) ;
+			if ($step_info->process != 'review') { // cannot review your own work
+			   $decision = null;
+			}			
 			$users = FCProcessFlow::get_users_by_role( $step_info->assignee, $postId, $decision ) ;
 			if($users){
 				$result["users"] = $users ;
