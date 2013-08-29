@@ -43,6 +43,10 @@ You can find the complete list of features on the [support](http://oasisworkflow
 
 **If you need help setting up the roles, we recommend the [User Role Editor plugin](http://wordpress.org/extend/plugins/user-role-editor/ "User Role Editor plugin").**
 
+[youtube http://www.youtube.com/watch?v=PPBJns2p-zU]
+
+[youtube http://www.youtube.com/watch?v=SuOCBf_mLpc]
+
 == Installation ==
 
 1. Download the plugin zip file to your desktop
