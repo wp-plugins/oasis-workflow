@@ -349,7 +349,6 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 
 #due-date, #start-date, #end-date{
 	background-color:white;
-	height:16px;
 	border:1px solid #ddd;	
 	-moz-border-radius:0.2em;
 	border-radius:0.2em;
