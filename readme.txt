@@ -41,8 +41,8 @@ The plugin provides three processes:
 **Out of the box workflow**
 To get you started, the plugin comes with an out of the box workflow. You can also modify the workflow to suit your needs. 
 
-You can find the complete list of features on the [support](http://oasisworkflow.com) site.
-**Check out Oasis Workflow Pro: http://www.oasisworkflow.com/pricing-purchase**
+You can find the complete list of features on the [support](http://oasisworkflow.com) site. 
+**If you are looking for additional functionality, check out our "Pro" version - Oasis Workflow Pro: http://www.oasisworkflow.com/pricing-purchase**
 
 If you need help setting up the roles, we recommend the [User Role Editor plugin](http://wordpress.org/extend/plugins/user-role-editor/ "User Role Editor plugin").
 
