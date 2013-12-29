@@ -84,6 +84,9 @@
 	};
 	browser.ie6 = browser.msie && /msie 6./.test(ua) && typeof window['XMLHttpRequest'] !== 'object';
 	browser.ie7 = browser.msie && /msie 7.0/.test(ua);
+	browser.ie9 = browser.msie && /msie 9.0/.test(ua);
+	browser.ie10 = browser.msie && /msie 10.0/.test(ua);
+	browser.ie11 = browser.msie && /msie 11.0/.test(ua);	
 
 	/*
 	 * Create and display a modal dialog.
@@ -238,7 +241,6 @@
 			}
 
 			// $.support.boxModel is undefined if checked earlier
-			// browser.ieQuirks = browser.msie && !$.support.boxModel;
 			browser.ieQuirks = browser.msie && (document.compatMode === "BackCompat");
 
 			// merge defaults and user options
@@ -306,6 +308,7 @@
 			s.getDimensions();
 
 			// add an iframe to prevent select options from bleeding through
+			// @todo: please remove ie hacks
 			if (s.o.modal && browser.ie6) {
 				s.d.iframe = $('<iframe src="javascript:false;"></iframe>')
 					.css($.extend(s.o.iframeCss, {
@@ -372,7 +375,8 @@
 			s.d.data.appendTo(s.d.wrap);
 
 			// fix issues with IE
-			if (browser.ie6 || browser.ieQuirks) {
+			// @todo: please remove ie hacks
+			if (browser.ie6 || browser.ieQuirks && !browser.ie9 && !browser.ie10 && !browser.ie11) {
 				s.fixIE();
 			}
 		},
@@ -415,7 +419,8 @@
 				// reposition the dialog
 				s.o.autoResize ? s.setContainerDimensions() : s.o.autoPosition && s.setPosition();
 
-				if (browser.ie6 || browser.ieQuirks) {
+				// @todo: please remove ie hacks
+				if (browser.ie6 || browser.ieQuirks && !browser.ie9 && !browser.ie10 && !browser.ie11) {
 					s.fixIE();
 				}
 				else if (s.o.modal) {
@@ -452,10 +457,12 @@
 
 					s.position = 'absolute';
 					if (i < 2) {
-						s.removeExpression('height');
-						s.removeExpression('width');
-						s.setExpression('height','' + bsh + ' > ' + bch + ' ? ' + bsh + ' : ' + bch + ' + "px"');
-						s.setExpression('width','' + bsw + ' > ' + bcw + ' ? ' + bsw + ' : ' + bcw + ' + "px"');
+						try {
+							s.removeExpression('height');
+					        s.removeExpression('width');
+					        s.setExpression('height','' + bsh + ' > ' + bch + ' ? ' + bsh + ' : ' + bch + ' + "px"');
+					        s.setExpression('width','' + bsw + ' > ' + bcw + ' ? ' + bsw + ' : ' + bcw + ' + "px"');
+					    } catch (e) {}						
 					}
 					else {
 						var te, le;
@@ -478,10 +485,12 @@
 							te = '(' + ch + ' || ' + bch + ') / 2 - (this.offsetHeight / 2) + (t = ' + st + ' ? ' + st + ' : ' + bst + ') + "px"';
 							le = '(' + cw + ' || ' + bcw + ') / 2 - (this.offsetWidth / 2) + (t = ' + sl + ' ? ' + sl + ' : ' + bsl + ') + "px"';
 						}
-						s.removeExpression('top');
-						s.removeExpression('left');
-						s.setExpression('top', te);
-						s.setExpression('left', le);
+						try {
+							s.removeExpression('top');
+						    s.removeExpression('left');
+						    s.setExpression('top', te);
+						    s.setExpression('left', le);
+						} catch (e) {}						
 					}
 				}
 			});

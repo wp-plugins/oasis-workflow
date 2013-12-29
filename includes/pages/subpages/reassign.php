@@ -40,11 +40,11 @@ jQuery(document).ready(function() {
 		jQuery.modal.close();
 	}
 
-	jQuery("#reassignCancel, .modalCloseImg").live("click", function(){
+	jQuery( document ).on( "click", "#reassignCancel, .modalCloseImg", function() {
 		modal_close() ;
 	});
 
-	jQuery("#reassignSave").live("click", function(){
+	jQuery( document ).on( "click", "#reassignSave", function(){
 		if(!jQuery("#reassign_actors").val())modal_close();
 		var obj = this ;
 		jQuery(this).parent().children("span").addClass("loading") ;

@@ -30,25 +30,8 @@ if( isset($_POST['page_action']) && $_POST["page_action"] == "submit" ){
          array_push($auto_submit_stati, $selectedOption);
 	   }
 	}
-	/*
-   $auto_submit_due_days = (isset($_POST["auto_submit_due_days"]) && $_POST["auto_submit_due_days"]) ? $_POST["auto_submit_due_days"] : "";
-   $auto_submit_comment = (isset($_POST["auto_submit_comment"]) && trim($_POST["auto_submit_comment"])) ? $_POST["auto_submit_comment"] : "";
-   $auto_submit_post_count = (isset($_POST["auto_submit_post_count"]) && $_POST["auto_submit_post_count"]) ? $_POST["auto_submit_post_count"] : "";
-   $auto_submit_settings = array(
-      'auto_submit_stati' => $auto_submit_stati,
-      'auto_submit_due_days' => $auto_submit_due_days,
-      'auto_submit_comment' => stripcslashes( $auto_submit_comment ),
-      'auto_submit_post_count' => $auto_submit_post_count
-   );
-	update_site_option("oasiswf_auto_submit_settings", $auto_submit_settings) ;
-	*/
 
 }
-/*
-if( isset($_POST['page_action']) && $_POST["page_action"] == "auto_submit" ){
-   $submitted_posts_count = FCWorkflowActions::auto_submit_articles();
-}
-*/
 $reminder_day = get_site_option('oasiswf_reminder_days') ;
 $reminder_day_after = get_site_option('oasiswf_reminder_days_after') ;
 $skip_workflow_roles = get_site_option('oasiswf_skip_workflow_roles') ;
@@ -179,15 +162,6 @@ $auto_submit_post_count = $auto_submit_settings['auto_submit_post_count'];
 					</a> <a class="owf_about_link" style="background-image:url(<?php echo OASISWF_URL . '/img/faq-icon.png'; ?>);" target="_blank" href="http://oasisworkflow.com/faq/"><?php _e('FAQ', "oasisworkflow"); ?>
 					</a>
 					<hr />
-					<div style="text-align: center;">
-						<form target="_blank" action="https://www.paypal.com/cgi-bin/webscr" method="post">
-							<input type="hidden" name="cmd" value="_s-xclick">
-							<input type="hidden" name="hosted_button_id" value="8YRMFYFEAEBQG">
-							<input	type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"
-								border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-							<img alt=""	border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-						</form>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -235,33 +209,6 @@ jQuery(document).ready(function($) {
 				return false;
 			}
 		}
-		/*
-		if( !jQuery("#auto_submit_due_days").val() ){
-			alert("Please enter the number of days.") ;
-			return false;
-		}
-		if(isNaN(jQuery("#auto_submit_due_days").val())){
-			alert("Please enter a numeric value.") ;
-			return false;
-		}
-
-		if( !jQuery("#auto_submit_post_count").val() ){
-			alert("Please enter the number of posts/pages to be processed at one time.") ;
-			return false;
-		}
-		if(isNaN(jQuery("#auto_submit_post_count").val())){
-			alert("Please enter a numeric value.") ;
-			return false;
-		}
-		*/
-
 	});
-
-	/*
-	jQuery("#autoSubmitBtn").click(function(){
-		jQuery("#page_action").val("auto_submit");
-		jQuery("#wf_settings_form").submit();
-	});
-	*/
 });
 </script>

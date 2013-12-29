@@ -8,13 +8,14 @@ class FCWorkflowActions
 		add_action( 'admin_menu', array( 'FCWorkflowActions', 'create_meta_box' ) );
 		add_action( 'oasiswf_email_schedule', array( 'FCWorkflowActions', 'send_reminder_email' ) ) ;
 		add_action( 'trash_post', array( 'FCWorkflowActions', 'when_post_trash_delete' ) ) ;
+		add_filter( 'get_edit_post_link', array( 'FCWorkflowActions', 'oasis_edit_post_link' ), '', 3 );
 	}
 
 	static function create_meta_box(){
 
 		global $chkResult ;
 
-		$selected_user = isset($_GET['user']) ? $_GET['user'] : "";
+		$selected_user = isset($_GET['user']) ? $_GET['user'] : get_current_user_id();
 		$chkResult = FCProcessFlow::workflow_submit_check($selected_user);
 
 		if( $chkResult && $chkResult != "submit" && $chkResult != "inbox" ){
@@ -56,7 +57,7 @@ class FCWorkflowActions
 	static function step_signoff_popup()
 	{
 		global $wpdb, $chkResult;
-		$selected_user = isset($_GET['user']) ? $_GET["user"] : null;
+				$selected_user = isset($_GET['user']) ? $_GET["user"] : get_current_user_id();
 		$chkResult = FCProcessFlow::workflow_submit_check($selected_user);
 		if( get_site_option("oasiswf_activate_workflow") == "active" ){
 
@@ -146,6 +147,17 @@ class FCWorkflowActions
 		return $location;
 	}
 
+	// Add Oasis Workflow sign off buttons on the edit post link, if the item is in workflow
+	static function oasis_edit_post_link($url, $post_id, $context)
+	{
+	   $new_url = $url;
+	   $row = FCProcessFlow::get_assigned_post( $post_id, get_current_user_id(), "row" ) ;
+		if($row){
+			$new_url = $url . '&oasiswf=' . $row->ID;
+		}
+      return $new_url;
+	}
+
 	static function add_edit_role($allcaps, $caps, $args)
 	{
 		if( $_GET["post"] && $_GET["action"] == "edit"  )
@@ -176,78 +188,6 @@ class FCWorkflowActions
 
 	}
 
-	static function auto_submit_articles()
-	{
-	   global $wpdb;
-	   $workflows = FCWorkflowBase::get_workflow_by_auto_submit(1);
-	   $auto_submit_settings = get_site_option('oasiswf_auto_submit_settings');
-
-	   $auto_submit_stati = $auto_submit_settings['auto_submit_stati'];
-	   foreach ($auto_submit_stati as $key => $status) // convert to a MySQL In list ('value1', 'value2')
-	   {
-	      $auto_submit_stati[$key] = "'" . mysql_real_escape_string($status) . "'";
-	   }
-	   $auto_submit_stati_list = join("," , $auto_submit_stati);
-      $auto_submit_post_count = ($auto_submit_settings['auto_submit_post_count'] != null) ? $auto_submit_settings['auto_submit_post_count'] : "5";
-      $auto_submit_due_days = ($auto_submit_settings['auto_submit_due_days'] != null) ? $auto_submit_settings['auto_submit_due_days'] : "1";
-
-	   // get all posts which are in draft or pending
-	   $unsubmitted_posts = $wpdb->get_results( "SELECT distinct posts.ID, posts.post_title FROM {$wpdb->prefix}posts posts
-	   	WHERE posts.post_status in (" . $auto_submit_stati_list . ")
-	   	AND
-	   	(NOT EXISTS (SELECT * from {$wpdb->prefix}postmeta postmeta1 WHERE postmeta1.meta_key = 'oasis_is_in_workflow' and posts.ID = postmeta1.post_id) OR
-	   	EXISTS (SELECT * from {$wpdb->prefix}postmeta postmeta2 WHERE postmeta2.meta_key = 'oasis_is_in_workflow' AND postmeta2.meta_value = '0' and posts.ID = postmeta2.post_id))
-	   	order by post_modified_gmt
-	   	limit 0, " . $auto_submit_post_count );
-
-	   $submitted_posts_count = 0;
-
-	   foreach ($workflows as $wf)
-	   {
-   		$keyword_array = @unserialize( $wf->auto_submit_keywords );
-   		if ($keyword_array === false) // no keywords defined
-   		{
-   		   continue;
-   		}
-   		$auto_submit_keywords = explode(",", implode(',', $keyword_array['keywords']));
-   		foreach($unsubmitted_posts as $i => $row)
-   		{
-   		   if(FCUtility::str_array_pos($row->post_title, $auto_submit_keywords))
-   		   {
-   		      // submit the post to workflow
-               $steps = FCProcessFlow::get_first_step_in_wf_internal($wf->ID);
-
-               $users = FCProcessFlow::get_users_in_step_internal($steps["first"][0][0]);
-               $actors = "";
-               foreach($users["users"] as $user)
-               {
-                  if($actors != "")
-                  {
-                     $actors .= "@";
-                  }
-                  $actors .= $user->ID;
-               }
-
-               $dueDate = FCProcessFlow::get_pre_next_date(date("m/d/Y"), "next", $auto_submit_due_days);
-               $userComments = $auto_submit_settings['auto_submit_comment'];
-               if ($actors != "")
-               {
-                  FCProcessFlow::submit_post_to_workflow_internal($steps["first"][0][0], $row->ID, $actors,
-                     FCWorkflowBase::format_date_for_display($dueDate), $userComments);
-
-                   // increment the count of successfully submitted posts
-                   $submitted_posts_count++;
-
-                  // remove the post from the list of unsubmitted posts
-                  unset($unsubmitted_posts[$i]);
-               }
-   		   }
-   		}
-	   }
-
-	   return $submitted_posts_count;
-	}
-
 	static function when_post_trash_delete($postid)
 	{
 		global $wpdb;
@@ -275,7 +215,9 @@ class FCWorkflowActions
    			'selectStep' => __( 'Please select a step.', 'oasisworkflow' ),
             'stepNotDefined' => __( 'This step is not defined.', 'oasisworkflow' ),
             'dueDateRequired' => __( 'Please enter a due date.', 'oasisworkflow' ),
-            'noAssignedActors' => __( 'No assigned actor(s).', 'oasisworkflow' )
+            'noAssignedActors' => __( 'No assigned actor(s).', 'oasisworkflow' ),
+				'drdb' =>  get_site_option('oasiswf_reminder_days'),
+				'drda' =>  get_site_option('oasiswf_reminder_days_after')
       ));
 	}
 
@@ -292,7 +234,9 @@ class FCWorkflowActions
             'dueDateRequired' => __( 'Please enter a due date.', 'oasisworkflow' ),
             'noAssignedActors' => __( 'No assigned actor(s).', 'oasisworkflow' ),
 				'multipleUsers' => __( 'You can select multiple users only for review step.\n Selected step is', 'oasisworkflow' ),
-				'step' => __( 'step.', 'oasisworkflow' )
+				'step' => __( 'step.', 'oasisworkflow' ),
+      		'drdb' =>  get_site_option('oasiswf_reminder_days'),
+				'drda' =>  get_site_option('oasiswf_reminder_days_after')
       ));
 	}
 }

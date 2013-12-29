@@ -51,15 +51,12 @@ $per_page=15;
 							{
 								$postcount = $list_workflow->get_postcount_in_wf( $wf->ID ) ;
 								$valid = ( $wf->is_valid ) ? "Yes" : "No" ;
-								/*$autoSubmit = ( $wf->is_auto_submit ) ? "Yes" : "No" ;*/
 								echo "<tr class='alternate author-self status-publish format-default iedit'>";
 								echo "<th scope='row' class='check-column'><input type='checkbox' name='linkcheck[]' value='1'></th>";
 								echo "<td>
 										<a href='admin.php?page=oasiswf-admin&wf_id=" . $wf->ID . "'><strong>{$wf->name}</strong></a>
 										<div class='row-actions'>
 											<span><a href='admin.php?page=oasiswf-admin&wf_id=" . $wf->ID . "'>" . __("Edit", "oasisworkflow") . "</a></span>";
-											if( !$postcount )
-												echo "&nbsp;|&nbsp;<span><a href='admin.php?page=oasiswf-admin&wf_id=" . $wf->ID . "&action=delete'>" . __("Delete", "oasisworkflow") . "</span>";
 								echo "</div>
 									</td>";
 								echo "<td>{$wf->version}</td>";
@@ -67,7 +64,6 @@ $per_page=15;
 								echo "<td>{$list_workflow->format_date_for_display( $wf->end_date)}</td>";
 								echo "<td>{$postcount}</td>";
 								echo "<td>{$valid}</td>";
-								/*echo "<td>{$autoSubmit}</td>";*/
 								echo "</tr>";
 							}
 							$count++;

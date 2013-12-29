@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
 		jQuery("#publishing-action").append("<a href='#' id='exit_link' style='float:right;margin-top:10px;'>" + owf_abort_workflow_vars.abortWorkflow + "</a><span class='loading' style='display:none;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>").css({"width":"100%"});
 		jQuery('.error').hide() ;
 	}
-	jQuery("#exit_link").live("click", function(){
+	jQuery( document ).on("click", "#exit_link", function(){
 		if(!confirm(owf_abort_workflow_vars.abortWorkflowConfirm))return ;
 		data = {
 				action: 'exit_post_from_workflow' ,

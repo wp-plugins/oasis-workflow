@@ -17,22 +17,22 @@ inlineEditPost = {
 				return inlineEditPost.revert();
 		});
 
-		$('a.cancel', qeRow).click(function(){
+		jQuery('a.cancel', qeRow).click(function(){
 			return inlineEditPost.revert();
 		});
 		jQuery('a.save', qeRow).click(function(){
 			return inlineEditPost.save(this);
 		});
-		$('td', qeRow).keydown(function(e){
+		jQuery('td', qeRow).keydown(function(e){
 			if ( e.which == 13 )
 				return inlineEditPost.save(this);
 		});
 
-		$('a.cancel', bulkRow).click(function(){
+		jQuery('a.cancel', bulkRow).click(function(){
 			return inlineEditPost.revert();
 		});
 
-		$('#inline-edit .inline-edit-private input[value="private"]').click( function(){
+		jQuery('#inline-edit .inline-edit-private input[value="private"]').click( function(){
 			var pw = $('input.inline-edit-password-input');
 			if ( $(this).prop('checked') ) {
 				pw.val('').prop('disabled', true);
@@ -42,7 +42,7 @@ inlineEditPost = {
 		});
 
 		// add events
-		$('a.editinline').live('click', function(){
+		jQuery( document ).on( "click", "a.editinline", function(){
 			var obj = this;
 			if(typenow == $(this).attr("real")){
 				inlineEditPost.edit(obj);
@@ -319,14 +319,14 @@ $(document).ready(function(){inlineEditPost.init();});
 
 jQuery(document).ready(function() {	
 	var inbox_obj = "" ;
-	jQuery(".inline-edit-save .save").live('click', function(){
+	jQuery( document ).on( "click", ".inline-edit-save .save", function(){
 		return inlineEditPost.save(this);
 	});
-	jQuery(".inline-edit-save .cancel").live('click', function(){
+	jQuery( document ).on( "click", ".inline-edit-save .cancel", function(){
 		return inlineEditPost.revert(this);
 	});
 	
-	jQuery(".quick_sign_off").live('click', function(){
+	jQuery( document ).on( "click", ".quick_sign_off", function(){
 		inbox_obj = this ;
 		task_user = "";
 		if (jQuery('#inbox_filter').length > 0)
@@ -352,7 +352,7 @@ jQuery(document).ready(function() {
 		}
 	});
 	
-	jQuery(".reassign").live('click', function(){
+	jQuery( document ).on( "click", ".reassign", function(){
 		inbox_obj = this ;
 		task_user = "";
 		if (jQuery('#inbox_filter').length > 0)
@@ -380,7 +380,7 @@ jQuery(document).ready(function() {
 		}
 	});
 	
-	jQuery(".claim").live('click', function(){
+	jQuery( document ).on( "click", ".claim", function(){
 		data = {
 				action: 'claim_process',
 				actionid: jQuery(this).attr("actionid")

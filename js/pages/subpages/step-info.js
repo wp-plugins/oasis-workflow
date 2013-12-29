@@ -2,14 +2,14 @@ jQuery(document).ready(function() {
 	var step_dbid = "" ;
 	var befor_focus = "" ;
 	//-----------tab control--------------
-	jQuery("#step-setting a").live("mouseover", function(){
+	jQuery( document ).on("mouseover", "#step-setting a", function(){
 		jQuery(this).css({"color":"red"});
 	});
-	jQuery("#step-setting a").live("mouseout", function(){
+	jQuery( document ).on("mouseout", "#step-setting a", function(){
 		jQuery(this).css({"color":"blue"});
 	});
 
-	jQuery("#more-show").live("click", function(){
+	jQuery( document ).on( "click", "#more-show", function(){
 		if(jQuery("#wf-email-define").css("display")=="block"){
 			jQuery("#wf-email-define").hide();
 			jQuery(this).css({'backgroundPosition': '105px 0px'});			
@@ -20,23 +20,23 @@ jQuery(document).ready(function() {
 		return false;
 	});	
 	
-	jQuery("#step-assignee-set-point").live("click", function(){
+	jQuery( document ).on( "click", "#step-assignee-set-point", function(){
 		var v = jQuery('#step-role-list option:selected').val();
 		var t = jQuery('#step-role-list option:selected').text();
 		if(option_exist_chk(v))
 			jQuery('#step-role-set-list').append('<option value=' + v + '>' + t + '</option>');
 	});
 	
-	jQuery("#step-assignee-unset-point").live("click", function(){
+	jQuery( document ).on( "click", "#step-assignee-unset-point", function(){
 		var v = jQuery('#step-role-set-list option:selected').val();
 		jQuery("#step-role-set-list option[value='" + v + "']").remove();
 	});
 	
-	jQuery("#stepCancel").live("click", function(){
+	jQuery( document ).on( "click", "#stepCancel", function(){
 		popup_remove();
 	});
 	
-	jQuery("#stepSave").live("click", function(){
+	jQuery( document ).on( "click", "#stepSave", function(){
 		if(!check_save_data())return;		
 		save_step_data();
 		var step_gpid = jQuery("#step_gpid-hi").val() ;
@@ -51,7 +51,7 @@ jQuery(document).ready(function() {
 	});
 	//--------placeholders-------------------
 	// assignment subject
-	jQuery("#addPlaceholderAssignmentSubj").live("click", function(){
+	jQuery( document ).on( "click", "#addPlaceholderAssignmentSubj", function(){
 		if (jQuery(this).parent().children("select").val() == '') {
 			alert(owf_workflow_step_info_vars.selectPlaceholder);
 			return false;
@@ -61,19 +61,19 @@ jQuery(document).ready(function() {
 	});
 	
 	// assignment message
-	jQuery("#addPlaceholderAssignmentMsg").live("click", function(){
+	jQuery( document ).on( "click", "#addPlaceholderAssignmentMsg", function(){
 		if (jQuery(this).parent().children("select").val() == '') {
 			alert(owf_workflow_step_info_vars.selectPlaceholder);
 			return false;
 		}		
 		var v = jQuery(this).parent().children("select").val() + " "; //add a space after the placeholder
-		jQuery("#addPlaceholderReminderMsg").focus();
-		c('assignment-email-content');
+		setCurrentWhizzy('assignment-email-content');
 		insHTML(v);
+		jQuery("#addPlaceholderAssignmentMsg").focus();
 	});	
 	
 	// reminder subject
-	jQuery("#addPlaceholderReminderSubj").live("click", function(){
+	jQuery( document ).on( "click", "#addPlaceholderReminderSubj", function(){
 		if (jQuery(this).parent().children("select").val() == '') {
 			alert(owf_workflow_step_info_vars.selectPlaceholder);
 			return false;
@@ -83,15 +83,15 @@ jQuery(document).ready(function() {
 	});
 	
 	// reminder message
-	jQuery("#addPlaceholderReminderMsg").live("click", function(){
+	jQuery( document ).on( "click", "#addPlaceholderReminderMsg", function(){
 		if (jQuery(this).parent().children("select").val() == '') {
 			alert(owf_workflow_step_info_vars.selectPlaceholder);
 			return false;
 		}		
 		var v = jQuery(this).parent().children("select").val() + " "; //add a space after the placeholder
-		jQuery("#addPlaceholderReminderMsg").focus();
-		c('reminder-email-content');
+		setCurrentWhizzy('reminder-email-content');
 		insHTML(v);
+		jQuery("#addPlaceholderReminderMsg").focus();
 	});
 	
 	jQuery.fn.extend({

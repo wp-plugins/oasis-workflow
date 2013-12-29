@@ -368,6 +368,13 @@ class FCWorkflowBase
 		return $result;
 	}
 
+	function get_count_assigned_post()
+	{
+		$selected_user = isset( $_GET['user'] ) ? $_GET["user"] : null;
+		$wfactions = FCWorkflowBase::get_assigned_post( null, $selected_user ) ;
+		return count($wfactions);
+	}
+
 	function get_pre_next_action($fromid)
 	{
 		$action = FCWorkflowBase::get_action_history_by_id( $fromid ) ;

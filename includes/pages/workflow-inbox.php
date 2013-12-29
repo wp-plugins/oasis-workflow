@@ -8,7 +8,6 @@ $posteditable = current_user_can('edit_others_posts') ;
 $current_user_role = FCProcessFlow::get_current_user_role() ;
 $current_user_id = get_current_user_id();
 
-FCUtility::owf_donation();
 ?>
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-posts-post"><br></div>
@@ -90,7 +89,7 @@ FCUtility::owf_donation();
 												</div>" ;
 										}else{
 											echo "<div class='row-actions'>" ;
-											if($posteditable){
+											if($posteditable || ($user->ID == $current_user_id )){
 												echo "<span><a href='post.php?post={$wfaction->post_id}&action=edit&oasiswf={$wfaction->ID}&user={$selected_user}' class='edit' real={$wfaction->post_id}>" . __("Edit", "oasisworkflow"). "</a></span>&nbsp;|&nbsp;" ;
 												echo "<span>
 															<a href='#' class='editinline' real='{$post->post_type}'>" . __("Quick Edit", "oasisworkflow") . "</a>
@@ -99,7 +98,7 @@ FCUtility::owf_donation();
 											}
 
 												echo "<span><a href='" . get_permalink($wfaction->post_id) . "'>" . __("View", "oasisworkflow") . "</a></span>&nbsp;|&nbsp;";
-											if($posteditable){
+											if($posteditable || ($user->ID == $current_user_id )){
 												echo "<span>
 														<a href='#' wfid='$wfaction->ID' postid='$wfaction->post_id' class='quick_sign_off'>" . __("Sign Off", "oasisworkflow") . "</a>
 														<span class='loading'>$sspace</span>

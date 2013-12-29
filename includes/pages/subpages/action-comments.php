@@ -54,7 +54,7 @@
 </div>
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery("#commentCancel, .modalCloseImg").live("click", function(){
+		jQuery( document ).on( "click", "#commentCancel, .modalCloseImg", function(){
 			jQuery(document).find("#post_com_count_content").html("");
 			jQuery(document).find(".post-com-count").show();
 			jQuery.modal.close() ;

@@ -57,7 +57,7 @@ class FCWorkflowHistory extends FCWorkflowBase
 			</th>" ;
 		echo "<th scope='col'>". __("Sign Off Date", "oasisworkflow") . "</th>" ;
 		echo "<th scope='col'>". __("Result", "oasisworkflow") . "</th>" ;
-		echo "<th scope='col' class='history-comment' width='70px'>". __("Comments", "oasisworkflow") . "</th>" ;
+		echo "<th scope='col' class='history-comment'>". __("Comments", "oasisworkflow") . "</th>" ;
 		echo "</tr>";
 	}
 

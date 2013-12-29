@@ -11,6 +11,8 @@ if( $oasiswf ){
 	$success_status = json_decode($current_step->step_info) ;
 	$success_status = $success_status->status ;
 }
+$reminder_days = get_site_option('oasiswf_reminder_days');
+$reminder_days_after = get_site_option('oasiswf_reminder_days_after');
 ?>
 <div class="info-setting" id="new-step-submit-div" style="display:none;">
 	<div class="dialog-title"><strong><?php echo __("Sign Off", "oasisworkflow") ;?></strong></div>
@@ -73,19 +75,26 @@ if( $oasiswf ){
 						</p>
 					</div>
 				</div>
+				<br class="clear">
 			</div>
-			<div class="text-info" style="margin-top:30px;">
-				<label style="float:left;margin-top:5px;"><?php echo __("Due Date : ", "oasisworkflow") ;?></label>
-				<div style="float:left;">
+			<?php if ($reminder_days != '' || $reminder_days_after != ''):?>
+			<div class="text-info left">
+				<div class="left">
+					<label><?php echo __("Due Date : ", "oasisworkflow") ;?></label>
+				</div>
+				<div class="left">
 					<input class="date_input" id="due-date" value=""/>
 			        <button class="date-clear"><?php echo __("clear", "oasisworkflow") ;?></button>
 				</div>
 				<br class="clear">
 			</div>
+			<?php endif;?>
 		</div>
-			<div class="text-info" id="comments-div">
-				<label style="float:left;"><?php echo __("Comments : ", "oasisworkflow") ;?></label>
-				<div style="float:left;">
+			<div class="text-info left" id="comments-div">
+				<div class="left">
+					<label><?php echo __("Comments : ", "oasisworkflow") ;?></label>
+				</div>
+				<div class="left">
 					<textarea id="comments" style="height:100px;width:400px;margin-top:10px;" ></textarea>
 				</div>
 				<br class="clear">

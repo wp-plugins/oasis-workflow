@@ -12,12 +12,6 @@ class FCWorkflowCRUD extends FCWorkflowBase
 		$graphic = stripcslashes($_POST["wf_graphic_data_hi"]) ;
 		$startdate = FCWorkflowCRUD::format_date_for_db( $_POST["start-date"] ) ;
 		$enddate = FCWorkflowCRUD::format_date_for_db( $_POST["end-date"] ) ;
-		/*
-		$auto_submit = (isset($_POST["auto-submit"]) && $_POST["auto-submit"]) ? 1 : 0;
-		$auto_submit_keywords = explode(',', stripcslashes($_POST["auto-submit-keywords"])) ;
-		$keyword_array = array('keywords' => $auto_submit_keywords);
-		*/
-
 
 		$workflow_message = FCWorkflowValidate::check_workflow_validate() ;
 		$workflow_table = FCUtility::get_workflows_table_name();
@@ -29,8 +23,6 @@ class FCWorkflowCRUD extends FCWorkflowBase
 									'wf_info' => $graphic,
 									'start_date' => $startdate,
 									'end_date' => $enddate,
-								   /*'is_auto_submit' => $auto_submit,
-								   'auto_submit_keywords' => serialize($keyword_array),*/
 									'is_valid' => $valid,
 									'update_datetime' => current_time('mysql')
 								),
@@ -137,75 +129,19 @@ class FCWorkflowCRUD extends FCWorkflowBase
 								}
 							}
 				$str .=	'</tr>
-						<tr><td colspan=4></td></tr>
-						<tr>
-							<td>' . __("Connector", "oasisworkflow") . '</td>
-							<th>:</th>
-							<td><input type="radio" id="link-rdo-straight" name="link-rdo" value="straight"  /> ' . __("Straight", "oasisworkflow") . '  </td>
-							<td><input type="radio" id="link-rdo-machine" name="link-rdo" value="machine" /> ' . __("StateMachine", "oasisworkflow") . '  </td>
-						</tr>
-						<tr height="40px">
-							<th></th>
-							<td></td>
-							<td><input type="radio" id="link-rdo-flowchart" name="link-rdo" value="flowchart"  /> ' . __("Flowchart", "oasisworkflow") . ' </td>
-							<td><input type="radio" id="link-rdo-bezier" name="link-rdo" value="bezier"  /> ' . __("Bezier", "oasisworkflow") . ' </td>
-						</tr>
 					</table>
 				</div>
 				<p class="changed-data-set">
-					<input type="button" id="connection-setting-save" class="button-primary" value="' . __("Save", "oasisworkflow") . '" />
-					<a href="#" id="connection-setting-cancel" style="margin-right:45px;">' . __("Cancel", "oasisworkflow") . '</a>
+					<div class="right button-spacing">
+						<input type="button" id="connection-setting-save" class="button-primary" value="' . __("Save", "oasisworkflow") . '" />
+					</div>
+					<div class="right button-link-spacing">
+						<a href="#" id="connection-setting-cancel">' . __("Cancel", "oasisworkflow") . '</a>
+					</div>
 				</p>
 				<br class="clear" />
 			    ';
 		return $str;
-	}
-
-	static function new_workflow_create_check_html()
-	{
-		$str = '<div class="dialog-title"><strong>' . __("Create New Workflow", "oasisworkflow") . '</strong></div>
-				<table style="margin-top:15px;">
-					<tr>
-						<td width="90px">
-							<label>' . __("Title : ", "oasisworkflow") . '</label>
-						</td>
-						<td>
-							<input type="text"  id="new-workflow-title" style="width:350px;" />
-						</td>
-					</tr>
-
-					<tr height="20px;"><td>&nbsp;</td><td>&nbsp;</td></tr>
-					<tr>
-						<td style="vertical-align: top;">
-							<label>' . __("Description : ", "oasisworkflow") . '</label>
-						</td>
-						<td>
-							<textarea id="new-workflow-description" cols="20" rows="10" style="height:100px;width:350px;"></textarea>
-						</td>
-					</tr>
-
-				</table>
-				<p class="changed-data-set">
-					<input type="button" id="new-create-wf-save" class="button-primary" value="' . __("Save", "oasisworkflow"). '" />
-					<span>&nbsp;</span>
-					<a href="javascript:window.history.back()" id="new-create-wf-cancel">' . __("Cancel", "oasisworkflow"). '</a>
-				</p>
-				<br class="clear" />
-			    ';
-		return $str;
-	}
-
-	static function create_new_workflow()
-	{
-		$data = array(
-					'name' => stripcslashes( $_POST["name"] ),
-					'description' => stripcslashes( $_POST["description"] ),
-					'create_datetime' => current_time('mysql')
-				);
-		$workflow_table = FCUtility::get_workflows_table_name();
-		$newid = FCWorkflowCRUD::insert_to_table( $workflow_table, $data ) ;
-		echo $newid ;
-		exit();
 	}
 
 	static function get_workflow_count()

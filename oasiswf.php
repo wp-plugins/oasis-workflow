@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Easily create graphical workflows to manage your work.
- Version: 1.0.7
+ Version: 1.0.8
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.7' );
-define( 'OASISWF_DB_VERSION','1.0.7');
+define( 'OASISWF_VERSION' , '1.0.8' );
+define( 'OASISWF_DB_VERSION','1.0.8');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -65,7 +65,7 @@ class FCInitialization
 	        {
 	            $old_blog = $wpdb->blogid;
 	            // Get all blog ids
-	            $blogids = $wpdb->get_col("SELECT blog_id FROM {$wpdb->prefix}blogs");
+	            $blogids = $wpdb->get_col("SELECT blog_id FROM {$wpdb->base_prefix}blogs");
 	            foreach ($blogids as $blog_id)
 	            {
 	            	switch_to_blog($blog_id);
@@ -91,7 +91,7 @@ class FCInitialization
 	        {
 	            $old_blog = $wpdb->blogid;
 	            // Get all blog ids
-	            $blogids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
+	            $blogids = $wpdb->get_col("SELECT blog_id FROM {$wpdb->base_prefix}blogs");
 	            foreach ($blogids as $blog_id)
 	            {
 	                switch_to_blog($blog_id);
@@ -111,7 +111,7 @@ class FCInitialization
 		if (function_exists('is_multisite') && is_multisite())
 		{
 			//Get all blog ids; foreach them and call the uninstall procedure on each of them
-			$blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
+			$blog_ids = $wpdb->get_col("SELECT blog_id FROM {$wpdb->base_prefix}blogs");
 
 			//Get all blog ids; foreach them and call the install procedure on each of them if the plugin table is found
 			foreach ( $blog_ids as $blog_id )
@@ -227,6 +227,10 @@ class FCInitialization
 			// nothing to upgrade
 		}
 		else if ($pluginOptions['version'] == "1.0.6")
+		{
+			// nothing to upgrade
+		}
+		else if ($pluginOptions['version'] == "1.0.7")
 		{
 			// nothing to upgrade
 		}
@@ -479,9 +483,75 @@ class FCInitialization
 
 	function install_admin_data()
 	{
-		/* this code is useful in future when insert example data
-		 //global $wpdb;
-		 */
+	    global $wpdb;
+
+	    // insert into workflow table
+	    $table_name = FCUtility::get_workflows_table_name();
+	    $workflow_id = '';
+       $workflow_info = stripcslashes('{"steps":{"step0":{"fc_addid":"step0","fc_label":"assignment","fc_dbid":"2","fc_process":"assignment","fc_position":["326px","568px"]},"step1":{"fc_addid":"step1","fc_label":"review","fc_dbid":"1","fc_process":"review","fc_position":["250px","358px"]},"step2":{"fc_addid":"step2","fc_label":"publish","fc_dbid":"3","fc_process":"publish","fc_position":["119px","622px"]}},"conns":{"0":{"sourceId":"step1","targetId":"step2","connset":{"connector":"StateMachine","paintStyle":{"lineWidth":3,"strokeStyle":"blue"}}},"1":{"sourceId":"step2","targetId":"step1","connset":{"connector":"StateMachine","paintStyle":{"lineWidth":3,"strokeStyle":"red"}}},"2":{"sourceId":"step1","targetId":"step0","connset":{"connector":"StateMachine","paintStyle":{"lineWidth":3,"strokeStyle":"red"}}},"3":{"sourceId":"step2","targetId":"step0","connset":{"connector":"StateMachine","paintStyle":{"lineWidth":3,"strokeStyle":"red"}}},"4":{"sourceId":"step0","targetId":"step1","connset":{"connector":"StateMachine","paintStyle":{"lineWidth":3,"strokeStyle":"blue"}}}},"first_step":["step1"]}');
+		 $data = array(
+					'name' => 'Test Workflow',
+					'description' => 'sample workflow',
+		         'wf_info' => $workflow_info,
+		         'start_date' => date('Y-m-d'),
+		         'end_date' => date('Y-m-d', strtotime('+1 years')),
+		         'is_valid' => 1,
+					'create_datetime' => current_time('mysql'),
+		 			'update_datetime' => current_time('mysql')
+				);
+		 $result = $wpdb->insert($table_name, $data);
+		 if( $result ){
+
+			$row = $wpdb->get_row("SELECT max(ID) as maxid FROM $table_name");
+			if($row)
+				$workflow_id = $row->maxid ;
+			else
+				return false;
+		 }else{
+			return false;
+		 }
+
+		 // insert steps
+		 $workflow_step_table = FCUtility::get_workflow_steps_table_name();
+
+	    // step 1 - review
+	    $review_step_info = '{"process":"review","step_name":"review","assignee":{"editor":"Editor"},"status":"pending","failure_status":"draft"}';
+	    $review_process_info = '{"assign_subject":"","assign_content":"","reminder_subject":"","reminder_content":""}';
+		 $result = $wpdb->insert(
+					  $workflow_step_table,
+					  array(
+						 'step_info' => stripcslashes( $review_step_info ),
+						 'process_info' => stripcslashes( $review_process_info ),
+						 'create_datetime' => current_time('mysql'),
+						 'workflow_id' => $workflow_id
+					 )
+			   );
+
+	    // step 2 - assignment
+	    $assignment_step_info = '{"process":"assignment","step_name":"assignment","assignee":{"author":"Author"},"status":"pending","failure_status":"draft"}';
+	    $assignment_process_info = '{"assign_subject":"","assign_content":"","reminder_subject":"","reminder_content":""}';
+		 $result = $wpdb->insert(
+					  $workflow_step_table,
+					  array(
+						 'step_info' => stripcslashes( $assignment_step_info ),
+						 'process_info' => stripcslashes( $assignment_process_info ),
+						 'create_datetime' => current_time('mysql'),
+						 'workflow_id' => $workflow_id
+					 )
+			   );
+
+	    // step 3 - publish
+	    $publish_step_info = '{"process":"publish","step_name":"publish","assignee":{"administrator":"Administrator"},"status":"publish","failure_status":"draft"}';
+	    $publish_process_info = '{"assign_subject":"","assign_content":"","reminder_subject":"","reminder_content":""}';
+		 $result = $wpdb->insert(
+					  $workflow_step_table,
+					  array(
+						 'step_info' => stripcslashes( $publish_step_info ),
+						 'process_info' => stripcslashes( $publish_process_info ),
+						 'create_datetime' => current_time('mysql'),
+						 'workflow_id' => $workflow_id
+					 )
+			   );
 	}
 
 	function run_on_deactivation()
@@ -548,13 +618,6 @@ class FCLoadWorkflow
 	    				array('FCLoadWorkflow','list_workflows'));
 
 	    add_submenu_page('oasiswf-admin',
-	    				__('New Workflow', 'oasisworkflow'),
-	    				__('New Workflow', 'oasisworkflow'),
-	    				'activate_plugins',
-	    				'oasiswf-add',
-	    				array('FCLoadWorkflow','create_workflow'));
-
-	    add_submenu_page('oasiswf-admin',
 	    				__('Settings', 'oasisworkflow'),
 	    				__('Settings', 'oasisworkflow'),
 	    				'activate_plugins',
@@ -567,20 +630,24 @@ class FCLoadWorkflow
 		$current_role = FCWorkflowBase::get_current_user_role() ;
 		$position = FCWorkflowBase::get_menu_position() ;
 
+		$inbox_count = FCWorkflowBase::get_count_assigned_post() ;
+		$count = ($inbox_count) ? '<span class="update-plugins count"><span class="plugin-count">' . $inbox_count . '</span></span>' : '' ;
+
+
 		if (!is_multisite())
 		{
 		   FCLoadWorkflow::register_admin_menu_pages();
 		}
 
 		add_menu_page(__('Workflows', 'oasisworkflow'),
-						__('Workflows', 'oasisworkflow'),
+						__('Workflows'. $count, 'oasisworkflow'),
 						$current_role,
 						'oasiswf-inbox',
 						array('FCLoadWorkflow','workflow_inbox'),'', $position);
 
 		 add_submenu_page('oasiswf-inbox',
 	    				__('Inbox', 'oasisworkflow'),
-	    				__('Inbox', 'oasisworkflow'),
+	    				__('Inbox'. $count, 'oasisworkflow'),
 	    				$current_role,
 	    				'oasiswf-inbox',
 	    				array('FCLoadWorkflow','workflow_inbox'));
@@ -700,7 +767,7 @@ class FCLoadWorkflow
    		wp_enqueue_script( 'jsPlumb',
    		                   OASISWF_URL. 'js/lib/jquery.jsPlumb-all-min.js',
    		                   array('thickbox', 'jquery-ui-core', 'jquery-ui-draggable', 'jquery-ui-droppable'),
-   		                   '1.3.9',
+   		                   '1.4.1',
    		                   true);
    		wp_enqueue_script( 'drag-drop-jsplumb',
    		                   OASISWF_URL. 'js/pages/drag-drop-jsplumb.js',

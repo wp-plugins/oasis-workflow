@@ -1,10 +1,9 @@
 === Oasis Workflow ===
 Contributors: nuggetsol
-Donate link:https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8YRMFYFEAEBQG
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit
-Requires at least: 3.3
-Tested up to: 3.5.1
-Stable tag: 1.0.7
+Requires at least: 3.6
+Tested up to: 3.8
+Stable tag: 1.0.8
 
 Workflow process for WordPress made simple with Oasis Workflow.
 
@@ -39,9 +38,15 @@ The plugin provides three processes:
 
 **Due Date and Email reminders** help you to publish your articles on time.
 
-You can find the complete list of features on the [support](http://oasisworkflow.com) site.
+**Out of the box workflow**
+To get you started, the plugin comes with an out of the box workflow. You can also modify the workflow to suit your needs. 
 
-**If you need help setting up the roles, we recommend the [User Role Editor plugin](http://wordpress.org/extend/plugins/user-role-editor/ "User Role Editor plugin").**
+You can find the complete list of features on the [support](http://oasisworkflow.com) site.
+**Check out Oasis Workflow Pro: http://www.oasisworkflow.com/pricing-purchase**
+
+If you need help setting up the roles, we recommend the [User Role Editor plugin](http://wordpress.org/extend/plugins/user-role-editor/ "User Role Editor plugin").
+
+Videos to help you get started with Oasis Workflow:
 
 [youtube http://www.youtube.com/watch?v=PPBJns2p-zU]
 
@@ -51,12 +56,12 @@ You can find the complete list of features on the [support](http://oasisworkflow
 
 1. Download the plugin zip file to your desktop
 2. Upload the plugin to WordPress
-3. Activate Oasis Workflow
+3. Activate Oasis Workflow by going to Workflow Admin --> Settings
 4. You are now ready to use Oasis Workflow! Build Your Workflow and start managing your editorial content flow.
 
 == Frequently Asked Questions ==
 
-For [Frequently Asked Questions](http://oasisworkflow.com/faqs) plus documentation, plugin help, go [here](http://oasisworkflow.com)
+For [Frequently Asked Questions](http://oasisworkflow.com/faq) plus documentation, plugin help, go [here](http://oasisworkflow.com)
 
 == Screenshots ==
 
@@ -109,4 +114,15 @@ If these workflows are different, they need to be recreated with this upgrade.
 = Version 1.0.7 =
 * Bug fixes.
 * minor enhancements
+
+= Version 1.0.8 =
+* Updated the Inbox menu to display the number of inbox items.
+* The plugin will now come with an out of the box workflow when installed for the first time. This will help getting started with the plugin with little or no effort. Simply activate the workflow process from Workflow Admin --&gt; Settings page and you are ready to use the workflow.
+* Auto select of user during the sign off process, if there is one and only one user for that given role.
+* Due dates are not required/shown unless "reminder emails" are set to be required on the settings page.
+* Added French translation files.
+* Added Sign off button on the Posts page. This will help to sign off the post/page even when you are not in your inbox.
+* Fixed issues related to IE compatibility. The plugin should function well in IE 9 and IE 10.
+* Fixed issue with sign off caused due to the addition of  "take over" functionality by core Wordpress.
+* We have removed the connection type from the connection settings popup. The plugin defaults to one specific connection type. You might see the workflow visual representation to be a bit awkward. All you have to do is to save the workflow and it will auto-correct the connections.
 

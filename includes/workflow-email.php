@@ -39,11 +39,16 @@ class FCWorkflowEmail extends FCWorkflowBase
 
    		$post_link = '';
    		$message_content = trim($messages->assign_content);
-   		if (empty($message_content)) {
+
+   		// replace all the non visible characters with space
+   		$subject_line = str_replace(array("\\r\\n", "\\r", "\\n", "\\t", "<br />", ' '), '', trim( $messages->assign_subject ));
+   		$content_line = str_replace(array("\\r\\n", "\\r", "\\n", "\\t", "<br />", ' '), '', trim( $message_content ));
+
+   		if (empty($content_line)) {
    		   $post_link = '<a href=' . $post_url . ' target="_blank">' . $post_title . '</a>';
    		}
-   		$messages->assign_subject = (!empty($messages->assign_subject)) ? $blog_name . $messages->assign_subject : $blog_name . __("You have an assignment", "oasisworkflow");
-   		$messages->assign_content = (!empty($message_content)) ? $messages->assign_content : __("You have an assignment related to post - " . $post_link, "oasisworkflow");
+   		$messages->assign_subject = (!empty($subject_line)) ? $blog_name . $messages->assign_subject : $blog_name . __("You have an assignment", "oasisworkflow");
+   		$messages->assign_content = (!empty($content_line)) ? $messages->assign_content : __("You have an assignment related to post - " . $post_link, "oasisworkflow");
 
 
 			foreach ($messages as $k => $v) {
@@ -71,14 +76,19 @@ class FCWorkflowEmail extends FCWorkflowBase
 			$last_name = ( $last_name ) ? $last_name : $nickname ;
 			$nameStr = ( $first_name == $last_name ) ? $nickname : $first_name . " " . $last_name ;
 			$signOffDate = FCWorkflowBase::format_date_for_display($actionStep->create_datetime, "-", "datetime");
-			$dueDate = FCWorkflowBase::format_date_for_display ($actionStep->due_date);
+			$dueDate = '';
+			if ( !empty( $actionStep->due_date )) {
+			   $dueDate = FCWorkflowBase::format_date_for_display ($actionStep->due_date);
+			}
          if ($comment->comment != "")
          {
 			   $commentStr .= "<p><strong>" . __('Additionally,', "oasisworkflow") . "</strong> {$nameStr} " . __('added the following comments', "oasisworkflow") . ":</p>" ;
 			   $commentStr .= "<p>" . nl2br($comment->comment) . "</p>" ;
          }
 			$commentStr .= "<p>" . __('Sign off date', "oasisworkflow") . " : {$signOffDate}</p>" ;
-			$commentStr .= "<p>" . __('Due date', "oasisworkflow") . " : {$dueDate} </p>" ;
+			if ( !empty( $dueDate )) {
+			   $commentStr .= "<p>" . __('Due date', "oasisworkflow") . " : {$dueDate} </p>" ;
+			}
 
 		}
 		return $commentStr ;

@@ -92,7 +92,15 @@ div#workflow-edit-icon {
    cursor:move;
 }
 .widget-wf-process {
-   padding:6px;margin-left:3px;
+   padding:6px;
+   background-image: url("../../img/process-button-bg.png");
+   text-align: center;
+   background-repeat: repeat;
+   border-color: #DFDFDF;
+   border-radius: 4px;
+   border-style: solid;
+   border-width: 1px;
+   cursor: pointer;   
 }
 .sortable img {
 	margin-top:30px !important;
@@ -127,10 +135,10 @@ div#workflow-edit-icon {
 .changed-data-set input {
    float: right;
 }
-#new-create-wf-save, #connection-setting-save {
+#new-create-wf-save {
    margin-right:10px;
 }
-#new-create-wf-cancel, #connection-setting-cancel {
+#new-create-wf-cancel {
    float:right;
    margin:5px 25px 0 0;
 }
@@ -666,6 +674,34 @@ a.owf_about_link:hover {
 #step-setting a{
    color:blue;
    cursor:pointer;
+}
+
+.hidden {
+   display: none;
+}
+
+.history-comment {
+   width: 80px;
+   text-align: left; 
+}
+
+.left {
+   float: left;
+}
+
+.right {
+   float: right;
+}
+
+.button-spacing {
+   margin-left: 10px;
+   padding-left: 5px;
+}
+
+.button-link-spacing {
+   margin-left: 10px;
+   padding-left: 5px;
+   padding-top: 5px;
 }
 
 

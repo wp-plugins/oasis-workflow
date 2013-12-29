@@ -1,4 +1,8 @@
-<?php $workflow = FCProcessFlow::get_workflow_by_validity( 1 ) ;?>
+<?php
+$workflow = FCProcessFlow::get_workflow_by_validity( 1 ) ;
+$reminder_days = get_site_option('oasiswf_reminder_days');
+$reminder_days_after = get_site_option('oasiswf_reminder_days_after');
+?>
 <div class="info-setting" id="new-workflow-submit-div">
 	<div class="dialog-title"><strong><?php echo __("Submit", "oasisworkflow") ;?></strong></div>
 	<div>
@@ -59,17 +63,23 @@
 			</div>
 			<br class="clear">
 		</div>
-		<div class="text-info">
-			<label style="float:left;margin-top:5px;"><?php echo __("Due Date : ", "oasisworkflow") ;?></label>
-			<div style="float:left;">
+		<?php if ($reminder_days != '' || $reminder_days_after != ''):?>
+		<div class="text-info left">
+			<div class="left">
+				<label><?php echo __("Due Date : ", "oasisworkflow") ;?></label>
+			</div>
+			<div class="left">
 				<input class="date_input" name="due-date" id="due-date"  />
 		        <button class="date-clear" ><?php echo __("clear", "oasisworkflow") ;?></button>
 			</div>
 			<br class="clear">
 		</div>
-		<div class="text-info" id="comments-div">
-			<label style="float:left;"><?php echo __("Comments : ", "oasisworkflow") ;?></label>
-			<div style="float:left;">
+		<?php endif;?>
+		<div class="text-info left" id="comments-div">
+			<div class="left">
+				<label><?php echo __("Comments : ", "oasisworkflow") ;?></label>
+			</div>
+			<div class="left">
 				<textarea id="comments" style="height:100px;width:400px;margin-top:10px;" ></textarea>
 			</div>
 			<br class="clear">

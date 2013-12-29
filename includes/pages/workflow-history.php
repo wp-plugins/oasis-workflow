@@ -76,7 +76,7 @@ $per_page = 25;
 											}
 											echo "<td>{$history_workflow->format_date_for_display( $signoff_date, "-", "datetime" )}</td>";
 											echo "<td>{$history_workflow->get_review_signoff_status( $row, $review_row )}</td>" ;
-											echo "<td class='comments column-comments'>
+											echo "<td class='comments'>
 													<div class='post-com-count-wrapper'>
 														<strong>
 															<a href='#' actionid={$review_row->ID} class='post-com-count' real='review'>
@@ -109,7 +109,7 @@ $per_page = 25;
 									echo "<td>{$history_workflow->format_date_for_display( $row->create_datetime, "-", "datetime" )}</td>";
 									echo "<td>{$history_workflow->format_date_for_display( $history_workflow->get_signoff_date( $row ), "-", "datetime" )}</td>";
 									echo "<td>{$history_workflow->get_signoff_status( $row )}</td>" ;
-									echo "<td class='comments column-comments'>
+									echo "<td class='comments'>
 											<div class='post-com-count-wrapper'>
 												<strong>
 													<a href='#' actionid={$row->ID} class='post-com-count' real='history'>

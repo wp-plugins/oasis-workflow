@@ -102,7 +102,7 @@ class FCProcessFlow extends FCWorkflowBase
 			$step_info= json_decode( $wf_info->step_info ) ;
 			if ($step_info->process != 'review') { // cannot review your own work
 			   $decision = null;
-			}			
+			}
 			$users = FCProcessFlow::get_users_by_role( $step_info->assignee, $postId, $decision ) ;
 			if($users){
 				$result["users"] = $users ;
@@ -157,7 +157,7 @@ class FCProcessFlow extends FCWorkflowBase
 			$iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
 			if( !$actionfrm )FCWorkflowEmail::send_step_email( $iid ) ; // send mail to the actor .
 		}
-		else if (!is_numeric( $actors ) && $step_info->process == "assignment") //multiple actors are assigned in assignment step
+		else if (!is_numeric( $actors )) //multiple actors are assigned in assignment step or publish step
 		{
          $arr = explode("@", $actors) ;
          for( $i = 0; $i < count( $arr ); $i++ )
@@ -217,13 +217,14 @@ class FCProcessFlow extends FCWorkflowBase
 				);
 		$aiid = FCProcessFlow::save_action( $adata, $auserid, "", "temp") ;		// This action doesn't send email.
 		//-----------------------------------------
+		$due_date = $dueDate != null ? FCWorkflowCRUD::format_date_for_db( $dueDate ) : null;
 		$data = array(
 					'action_status' => "assignment",
 					'comment' => $saveComments,
 					'step_id' => $stepId,
 					'post_id' => $postId,
 					'from_id' => $aiid,
-					'due_date' => FCProcessFlow::format_date_for_db( $dueDate ),
+					'due_date' => $due_date,
 					'create_datetime' => current_time('mysql')
 				);
 
@@ -358,12 +359,13 @@ class FCProcessFlow extends FCWorkflowBase
 		      $first_actor = $arr[0];
 		   }
          // update with the first actor
+         $due_date = (isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"])) ? FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] ) : null;
 			$updatedata = array(
 							"review_status" => $_POST["review_result"],
 							"reassign_actor_id" => $first_actor,
 							"step_id" => $_POST["hi_step_id"],
 							"comments" => $saveComments,
-							"due_date" => FCProcessFlow::format_date_for_db( $_POST["hi_due_date"] ),
+							"due_date" => $due_date,
 							"update_datetime" => current_time('mysql')
 						 ) ;
 			$wpdb->update($action_table, $updatedata, array( "actor_id" => $current_actor_id, "action_history_id" => $_POST["oasiswf"] ) ) ;
@@ -372,13 +374,14 @@ class FCProcessFlow extends FCWorkflowBase
 		   {
             for( $i = 1; $i < count( $arr ); $i++ )
             {
+               $due_date = (isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"])) ? FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] ) : null;
       			$redata = array(
       							"review_status" => $_POST["review_result"],
       							"reassign_actor_id" => $arr[$i],
       							"actor_id" => $current_actor_id,
       							"step_id" => $_POST["hi_step_id"],
       							"comments" => $saveComments,
-      							"due_date" => FCProcessFlow::format_date_for_db( $_POST["hi_due_date"] ),
+      							"due_date" => $due_date,
       							"action_history_id" => $_POST["oasiswf"],
       							"update_datetime" => current_time('mysql')
       						 ) ;
@@ -389,13 +392,14 @@ class FCProcessFlow extends FCWorkflowBase
 			FCWorkflowEmail::delete_step_email($_POST["oasiswf"], $current_actor_id);
 			FCProcessFlow::review_result_process( $_POST["oasiswf"] ) ;
 		}else{
+		   $due_date = (isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"])) ? FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] ) : null;
 			$data = array(
 						'action_status' => "assignment",
 						'comment' => $saveComments,
 						'step_id' => $_POST["hi_step_id"],
 						'post_id' => $_POST["post_ID"],
 						'from_id' => $_POST["oasiswf"],
-						'due_date' => FCProcessFlow::format_date_for_db( $_POST["hi_due_date"] ),
+						'due_date' => $due_date,
 						'create_datetime' => current_time('mysql')
 					);
 			$iid = FCProcessFlow::save_action( $data, $_POST["hi_actor_ids"], $_POST["oasiswf"]) ;

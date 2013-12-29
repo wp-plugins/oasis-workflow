@@ -27,12 +27,12 @@ jQuery(document).ready(function() {
 		jQuery(this).parent().children(".date_input").val("");
 	});
 	
-	jQuery("#workflow_submit").live('click', function(){
+	jQuery( document ).on( "click", "#workflow_submit", function(){
 		jQuery("#new-workflow-submit-div").modal();
 		calendar_action();
 	});
 		
-	jQuery("#submitCancel, .modalCloseImg").live("click", function(){
+	jQuery( document ).on( "click", "#submitCancel, .modalCloseImg", function(){
 		modal_close();
 	});
 	
@@ -145,14 +145,29 @@ jQuery(document).ready(function() {
 				stepProcess = result["process"] ;
 			}
 			// multiple actors applicable to both review and assignment step
-			if(stepProcess == "review" || stepProcess == "assignment"){
+			if(stepProcess == "review" || stepProcess == "assignment" || stepProcess == "publish"){
 				jQuery("#one-actors-div").hide();
 				jQuery("#multiple-actors-div").show();
 				add_option_to_select("actors-list-select", users, 'name', 'ID') ;	
+				
+				// If there is only one assignee ound then directly select as asigned user
+				if(numKeys(users)==1) {
+					var v = jQuery('#actors-list-select option:selected').val();
+					var t = jQuery('#actors-list-select option:selected').text();
+					if(option_exist_chk(v)){
+						if(jQuery("#actors-set-select option").length == 1){
+							alert(owf_submit_workflow_vars.multipleUsers + " " + stepProcess + " " + owf_submit_workflow_vars.step);
+							return;
+						}
+						jQuery('#actors-set-select').append('<option value=' + v + '>' + t + '</option>');
+					}
+					return false;
+				}
 			}else{
 				jQuery("#multiple-actors-div").hide();
 				jQuery("#one-actors-div").show();
 				add_option_to_select("actor-one-select", users, 'name', 'ID') ;	
+				
 			}
 					
 		});
@@ -164,10 +179,6 @@ jQuery(document).ready(function() {
 		var v = jQuery('#actors-list-select option:selected').val();
 		var t = jQuery('#actors-list-select option:selected').text();
 		if(option_exist_chk(v)){
-			if(jQuery("#actors-set-select option").length == 1 && stepProcess == "publish" ){
-				alert(owf_submit_workflow_vars.multipleUsers + " " + stepProcess + " " + owf_submit_workflow_vars.step);
-				return;
-			}
 			jQuery('#actors-set-select').append('<option value=' + v + '>' + t + '</option>');
 		}
 		return false;
@@ -205,11 +216,18 @@ jQuery(document).ready(function() {
 		
 		var actors = assign_actor_chk() ;
 		if(!actors)return;
-		if(!chk_due_date("due-date")){
-			alert(owf_submit_workflow_vars.dueDateRequired);
-			return false;
-		}
-		
+		/* This is for checking that reminder email checkbox is selected in workflow settings.
+		If YES then Due Date is Required Else Not */
+		if(owf_submit_workflow_vars.drdb != "" || owf_submit_workflow_vars.drda != "")
+		{
+			if (jQuery("#due-date").val() == '') {
+				alert(owf_submit_workflow_vars.dueDateRequired);
+				return false;
+			}
+			if(!chk_due_date("due-date")){
+				return false;
+			}
+		}		
 		jQuery("#hi_workflow_id").val(jQuery("#workflow-select").val());
 		jQuery("#hi_step_id").val(jQuery("#step-select").val());		
 		jQuery("#hi_actor_ids").val(actors);

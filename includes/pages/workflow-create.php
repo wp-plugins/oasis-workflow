@@ -89,14 +89,6 @@ echo "<script type='text/javascript'>
 									}
 									$startdate = $create_workflow->format_date_for_display( $able_start_date ) ;
 								}
-								/*
-								$auto_submit = $workflow->is_auto_submit;
-								$keyword_array = @unserialize( $workflow->auto_submit_keywords );
-								if ($keyword_array !== false)
-								{
-									$auto_submit_keywords = implode(',', $keyword_array['keywords']);
-								}
-								*/
 							}
 						?>
 						<div class="move-div" id="workflow-define-div">
@@ -146,34 +138,6 @@ echo "<script type='text/javascript'>
 									</td>
 								</tr>
 							</table>
-							<!--
-							<div class="div-line"></div>
-							<table>
-								<tr>
-									<td colspan="2">
-									   <?php
-   				                  $str="" ;
-   				                  if( $auto_submit == 1 )$str = "checked=true" ;
-   				               ?>
-   									<label><input type="checkbox" name="auto-submit"
-   											value="1" <?php echo $str;?> />&nbsp;&nbsp;<?php echo __("Enable Auto Submit?", "oasisworkflow") ;?>
-   									</label>
-									</td>
-								</tr>
-								<tr height="20px;"><td>&nbsp;</td><td>&nbsp;</td></tr>
-								<tr>
-									<td style="vertical-align: top;">
-										<label><?php echo  __("Keywords for Auto Submit : <br>&nbsp;(comma separated) ", "oasisworkflow");?></label>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<textarea id="auto-submit-keywords" name="auto-submit-keywords" class="define-workflow-textarea"
-									 		cols="20" rows="5"><?php echo $auto_submit_keywords;?></textarea>
-									</td>
-								</tr>
-							</table>
-							-->
 						</div>
 					</div>
 				</div>
@@ -219,27 +183,11 @@ echo "<div id='connection-setting'>{$create_workflow->connection_setting_html()}
 	<?php endif;?>
 	<li class="quit separator" id="stepQuit"><a href="#quit"><?php echo __("Quit", "oasisworkflow") ?></a></li>
 </ul>
-<?php echo "<div id='new-workflow-create-check'>{$create_workflow->new_workflow_create_check_html()}</div>" ;?>
 <script type="text/javascript">
-	jQuery(document).ready(function() {
-		//----------loading modal--------------
-		if(!jQuery("#wf_id").val()){
-			if(navigator.appName == "Netscape"){
-				show_workflow_create_modal() ;
-			}else{
-				setTimeout("show_workflow_create_modal()", 500);
-			}
-		}
-	});
 	//-------------------------------------
 	jQuery("#wpbody").css({"position":"inherit"});
 	function call_modal(param){
 		jQuery('.contextMenu').hide();
 		jQuery('#'+param).modal();
-	}
-
-	function show_workflow_create_modal(){
-		jQuery('#new-workflow-create-check').modal();
-		jQuery(".modalCloseImg").hide() ;
 	}
 </script>

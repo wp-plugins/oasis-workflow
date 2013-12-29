@@ -25,7 +25,7 @@ var jQueryCgmp = jQuery.noConflict();
 		//-------------first setting------------------------
 		var stepNum = 0;
 		var wfConn = {}; // action connection object
-		var connSet = {"connector": "straight", "path": "blue"};
+		var connSet = { "path": "blue" }; //default success connection
 		var selectedStep = {};
 		var newconnection = false ; // For checking 'new connection' or 'edit connection'
 		jQuery("#workflow-area").css("height", jQuery(".fc_action").css("height"));
@@ -161,10 +161,11 @@ var jQueryCgmp = jQuery.noConflict();
 			});
 			
 			for( var i = 0; i < c.length ; i++ ){
+				// connector - StateMachine - specified in jsPlumb lib 
 				conns[i] = {
 							"sourceId": c[i].sourceId, 
 							"targetId": c[i].targetId, 
-							"connset": {"connector": c[i].connector.type, "paintStyle": c[i].paintStyleInUse}
+							"connset": {"connector": "StateMachine", "paintStyle": c[i].paintStyleInUse}
 						} ;
 			}
 			
@@ -283,64 +284,30 @@ var jQueryCgmp = jQuery.noConflict();
 		   return true;
 	   }
 	   
-	   jQuery("#connection-setting-save").live('click',function(){
+	   jQuery( document ).on( "click", "#connection-setting-save", function(){
 	    	var pathColor = jQuery("input[name=path-opt]:checked").val();
-	    	var connector = jQuery("input[name=link-rdo]:checked").val();
 	    	jsPlumb.detach(wfConn);
-	    	reconnect(pathColor, connector);
-	    	connSet = { "path": pathColor, 
-	    				"connector": connector,
-	    			  };
+	    	reconnect(pathColor);
+	    	connSet = { "path": pathColor };
 	    	
 	    	edit_conn_setting() ; //We can know what it isn't new the connection after saving .
 	    	set_step_chaned_status() ; // We can know what workflow graphic was changed.
 	    	jQuery.modal.close(); 
 	    });    
-	    var reconnect = function(p, c){
-		    	jsPlumb.connect({
-					source:wfConn.sourceId,
-					target:wfConn.targetId
-				}, wfConnetorSetting(p, c)); 
-		    } 
-	    
-	    var wfConnetorSetting = function(pColor, conn){
-	    	var w = {"machine" : {
-							paintStyle:{
-								lineWidth:3,
-								strokeStyle:pColor							
-							},
-							connector:"StateMachine",	
-					    },    
-					    "flowchart": {
-							paintStyle:{
-					    		lineWidth:3,
-					    		strokeStyle:pColor				    		
-					    	},
-							connector:[ "Flowchart", { stub:40, gap:10 } ]	
-					    },
-					    "straight": {
-							paintStyle:{ 
-								lineWidth:3,
-								strokeStyle:pColor			 				
-							},
-							connector:"Straight",					
-						},
-					    "bezier": {
-							connector:"Bezier",				   
-						   	paintStyle:{
-								lineWidth:3, 
-								strokeStyle:pColor							
-							},							   	
-						}
-					};    	
-	    	return w[conn];
-	    }   
+	    var reconnect = function(pColor){
+	    	jsPlumb.connect({
+				source:wfConn.sourceId,
+				target:wfConn.targetId,
+				paintStyle:{
+					lineWidth:3,
+					strokeStyle:pColor							
+				},
+				connector:"StateMachine"	// only one connection style.
+			}); 
+	    } 
 	    
 	    jQuery("#connEdit").click(function(){
-	    	var connector = {"Straight": "straight", "StateMachine": "machine", "Flowchart": "flowchart" , "Bezier": "bezier"};
-	    	connSet = { "path": wfConn.paintStyleInUse.strokeStyle, 
-						"connector": connector[wfConn.connector.type]
-					  };
+	    	connSet = { "path": wfConn.paintStyleInUse.strokeStyle };
 	    	jQuery("#connectionMenu").hide();
 	    	showConnectionDialog(wfConn, connSet);    	
 	    })
@@ -351,7 +318,7 @@ var jQueryCgmp = jQuery.noConflict();
 	    	jQuery("#connectionMenu").hide();
 	    });
 	    
-	    jQuery("#connection-setting-cancel, .modalCloseImg").live('click',function(){    	
+	    jQuery( document ).on( "click", "#connection-setting-cancel, .modalCloseImg", function(){       	
 	    	if(newconnection)
 	    		jsPlumb.detach(wfConn);    	
 	    	edit_conn_setting() ; //We can know what it isn't new the connection after cancel .
@@ -445,7 +412,7 @@ var jQueryCgmp = jQuery.noConflict();
 		    	return false;
 		    }); 
 	    }    
-	    jQuery(".w").live("contextmenu",function(e){
+	    jQuery( document ).on( "contextmenu", ".w", function(e){
 			jQuery("#stepMenu").show().css({"left": e.pageX + "px", "top": e.pageY + "px"});
 			setSlectedStep(this);
 			jQuery("#connectionMenu").hide();

@@ -4,42 +4,6 @@ var jQueryCgmp = jQuery.noConflict();
 		var changed_step_chk = false ;
 		var deleted_step = new Array(); // IDs of Deleted step
 		
-		//----------new workflow load-----------
-		
-		jQuery("#new-create-wf-save").click(function(){
-			if(!jQuery("#new-workflow-title").val()){
-	    		jQuery("#new-workflow-title").css({"background-color": "#fbf3f3"}).focus();
-	    		return;
-	    	}
-			jQuery(".changed-data-set span").addClass("loading");
-			check_for_duplicate_data = {
-					action: 'get_workflow_count' ,
-					name: jQuery("#new-workflow-title").val()
-				   };
-			create_data = {
-					action: 'create_new_workflow' ,
-					name: jQuery("#new-workflow-title").val(),
-					description: jQuery("#new-workflow-description").val()
-				   };			
-			jQuery.post(ajaxurl, check_for_duplicate_data, function( response ) {
-				jQuery(".changed-data-set span").removeClass("loading");
-				if(response > 0){
-					alert(owf_workflow_create_vars.alreadyExistWorkflow);
-				}
-				else {
-					jQuery.post(ajaxurl, create_data, function( response ) {
-						jQuery(".changed-data-set span").removeClass("loading");
-						if(response){
-							jQuery("#wf_id").val(response);
-							jQuery("#define-workflow-title").val(jQuery("#new-workflow-title").val());
-							jQuery("#define-workflow-description").val(jQuery("#new-workflow-description").val());
-							jQuery("#page_top_lbl").html(jQuery("#new-workflow-title").val() + " (1)") ;
-						}
-						jQuery.modal.close();
-					});		
-				}
-			});
-		});
 		//------------changed workflow check----------
 		set_step_chaned_status = function(){
 	    	changed_step_chk = true;

@@ -3,14 +3,26 @@ function add_option_to_select(obj,dt,lbl,vl)
 	var sel = jQuery("#" + obj).find('option');
 	sel.remove();
 	var appendStr = "";
-	if(!jQuery("#"+obj).attr("size"))appendStr = "<option></option>";
+	if(numKeys(dt)> 1 && !jQuery("#"+obj).attr("size")) {
+		appendStr = "<option></option>";
+	}
+//	alert(numKeys(dt));
+	/*
+	If only user found then select it
+	*/
+	if(numKeys(dt)==1)
+	{
+		var selected_opt = " selected=selected ";		
+	}
+	
+	
 	if(typeof(dt)=="object" && numKeys(dt)>0 && lbl)
 	{		
 		for(var k in dt)
 		{
 			if(vl)
 			{
-				appendStr +="<option value='" + dt[k][vl] + "'>" + dt[k][lbl] + "</option>";
+				appendStr +="<option value='" + dt[k][vl] + "' " + selected_opt + " >" + dt[k][lbl] + "</option>";
 			}
 			else
 			{
@@ -18,6 +30,7 @@ function add_option_to_select(obj,dt,lbl,vl)
 			}
 		}
 		jQuery('#'+obj).append(appendStr);
+		
 	}
 	
 	if(!lbl && !vl)
@@ -28,6 +41,12 @@ function add_option_to_select(obj,dt,lbl,vl)
 		}
 		jQuery('#'+obj).append(appendStr);
 	}
+	
+	if(numKeys(dt)==1)
+	{
+		jQuery("#assignee-set-point").click();		
+	}	
+	
 }
 
 

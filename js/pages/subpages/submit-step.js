@@ -27,7 +27,7 @@ jQuery(document).ready(function() {
 		jQuery(this).parent().children(".date_input").val("");
 	});
 			
-	jQuery("#submitCancel, .modalCloseImg").live("click", function(){
+	jQuery( document ).on("click", "#submitCancel, .modalCloseImg", function(){
 		modal_close();
 	});
 	
@@ -44,7 +44,7 @@ jQuery(document).ready(function() {
 		load_setting();
 	}
 	
-	jQuery("#step_submit").live('click', function(){
+	jQuery( document ).on("click", "#step_submit", function(){
 		jQuery("#new-step-submit-div").modal({
 			minHeight:400,
 			minWidth: 600
@@ -126,7 +126,7 @@ jQuery(document).ready(function() {
 		set_position() ;		
 	}
 	
-	jQuery("#decision-select").live("change", function(){
+	jQuery( document ).on("change", "#decision-select", function(){
 		var get_action = "" ;
 		var v = jQuery(this).val() ;
 		action_setting(v);
@@ -137,27 +137,43 @@ jQuery(document).ready(function() {
 			   };
 		jQuery("#sum_step_info").css("opacity", 1) ;	
 		jQuery("#step-loading-span").addClass("loading");
-		jQuery.post(ajaxurl, data, function( response ) {
-			jQuery("#step-loading-span").removeClass("loading");
-			if(response){
-				var steps = JSON.parse(response) ;
-				if(steps[wfpath]){
-					jQuery("#step-select").removeAttr("disabled"); 
-					add_option_to_select("step-select", steps[wfpath]);
-				}else{					
-					first_last_step_error(wfpath);
-				}
+		jQuery.ajax({
+			type: "POST",
+			url: ajaxurl,
+			data: data,
+			success: function( response ){	
+				jQuery("#step-loading-span").removeClass("loading");
+				if(response){
+					var steps = JSON.parse(response) ;
+					if(steps[wfpath]){
+						jQuery("#step-select").removeAttr("disabled"); 
+						add_option_to_select("step-select", steps[wfpath]);
+						var count = 0;
+					    for(var steps in steps[wfpath])
+					    {
+					        count++;
+					    }
+					    if (count == 1){
+					    	jQuery("#step-select").change();
+					    }
+					}else{					
+						first_last_step_error(wfpath);
+					}
+				}			
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("error while loading the steps list");
 			}			
-		}).error(function () { alert('Internal Server Error'); });	
+		});
 	});
 	
-	jQuery("#step-select").live("change", function(){
+	jQuery( document ).on("change", "#step-select", function(){
 		stepProcess = "" ;
 		data = {
 				action: 'get_users_in_step' ,
 				stepid: jQuery(this).val(),
 				postid: jQuery("#hi_post_id").val(),
-				decision: jQuery("#decision-select").val() 				
+				decision: jQuery("#decision-select").val() 
 			   };
 		
 		jQuery("#actors-list-select").find('option').remove() ;
@@ -166,56 +182,60 @@ jQuery(document).ready(function() {
 		jQuery("#actors-set-select").attr("disabled", true);
 		
 		jQuery(".assign-loading-span").addClass("loading");
-		jQuery.post(ajaxurl, data, function( response ) {
-			if(response=="nodefine" && response=="No dbdata")return;
-			jQuery(".assign-loading-span").removeClass("loading");
-			
-			jQuery("#actor-one-select").removeAttr("disabled");	
-			jQuery("#actors-list-select").removeAttr("disabled");	
-			jQuery("#actors-set-select").removeAttr("disabled");
-			var result={}, users = {} ;
-			if(response){
-				result = JSON.parse(response) ;
-				if( typeof result["users"][0] == 'object') // no users are defined 
-				{
-					users = result["users"] ;					
+		jQuery.ajax({
+			type: "POST",
+			url: ajaxurl,
+			data: data,
+			success: function( response ){
+				if(response=="nodefine" && response=="No dbdata")return;
+				jQuery(".assign-loading-span").removeClass("loading");
+				
+				jQuery("#actor-one-select").removeAttr("disabled");	
+				jQuery("#actors-list-select").removeAttr("disabled");	
+				jQuery("#actors-set-select").removeAttr("disabled");
+				var result={}, users = {} ;
+				if(response){
+					result = JSON.parse(response) ;
+					if( typeof result["users"][0] == 'object') // no users are defined 
+					{
+						users = result["users"] ;					
+					}
+					else
+					{
+						alert(owf_submit_step_vars.noUsersFound);
+					}
+					stepProcess = result["process"] ;
 				}
-				else
-				{
-					alert(owf_submit_step_vars.noUsersFound);
+				// multiple actors applicable to both review and assignment step
+				if(stepProcess == "review" || stepProcess == "assignment" || stepProcess == "publish"){
+				//if(jQuery("#hi_current_process").val() != "review" && stepProcess == "review"){
+					jQuery("#one-actors-div").hide();
+					jQuery("#multi-actors-div").show();
+					add_option_to_select("actors-list-select", users, 'name', 'ID') ;
+				}else{
+					//console.log(users);
+					jQuery("#multi-actors-div").hide();
+					jQuery("#one-actors-div").show();				
+					add_option_to_select("actor-one-select", users, 'name', 'ID') ;
 				}
-				stepProcess = result["process"] ;
-			}
-			// multiple actors applicable to both review and assignment step
-			if(stepProcess == "review" || stepProcess == "assignment"){
-			//if(jQuery("#hi_current_process").val() != "review" && stepProcess == "review"){
-				jQuery("#one-actors-div").hide();
-				jQuery("#multi-actors-div").show();
-				add_option_to_select("actors-list-select", users, 'name', 'ID') ;
-			}else{
-				//console.log(users);
-				jQuery("#multi-actors-div").hide();
-				jQuery("#one-actors-div").show();				
-				add_option_to_select("actor-one-select", users, 'name', 'ID') ;
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("error while loading the user list");
 			}
 		});
-	});	
+	});
 	//--------------------------------	
-	jQuery("#assignee-set-point").live("click", function(){
+	jQuery( document ).on( "click", "#assignee-set-point", function(){
 		
 		var v = jQuery('#actors-list-select option:selected').val();
 		var t = jQuery('#actors-list-select option:selected').text();
 		if(option_exist_chk(v)){
-			if(jQuery("#actors-set-select option").length == 1 && stepProcess == "publish" ){
-				alert(owf_submit_step_vars.multipleUsers + " " + stepProcess + " " + owf_submit_step_vars.step);
-				return;
-			}
 			jQuery('#actors-set-select').append('<option value=' + v + '>' + t + '</option>');
 		}
 		return false;
 	});
 	
-	jQuery("#assignee-unset-point").live("click", function(){
+	jQuery( document ).on( "click", "#assignee-unset-point" , function(){
 		var v = jQuery('#actors-set-select option:selected').val();
 		jQuery("#actors-set-select option[value='" + v + "']").remove();
 		return false;
@@ -229,7 +249,7 @@ jQuery(document).ready(function() {
 		}
 	}	
 	//-----------save -------------------	
-	jQuery("#submitSave").live("click", function(){
+	jQuery( document ).on( "click", "#submitSave", function(){
 		var obj =this;
 		if(!datacheck())return false;
 		var actors = assign_actor_chk() ;
@@ -274,9 +294,17 @@ jQuery(document).ready(function() {
 			return false;
 		}
 		
-		if(!chk_due_date("due-date")){
-			alert(owf_submit_step_vars.dueDateRequired);
-			return false;
+		/* This is for checking that reminder email checkbox is selected in workflow settings.
+		If YES then Due Date is Required Else Not */
+		if(owf_submit_step_vars.drdb != "" || owf_submit_step_vars.drda != "")
+		{
+			if (jQuery("#due-date").val() == '') {
+				alert(owf_submit_step_vars.dueDateRequired);
+				return false;
+			}
+			if(!chk_due_date("due-date")){
+				return false;
+			}
 		}
 		
 		return true;
@@ -310,7 +338,7 @@ jQuery(document).ready(function() {
 	}
 	
 	//--------complate------------
-	jQuery("#immediately-chk").live("click", function(){
+	jQuery( document ).on( "click", "#immediately-chk", function(){
 		if(jQuery(this).attr("checked") == "checked"){
 			jQuery("#immediately-span").hide() ;
 		}else{
@@ -318,7 +346,7 @@ jQuery(document).ready(function() {
 		}
 	}) ;
 	
-	jQuery("#completeSave").live("click", function(){
+	jQuery( document ).on( "click", "#completeSave", function(){
 		var im_date = "" ;
 		if(jQuery("#immediately-span").length > 0 && jQuery("#immediately-span").css("display") != "none")
 		{
@@ -370,7 +398,7 @@ jQuery(document).ready(function() {
 	});
 	
 	//--------complate------------
-	jQuery("#cancelSave").live("click", function(){
+	jQuery( document ).on( "click", "#cancelSave", function(){
 		var obj =this;
 		data = {
 				action: 'change_workflow_status_to_cancelled',
