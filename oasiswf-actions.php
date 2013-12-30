@@ -90,16 +90,18 @@ class FCWorkflowActions
 				}
 			}
 
+         $role = FCProcessFlow::get_current_user_role() ;
+
+         // do not hide the ootb publish section for skip_workflow_roles option, but hide it if the post is in the workflow
+         $skip_workflow_roles = get_site_option('oasiswf_skip_workflow_roles') ;
+         if( (is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles ))){
+            FCWorkflowActions::ootb_publish_section_hide() ;
+         }
+
+
 		   if( isset($_GET['post']) && $_GET["post"] && isset($_GET['action']) && $_GET["action"] == "edit")
 			{
-            $role = FCProcessFlow::get_current_user_role() ;
             $row = $wpdb->get_row("SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE post_id = {$_GET["post"]} AND action_status = 'assignment'") ;
-
-            // do not hide the ootb publish section for skip_workflow_roles option, but hide it if the post is in the workflow
-            $skip_workflow_roles = get_site_option('oasiswf_skip_workflow_roles') ;
-            if( (is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles )) || $row){
-               FCWorkflowActions::ootb_publish_section_hide() ;
-            }
 
    			//--------generate abort workflow link---------
 
