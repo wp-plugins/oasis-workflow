@@ -11,7 +11,7 @@ $per_page=15;
 ?>
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-posts-post"><br></div>
-	<h2>Edit Workflows<a href="admin.php?page=oasiswf-add" class="add-new-h2"><?php echo __("Add New", "oasisworkflow"); ?></a></h2>
+	<h2>Edit Workflows</h2>
 	<div id="view-workflow">
 		<div class="tablenav">
 			<ul class="subsubsub">
@@ -69,12 +69,7 @@ $per_page=15;
 							$count++;
 						}
 					else:
-						if( $action == "all" ){
-							$msg = "<label>" . __("You don't have any workflows. Let's go ", "oasisworkflow") ."</label>
-								<a href='admin.php?page=oasiswf-add'>" . __("create one", "oasisworkflow"). "</a> !" ;
-						}else{
-							$msg = __("You don't have $action workflows", "oasisworkflow") ;
-						}
+						$msg = "<label>" . __("You don't have any workflows.", "oasisworkflow") . "</label>";
 						echo "<tr>" ;
 						echo "<td colspan='8' class='no-found-lbl'>$msg</td>" ;
 						echo "</tr>" ;
