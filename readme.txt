@@ -3,7 +3,7 @@ Contributors: nuggetsol
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit
 Requires at least: 3.6
 Tested up to: 3.8
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 
 Workflow process for WordPress made simple with Oasis Workflow.
 
@@ -126,3 +126,6 @@ If these workflows are different, they need to be recreated with this upgrade.
 * Fixed issue with sign off caused due to the addition of  "take over" functionality by core Wordpress.
 * We have removed the connection type from the connection settings popup. The plugin defaults to one specific connection type. You might see the workflow visual representation to be a bit awkward. All you have to do is to save the workflow and it will auto-correct the connections.
 
+= Version 1.0.9 =
+* removed a call to wp-load.php to help with performance
+* added visual indicator to the first step 

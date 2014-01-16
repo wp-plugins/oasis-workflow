@@ -46,8 +46,11 @@ jQuery(document).ready(function() {
 	
 	jQuery( document ).on("click", "#step_submit", function(){
 		jQuery("#new-step-submit-div").modal({
-			minHeight:400,
-			minWidth: 600
+		    onShow: function (dlg) {
+		        jQuery(dlg.container).css('height', 'auto');
+		        jQuery(dlg.wrap).css('overflow', 'auto'); // or try ;
+		        jQuery.modal.update();
+		    }	
 		});
 		wfpath = "";
 		stepProcess = "";

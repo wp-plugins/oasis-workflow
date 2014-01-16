@@ -3,12 +3,12 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Easily create graphical workflows to manage your work.
- Version: 1.0.8
+ Version: 1.0.9
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
 ----------------------------------------------------------------------
-Copyright 2011-2013 Nugget Solutions Inc.
+Copyright 2011-2014 Nugget Solutions Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,14 +28,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.8' );
-define( 'OASISWF_DB_VERSION','1.0.8');
+define( 'OASISWF_VERSION' , '1.0.9' );
+define( 'OASISWF_DB_VERSION','1.0.9');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
 define( 'OASISWF_URL' , plugins_url( '/', __FILE__ ) );
 define( 'OASISWF_SETTINGS_PAGE' , add_query_arg( 'page', 'ef-settings', get_admin_url( null, 'admin.php' ) ) );
-define( 'OASISWF_SITE_URL' , site_url() );
 load_plugin_textdomain('oasisworkflow', false, basename( dirname( __FILE__ ) ) . '/languages' );
 
 //Initialization
@@ -231,6 +230,10 @@ class FCInitialization
 			// nothing to upgrade
 		}
 		else if ($pluginOptions['version'] == "1.0.7")
+		{
+			// nothing to upgrade
+		}
+		else if ($pluginOptions['version'] == "1.0.8")
 		{
 			// nothing to upgrade
 		}
@@ -584,12 +587,11 @@ class FCLoadWorkflow
 	{
 	   FCInitialization::run_on_upgrade();
 		require_once( OASISWF_PATH . "includes/workflow-base.php" ) ;
-		if( isset($_GET['wf-popup']) && $_GET["wf-popup"] )
-		{
-			global $plugin_workflow ;
-			$plugin_workflow = new FCWorkflowCRUD() ;
-			require_once( OASISWF_PATH . "includes/pages/subpages/step-info.php" );
-		}
+	}
+
+	function load_step_info()
+	{
+      require_once( OASISWF_PATH . "includes/pages/subpages/step-info-content.php" );
 	}
 
    function register_network_admin_menu_pages()
@@ -616,6 +618,13 @@ class FCLoadWorkflow
 	    				'activate_plugins',
 	    				'oasiswf-admin',
 	    				array('FCLoadWorkflow','list_workflows'));
+
+	    add_submenu_page('oasiswf-admin',
+	    				__('New Workflow', 'oasisworkflow'),
+	    				__('New Workflow', 'oasisworkflow'),
+	    				'activate_plugins',
+	    				'oasiswf-add',
+	    				array('FCLoadWorkflow','create_workflow'));
 
 	    add_submenu_page('oasiswf-admin',
 	    				__('Settings', 'oasisworkflow'),
@@ -645,7 +654,7 @@ class FCLoadWorkflow
 						'oasiswf-inbox',
 						array('FCLoadWorkflow','workflow_inbox'),'', $position);
 
-		 add_submenu_page('oasiswf-inbox',
+		add_submenu_page('oasiswf-inbox',
 	    				__('Inbox', 'oasisworkflow'),
 	    				__('Inbox'. $count, 'oasisworkflow'),
 	    				$current_role,
@@ -667,6 +676,11 @@ class FCLoadWorkflow
 
 	function create_workflow()
 	{
+		include( OASISWF_PATH . "includes/pages/subpages/workflow-create-message.php" ) ;
+	}
+
+	function edit_workflow()
+	{
 		$create_workflow = new FCWorkflowCRUD() ;
 		include( OASISWF_PATH . "includes/pages/workflow-create.php" ) ;
 	}
@@ -674,7 +688,7 @@ class FCLoadWorkflow
 	function list_workflows()
 	{
 		if(isset($_GET['wf_id']) && $_GET["wf_id"]){
-			FCLoadWorkflow::create_workflow() ;
+			FCLoadWorkflow::edit_workflow() ;
 		}else{
 			$list_workflow = new FCWorkflowList() ;
 			include( OASISWF_PATH . "includes/pages/workflow-list.php" ) ;
@@ -776,7 +790,7 @@ class FCLoadWorkflow
    		                   true ) ;
          wp_localize_script( 'drag-drop-jsplumb', 'drag_drop_jsplumb_vars', array(
    						'clearAllSteps' => __( 'Do you really want to clear all the steps?', 'oasisworkflow' ),
-         				'removeStep' => __( 'This step is already defined.\nDo you really want to remove this step?', 'oasisworkflow' ),
+         				'removeStep' => __( 'This step is already defined.Do you really want to remove this step?', 'oasisworkflow' ),
          				'pathBetween' => __( 'The path between', 'oasisworkflow' ),
          				'stepAnd' => __( 'step and', 'oasisworkflow' ),
          				'incorrect' => __( 'step is incorrect.', 'oasisworkflow' ),
@@ -852,5 +866,6 @@ add_action('wp_ajax_get_reassign_content', array( 'FCWorkflowInbox', 'get_reassi
 add_action('wp_ajax_claim_process', array( 'FCWorkflowInbox', 'claim_process' ) );
 add_action('wp_ajax_reset_assign_actor', array( 'FCWorkflowInbox', 'reset_assign_actor' ) );
 add_action('wp_ajax_get_step_comment', array( 'FCWorkflowInbox', 'get_step_comment' ) );
+add_action('wp_ajax_load_step_info', array( 'FCLoadWorkflow', 'load_step_info' ) );
 
 ?>

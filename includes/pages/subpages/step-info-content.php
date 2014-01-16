@@ -2,15 +2,15 @@
 global $wp_roles, $wpdb ;
 $process_info = "";
 $step_info = "";
-if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
+if( isset($_POST['step_dbid']) && $_POST["step_dbid"] != "nodefine" )
 {
-   $step_dbid = $_GET["step_dbid"];
+   $step_dbid = $_POST["step_dbid"];
 	$step_row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_workflow_steps_table_name() . " WHERE ID = %d" , $step_dbid ) );
 	$step_info = json_decode($step_row->step_info);
 	$process_info = json_decode($step_row->process_info);
 }
 ?>
-<div id="step-setting" class="popup-div">
+<div id="step-setting">
 	<div class="dialog-title"><strong><?php echo __("Step Information", "oasisworkflow");?></strong></div>
 	<div id="step-setting-content" style="overflow:auto;" >
 		<p class="step-name">
@@ -33,7 +33,7 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 				</p>
 			</div>
 			<div class="step-assignee-point">
-				<a href="#" id="step-assignee-set-point"><img src="<?php echo OASISWF_URL . "img/role-set.png";?>" style="border:0px;" /></a><br><br>
+				<a href="#" id="step-assignee-set-point"><img src="<?php echo OASISWF_URL . "img/role-set.png";?>" style="border:0px;" /></a><br>
 				<a href="#" id="step-assignee-unset-point"><img src="<?php echo OASISWF_URL . "img/role-unset.png";?>" style="border:0px;" /></a>
 			</div>
 			<div class="step-assignee-list">
@@ -58,7 +58,7 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 				<div style="float:left;text-align:center;">
 					<label><?php echo __("On Success", "oasisworkflow"); ?></label><br><br>
 					<?php
-					if (isset($_GET['process_name']) && $_GET['process_name'] != "publish")
+					if (isset($_POST['process_name']) && $_POST['process_name'] != "publish")
 					{
 					?>
    					<select id="step-status-select" style="width:150px;margin-top:-5px;">
@@ -213,13 +213,13 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 			</div>
 		</form>
 		<br class="clear">
-		<input type="hidden" id="step_gpid-hi" value="<?php echo $_GET["step_gpid"] ;?>" />
-		<input type="hidden" id="step_dbid-hi" value="<?php echo $_GET["step_dbid"] ;?>" />
+		<input type="hidden" id="step_gpid-hi" value="<?php echo $_POST["step_gpid"] ;?>" />
+		<input type="hidden" id="step_dbid-hi" value="<?php echo $_POST["step_dbid"] ;?>" />
 	</div>
 	<div class="dialog-title" style="padding-bottom:0.5em"></div>
 	<br class="clear">
 	<p class="step-set">
-		<?php if( $_GET["editable"] ):?>
+		<?php if( $_POST["editable"] ):?>
 			<input type="button" id="stepSave" class="button-primary" value="<?php echo __("Save", "oasisworkflow") ;?>"  />
 			<span>&nbsp;</span>
 		<?php endif;?>
@@ -227,25 +227,3 @@ if( isset($_GET['step_dbid']) && $_GET["step_dbid"] != "nodefine" )
 	</p>
 	<br class="clear">
 </div>
-<script type='text/javascript'>
-   jQuery(document).ready(function() {
-   	var step_gpid = jQuery("#step_gpid-hi").val() ;
-   	var lbl = jQuery(document).find( "#" + step_gpid + " label" ).html() ;
-   	jQuery("#step-name").val(lbl) ;
-   	var process_name = jQuery(document).find( "#" + step_gpid ).attr("process-name") ;
-   	if(process_name != "review"){
-   		jQuery("#step-setting-content").css("height","420px");
-   	}else{
-   		jQuery("#step-setting-content").css("height","420px");
-   	}
-   	//jQuery(".step-review").hide();
-   	//setting_db_step_data();
-   	if(jQuery("#" + step_gpid).attr("first_step") == "yes")jQuery("#first_step_check").attr("checked", true);
-
-   	makeWhizzyWig("assignment-email-content","all");
-   	makeWhizzyWig("reminder-email-content","all");
-
-   	jQuery("#TB_window").css({"top":"53%"});
-
-   });
-</script>

@@ -37,7 +37,6 @@ class FCWorkflowList extends FCWorkflowBase
 		echo "<th>" . __("End Date", "oasisworkflow") . "</th>";
 		echo "<th>" . __("Post/Pages in workflow", "oasisworkflow") . "</th>";
 		echo "<th>" . __("Is Valid?", "oasisworkflow") . "</th>";
-		/*echo "<th>" . __("Is Auto Submit?", "oasisworkflow") . "</th>";*/
 		echo "</tr>";
 	}
 

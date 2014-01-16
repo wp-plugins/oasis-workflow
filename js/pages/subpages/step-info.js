@@ -33,7 +33,7 @@ jQuery(document).ready(function() {
 	});
 	
 	jQuery( document ).on( "click", "#stepCancel", function(){
-		popup_remove();
+		jQuery.modal.close(); 
 	});
 	
 	jQuery( document ).on( "click", "#stepSave", function(){
@@ -43,10 +43,14 @@ jQuery(document).ready(function() {
 		jQuery(document).find("#" + step_gpid + " label").html(jQuery("#step-name").val()) ;
 		if(jQuery("#first_step_check").attr("checked")){
 			jQuery(document).find("#" + step_gpid).attr("first_step", "yes") ;
+			jQuery(document).find("#" + step_gpid).css("background-color", "#99CCFF");
+			jQuery(document).find("#" + step_gpid).children("label").css("color", "#000");			
 		}else{
 			jQuery(document).find("#" + step_gpid).attr("first_step", "no") ;
+			jQuery(document).find("#" + step_gpid).css("background-color", "#FFFFFF");
+			jQuery(document).find("#" + step_gpid).children("label").css("color", "#444444");			
 		}
-		popup_remove() ;
+		jQuery.modal.close();
 		
 	});
 	//--------placeholders-------------------

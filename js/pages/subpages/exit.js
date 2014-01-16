@@ -1,6 +1,6 @@
 jQuery(document).ready(function() {
 	if( exit_wfid ){
-		jQuery("#publishing-action").append("<a href='#' id='exit_link' style='float:right;margin-top:10px;'>" + owf_abort_workflow_vars.abortWorkflow + "</a><span class='loading' style='display:none;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>").css({"width":"100%"});
+		jQuery("#publishing-action").append("<div class='abort-workflow-section right'><a href='#' id='exit_link'>" + owf_abort_workflow_vars.abortWorkflow + "</a><span class='loading' class='hidden'></span></div>");
 		jQuery('.error').hide() ;
 	}
 	jQuery( document ).on("click", "#exit_link", function(){

@@ -259,7 +259,11 @@ var jQueryCgmp = jQuery.noConflict();
 		   if( first_step.length ){
 			   jQuery(".fc_action .w").each(function(){		  
 				   var iid = jQuery(this).attr("id") ;			   
-				   if(arr_contains(first_step, iid))jQuery(this).attr("first_step", "yes") ;
+				   if(arr_contains(first_step, iid)) {
+					   jQuery(this).attr("first_step", "yes") ;
+					   jQuery(this).css("background-color", "#99CCFF");
+					   jQuery(this).children("label").css("color", "#000000");					   
+				   }
 			   }) ;
 		   }	  
 	   }
@@ -376,18 +380,43 @@ var jQueryCgmp = jQuery.noConflict();
 	    jQuery("#stepEdit a").click(function(){
 	    	var g_step_id = jQuery(selectedStep).attr("id");
 	    	var step_dbid = jQuery(selectedStep).attr("db-id");
-	    	var hrf = jQuery(this).attr('alt'); 
-	    	var h = 560 ;
 	    	var process_name = jQuery(selectedStep).attr("process-name");
-	    	//if(jQuery(selectedStep).attr("process-name") != "review")
-	    		//h = 520;
-	    	jQuery(this).attr({"href": hrf + 
-	    		"&wf-id=" + jQuery("#wf_id").val() + 
-	    		"&step_gpid=" + g_step_id + 
-	    		"&step_dbid=" + step_dbid +
-	    		"&process_name=" + process_name +
-	    		"&editable=" + wfeditable + 
-	    		"&width=730&height=" + h});
+			step_edit_data = {
+					action : 'load_step_info' ,
+					process_name : process_name,
+					step_gpid : g_step_id,
+					step_dbid : step_dbid,
+					editable : wfeditable
+				   };							
+			jQuery.post(ajaxurl, step_edit_data, function( response ) {
+				jQuery("#step-info-update").html(response);
+				jQuery("#step-info-update").modal({
+				    containerCss: {
+				        padding: 0,
+				        width: 650
+				    },					
+				    onShow: function (dlg) {
+				        jQuery(dlg.container).css('height', 'auto');
+				        jQuery(dlg.wrap).css('overflow', 'auto'); // or try ;
+				        jQuery.modal.update();
+				    }					
+				});
+			   	var step_gpid = jQuery("#step_gpid-hi").val() ;
+			   	var lbl = jQuery(document).find( "#" + step_gpid + " label" ).html() ;
+			   	jQuery("#step-name").val(lbl) ;
+			   	var process_name = jQuery(document).find( "#" + step_gpid ).attr("process-name") ;
+			  	jQuery("#step-setting-content").css("height","420px");
+			   	if(jQuery("#" + step_gpid).attr("first_step") == "yes") {
+			   		jQuery("#first_step_check").attr("checked", true);
+				}
+
+			   	makeWhizzyWig("assignment-email-content","all");
+			   	makeWhizzyWig("reminder-email-content","all");
+
+			   	jQuery("#TB_window").css({"top":"53%"});
+			   	jQuery("#TB_overlay").addClass("hidden");
+			   	jQuery("#TB_load").css({"display":"none"});
+			});	    	
 	    	jQuery("#stepMenu").hide();
 	    	return true;
 	    });

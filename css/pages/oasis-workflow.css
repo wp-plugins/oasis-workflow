@@ -180,6 +180,7 @@ div#workflow-edit-icon {
 
 #new-workflow-create-check{
    font-size:13px;
+   min-height: 150px;
 }
 
 .div-line {
@@ -568,12 +569,10 @@ a.owf_about_link:hover {
    padding:1em;
    -moz-border-radius:1em;
    border-radius:1em; 
-   font-family:helvetica;
    box-shadow: 2px 2px 19px #aaa;
    -o-box-shadow: 2px 2px 19px #aaa;
    -webkit-box-shadow: 2px 2px 19px #aaa;
    -moz-box-shadow: 2px 2px 19px #aaa;
-   font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
 }
 
 #step-setting label{
@@ -601,7 +600,7 @@ a.owf_about_link:hover {
    text-align:center;
 }
 .step-assignee-list p select{
-   width:200px;
+   width:180px;
    border:1px solid #dadada;
    overflow: auto;
    height:100px;
@@ -610,7 +609,7 @@ a.owf_about_link:hover {
 }
 
 .step-assignee-point{
-   margin:55px 10px 0 10px;
+   margin:40px 10px 0 10px;
 }
 
 .step-review-lb {
@@ -704,9 +703,7 @@ a.owf_about_link:hover {
    padding-top: 5px;
 }
 
-
-
-
-
-
-
+.abort-workflow-section {
+   margin-top: 10px;
+   width: 100%;
+}

@@ -347,7 +347,13 @@ jQuery(document).ready(function() {
 		});
 		call_modal = function(){
 			jQuery(inbox_obj).parent().children(".loading").hide();
-			jQuery("#new-step-submit-div").modal();
+			jQuery("#new-step-submit-div").modal({
+			    onShow: function (dlg) {
+			        jQuery(dlg.container).css('height', 'auto');
+			        jQuery(dlg.wrap).css('overflow', 'auto'); // or try ;
+			        jQuery.modal.update();
+			    }					
+			});
 			jQuery( "#due-date" ).datepicker();
 		}
 	});

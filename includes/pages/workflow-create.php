@@ -176,13 +176,13 @@ echo "<div id='connection-setting'>{$create_workflow->connection_setting_html()}
 <ul id="stepMenu" class="contextMenu">
 	<div>Step Menu</div>
 	<li class="edit" id="stepEdit">
-		<a class="thickbox"
-			alt="<?php echo site_url('wp-load.php?wf-popup=step');?>"><?php echo __("Edit", "oasisworkflow") ?></a></li>
+		<a class="thickbox"><?php echo __("Edit", "oasisworkflow") ?></a></li>
 	<?php if($wfeditable):?>
 		<li class="delete" id="stepDelete"><a href="#delete"><?php echo __("Delete", "oasisworkflow") ?></a></li>
 	<?php endif;?>
 	<li class="quit separator" id="stepQuit"><a href="#quit"><?php echo __("Quit", "oasisworkflow") ?></a></li>
 </ul>
+<div id="step-info-update" class="hidden"></div>
 <script type="text/javascript">
 	//-------------------------------------
 	jQuery("#wpbody").css({"position":"inherit"});
