@@ -43,13 +43,14 @@ The plugin provides three processes:
 
 **If you are looking for additional functionality, check out our "Pro" version - Oasis Workflow Pro: https://www.oasisworkflow.com/pricing-purchase**
 **It comes with some additional features like,** 
-* [Multiple Workflows] - Allows you to create multiple workflows
-* [Copy Workflow and Copy Steps] - Allows you to quickly create workflows by using the copy workflow/copy step functionality.
+
+Multiple Workflows - Allows you to create multiple workflows.
+Copy Workflow and Copy Steps - Allows you to quickly create workflows by using the copy workflow/copy step functionality.
 * [Auto Submit](http://www.oasisworkflow.com/auto-submit-to-workflow) - Allows you to automatically submit to workflow(s) with certain conditions.
 * [Workflow Support for Published Content] (http://www.oasisworkflow.com/workflow-support-for-updating-published-content) - Use workflow to edit your published content while keeping the published article online.
-and much more.. 
 
-More details for each feature, screenshots and documentation can be found on [our website]http://www.oasisworkflow.com/
+And much more.. 
+More details for each feature, screenshots and documentation can be found on [our website](http://www.oasisworkflow.com/).
 
 If you need help setting up the roles, we recommend the [User Role Editor plugin](http://wordpress.org/extend/plugins/user-role-editor/ "User Role Editor plugin").
 
