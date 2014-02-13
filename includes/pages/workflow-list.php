@@ -8,6 +8,7 @@ $wfcount = $list_workflow->get_workflow_count() ;
 $count_posts = count($workflows);
 $pagenum=(isset($_GET['paged']) && $_GET["paged"]) ? $_GET["paged"] : 1;
 $per_page=15;
+FCUtility::owf_pro_features();
 ?>
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-posts-post"><br></div>

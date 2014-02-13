@@ -119,9 +119,11 @@ class FCWorkflowBase
    function get_action_history_by_status( $action_status, $post_id )
    {
       global $wpdb;
-      $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE action_status = %s AND post_id = %d ORDER BY create_datetime DESC", $action_status, $post_id ) );
-
-      return $result;
+      if (!empty( $post_id )) {
+         $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE action_status = %s AND post_id = %d ORDER BY create_datetime DESC", $action_status, $post_id ) );
+         return $result;
+      }
+      return null;
    }
 
    function get_action_history_by_post( $post_id )

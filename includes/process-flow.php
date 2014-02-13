@@ -13,6 +13,9 @@ class FCProcessFlow extends FCWorkflowBase
 
 	   //-------submit----------
 		$post_var = isset($_GET['post']) ? $_GET["post"] : "";
+		if ( is_array($post_var) ) {//looks like the user is performing a bulk action, and hence we need not load the workflow javascripts
+		   return false;
+		}
 		$rows = FCProcessFlow::get_action_history_by_status( "assignment", $post_var ) ;
 		if( count( $rows ) == 0 )return "submit" ;
 
@@ -157,7 +160,7 @@ class FCProcessFlow extends FCWorkflowBase
 			$iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
 			if( !$actionfrm )FCWorkflowEmail::send_step_email( $iid ) ; // send mail to the actor .
 		}
-		else if (!is_numeric( $actors )) //multiple actors are assigned in assignment step or publish step
+		else if (!is_numeric( $actors ) && ($step_info->process == "assignment" || $step_info->process == "publish" )) //multiple actors are assigned in assignment step or publish step
 		{
          $arr = explode("@", $actors) ;
          for( $i = 0; $i < count( $arr ); $i++ )
@@ -455,9 +458,9 @@ class FCProcessFlow extends FCWorkflowBase
 			}else{
 				FCProcessFlow::copy_step_status_to_post($_POST["post_id"], $action->step_id, "complete") ;
 			}
+			update_post_meta($_POST["post_id"], "oasis_is_in_workflow", 0); // set the post meta to 0, specifying that the post is out of a workflow.
 			echo $iid;
 		}
-		update_post_meta($_POST["post_id"], "oasis_is_in_workflow", 0); // set the post meta to 0, specifying that the post is out of a workflow.
 		exit();
 	}
 
@@ -509,10 +512,54 @@ class FCProcessFlow extends FCWorkflowBase
             FCWorkflowEmail::send_mail( $user->ID, $title, stripcslashes($_POST["hi_comment"])) ;
          }
 			//---------------------------------------------
+		   update_post_meta($_POST["post_id"], "oasis_is_in_workflow", 0); // set the post meta to 0, specifying that the post is out of a workflow.
 			echo $iid;
 		}
-		update_post_meta($_POST["post_id"], "oasis_is_in_workflow", 0); // set the post meta to 0, specifying that the post is out of a workflow.
 		exit() ;
+	}
+
+	static function get_step_status_by_history_id()
+	{
+	   $action = FCProcessFlow::get_action_history_by_id( $_POST["oasiswf"] ) ;
+	   $step_id = $action->step_id;
+	   $step_result = $_POST["review_result"];
+		$step = FCProcessFlow::get_step_by_id( $step_id ) ;
+
+		if( $step ){
+			$step_info = json_decode( $step->step_info ) ;
+         $step_status = "draft";
+
+			if($step_result=="complete")
+				$step_status = $step_info->status ;
+			else
+				$step_status = $step_info->failure_status ;
+
+			if( $step_status ){
+			   echo $step_status;
+			   exit();
+			}
+		}
+	}
+
+	static function get_step_status_by_step_id()
+	{
+		$step = FCProcessFlow::get_step_by_id( $_POST["step_id"] ) ;
+      $step_result = $_POST["review_result"];
+
+		if( $step ){
+			$step_info = json_decode( $step->step_info ) ;
+         $step_status = "draft";
+
+			if($step_result=="complete")
+				$step_status = $step_info->status ;
+			else
+				$step_status = $step_info->failure_status ;
+
+			if( $step_status ){
+			   echo $step_status;
+			   exit();
+			}
+		}
 	}
 
 	static function copy_step_status_to_post($postid, $stepid, $result, $immediately=null)
@@ -531,9 +578,19 @@ class FCProcessFlow extends FCWorkflowBase
 				global $wpdb;
 				if($immediately){
 					if($step_status == "publish")$step_status = "future" ;
-					$wpdb->update( $wpdb->posts, array("post_date" => $immediately, "post_date_gmt" => $immediately, "post_status" => $step_status ), array( "ID" => $postid ) ) ;
+					$publish_post = array(
+   	   			"ID" => $postid,
+					   "post_date_gmt" => $immediately,
+					   "post_date" => $immediately,
+						"post_status" => $step_status
+					);
+					wp_update_post( $publish_post );
 				}else{
-					$wpdb->update( $wpdb->posts, array( "post_status" => $step_status ), array( "ID" => $postid ) ) ;
+					$update_post = array(
+   	   			"ID" => $postid,
+						"post_status" => $step_status
+					);
+					wp_update_post( $update_post );
 				}
 			}
 		}
@@ -614,9 +671,9 @@ class FCProcessFlow extends FCWorkflowBase
 		   // delete all the unsend emails for this workflow
 		   FCWorkflowEmail::delete_step_email($_POST["exitId"]);
 			$wpdb->update($action_history_table, array( "action_status" => "aborted" ), array( "ID" => $_POST["exitId"] ) ) ;
+		   update_post_meta($action->post_id, "oasis_is_in_workflow", 0); // set the post meta to 0, specifying that the post is out of a workflow.
 			echo $iid ;
 		}
-		update_post_meta($action->post_id, "oasis_is_in_workflow", 0); // set the post meta to 0, specifying that the post is out of a workflow.
 		exit() ;
 	}
 

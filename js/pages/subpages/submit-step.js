@@ -10,7 +10,9 @@ jQuery(document).ready(function() {
 		if(jQuery("#hi_editable").val()){
 			jQuery("#publishing-action").append("<input type='button' id='step_submit' class='button button-primary button-large'" +
 												" value='" + owf_submit_step_vars.signOffButton + "' style='float:left;margin-top:10px;' />" + 
-												"<input type='hidden' name='hi_process_info' id='hi_process_info' />").css({"width":"100%"});
+												"<input type='hidden' name='hi_process_info' id='hi_process_info' />" + 
+												"<input type='hidden' name='hi_oasiswf_redirect' id='hi_oasiswf_redirect' value='step'/>").css({"width":"100%"});
+
 		}else{
 			jQuery("#publish").hide();
 			jQuery("#publishing-action").append("<input type='button' id='step_submit' class='button button-primary button-large' " +
@@ -61,7 +63,7 @@ jQuery(document).ready(function() {
 	//-----------function-------------------
 	
 	
-	first_last_step_error = function(path){
+	first_last_step_message = function(path, oasiswf_id){
 		if(path=="failure"){
 			var msg = owf_submit_step_vars.firstStepMessage;
 			jQuery("#message_div").html(msg).css({"background-color":"#fbd7f0", "border":"1px solid #f989d8"}).show();
@@ -160,7 +162,7 @@ jQuery(document).ready(function() {
 					    	jQuery("#step-select").change();
 					    }
 					}else{					
-						first_last_step_error(wfpath);
+						first_last_step_message(wfpath, jQuery("#hi_oasiswf_id").val());
 					}
 				}			
 			},
@@ -278,7 +280,18 @@ jQuery(document).ready(function() {
 					location.reload();
 				}else{
 					jQuery("#hi_process_info").val(jQuery("#hi_oasiswf_id").val()+"@#@"+jQuery("#decision-select").val()) ;
-					jQuery("#publish").click();
+					// get the step status (success or failure) status and set it on the post form.
+					var step_status_data = {
+						action: 'get_step_status_by_history_id',
+						oasiswf: jQuery("#hi_oasiswf_id").val(),
+						review_result: jQuery("#decision-select").val()
+					};
+					jQuery.post(ajaxurl, step_status_data, function( response ) {
+						if(response){
+							jQuery("#post_status").val(response);
+							jQuery("#post").submit();
+						}
+					});					
 				}				
 			}
 			return false;
@@ -390,13 +403,23 @@ jQuery(document).ready(function() {
 			}
 			else {
 				modal_close() ;
-				jQuery("#publish").click();
-			}
-		});		
-	});	
+				// get the step status (success or failure) status and set it on the post form.
+				var step_status_data = {
+					action: 'get_step_status_by_history_id',
+					oasiswf: jQuery("#hi_oasiswf_id").val(),
+					review_result: 'complete'
+				};
+				jQuery.post(ajaxurl, step_status_data, function( status_response ) {
+					if(status_response){
+						jQuery("#post_status").val(status_response);
+						jQuery("#post").submit();
+					}
+				});
+			 }	
+		});	
+	});			
 	
 	jQuery(".immediately").keydown(function(){
-		
 		jQuery(this).css("background-color", "#ffffff");
 	});
 	

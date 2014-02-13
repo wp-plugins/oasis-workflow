@@ -57,7 +57,7 @@ class FCWorkflowActions
 	static function step_signoff_popup()
 	{
 		global $wpdb, $chkResult;
-				$selected_user = isset($_GET['user']) ? $_GET["user"] : get_current_user_id();
+		$selected_user = isset($_GET['user']) ? $_GET["user"] : get_current_user_id();
 		$chkResult = FCProcessFlow::workflow_submit_check($selected_user);
 		if( get_site_option("oasiswf_activate_workflow") == "active" ){
 
@@ -101,7 +101,7 @@ class FCWorkflowActions
 
 		   if( isset($_GET['post']) && $_GET["post"] && isset($_GET['action']) && $_GET["action"] == "edit")
 			{
-            $row = $wpdb->get_row("SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE post_id = {$_GET["post"]} AND action_status = 'assignment'") ;
+            $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE post_id = %d AND action_status = 'assignment'", $_GET["post"] )) ;
 
    			//--------generate abort workflow link---------
 
@@ -201,7 +201,17 @@ class FCWorkflowActions
 				$wpdb->get_results("DELETE FROM " . FCUtility::get_emails_table_name() . " WHERE history_id = " . $history->ID) ;
 			}
 			$wpdb->get_results("DELETE FROM " . FCUtility::get_action_history_table_name() . " WHERE post_id = " . $postid) ;
+			delete_post_meta($postid, 'oasis_is_in_workflow');
 		}
+	}
+
+	static function redirect_after_signoff( $url ) {
+   	if(isset($_POST['hi_oasiswf_redirect']) AND $_POST['hi_oasiswf_redirect']=='step')
+   	{
+   		wp_redirect(admin_url( 'admin.php?page=oasiswf-inbox' ));
+   		die();
+   	}
+   	return $url;
 	}
 
 	static function localize_submit_workflow_script()
@@ -249,4 +259,8 @@ add_action('wp_ajax_get_users_in_step', array( 'FCProcessFlow', 'get_users_in_st
 add_action('wp_ajax_change_workflow_status_to_complete', array( 'FCProcessFlow', 'change_workflow_status_to_complete' ) );
 add_action('wp_ajax_change_workflow_status_to_cancelled', array( 'FCProcessFlow', 'change_workflow_status_to_cancelled' ) );
 add_action('wp_ajax_exit_post_from_workflow', array( 'FCProcessFlow', 'exit_post_from_workflow' ) );
+add_action('wp_ajax_get_step_status_by_history_id', array( 'FCProcessFlow', 'get_step_status_by_history_id' ) );
+add_action('wp_ajax_get_step_status_by_step_id', array( 'FCProcessFlow', 'get_step_status_by_step_id' ) );
+add_action('redirect_post_location', array( 'FCWorkflowActions', 'redirect_after_signoff' ) );
+
 ?>

@@ -58,6 +58,19 @@ class FCUtility {
 		echo $str;
 	}
 
+	public static function owf_pro_features()
+	{
+      $str= '<div style="width:90%; float:left;  margin: 0px 50px 5px 7px; padding: 10px 10px 10px 10px; border: 1px solid #ddd; background-color:#FFFFE0;">
+                <div style="width:100%; float:left; align: center">' .
+					 	__("If you are looking for additional functionality like \"Multiple Workflows\", \"Workflow Support for Published Content\", \"Auto Submit\", \"Reports\", and much more...", "oasisworkflow")
+					 	. '<br/>' .
+					 	__("check out our \"Pro\" version at - ", "oasisworkflow")
+					 	. '<a target="_blank" href="https://www.oasisworkflow.com/pricing-purchase">' .  __("Oasis Workflow Pro", "oasisworkflow") . '</a>'
+                	. '</div>
+             </div>';
+		echo $str;
+	}
+
    public static function owf_dropdown_roles_multi( $selected ) {
    	$r = '';
    	$p = '';

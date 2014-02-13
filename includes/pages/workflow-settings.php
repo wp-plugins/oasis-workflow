@@ -157,7 +157,6 @@ $auto_submit_post_count = $auto_submit_settings['auto_submit_post_count'];
 					<span><?php _e("About this Plugin:", "oasisworkflow"); ?> </span>
 				</h3>
 				<div class="inside">
-					<a class="owf_about_link" style="background-image:url(<?php echo OASISWF_URL . '/img/nugget-solutions.png'; ?>);" target="_blank" href="http://www.nuggetsolutions.com/"><?php _e("Author's website", "oasisworkflow"); ?>
 					</a> <a class="owf_about_link" style="background-image:url(<?php echo OASISWF_URL . 'img/publish.gif'; ?>);" target="_blank" href="http://oasisworkflow.com/"><?php _e('Plugin webpage', "oasisworkflow"); ?>
 					</a> <a class="owf_about_link" style="background-image:url(<?php echo OASISWF_URL . '/img/faq-icon.png'; ?>);" target="_blank" href="http://oasisworkflow.com/faq/"><?php _e('FAQ', "oasisworkflow"); ?>
 					</a>

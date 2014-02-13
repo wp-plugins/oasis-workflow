@@ -235,9 +235,19 @@ jQuery(document).ready(function() {
 		jQuery("#hi_comment").val(jQuery("#comments").val());
 		jQuery("#save_action").val("submit_post_to_workflow");	
 		
-		jQuery("#post").submit();
-		modal_close();		
-		return;
+		var step_status_data = {
+			action: 'get_step_status_by_step_id',
+			step_id: jQuery("#hi_step_id").val(),
+			review_result: 'complete'
+		};
+		jQuery.post(ajaxurl, step_status_data, function( response ) {
+			if(response){
+				jQuery("#post_status").val(response);
+				jQuery("#post").submit();
+				modal_close();		
+				return;
+			}
+		});	
 	});
 	
 	assign_actor_chk = function(){

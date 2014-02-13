@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Easily create graphical workflows to manage your work.
- Version: 1.0.9
+ Version: 1.0.10
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.9' );
-define( 'OASISWF_DB_VERSION','1.0.9');
+define( 'OASISWF_VERSION' , '1.0.10' );
+define( 'OASISWF_DB_VERSION','1.0.10');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -234,6 +234,10 @@ class FCInitialization
 			// nothing to upgrade
 		}
 		else if ($pluginOptions['version'] == "1.0.8")
+		{
+			// nothing to upgrade
+		}
+		else if ($pluginOptions['version'] == "1.0.9")
 		{
 			// nothing to upgrade
 		}
@@ -526,6 +530,7 @@ class FCInitialization
 						 'step_info' => stripcslashes( $review_step_info ),
 						 'process_info' => stripcslashes( $review_process_info ),
 						 'create_datetime' => current_time('mysql'),
+					    'update_datetime' => current_time('mysql'),
 						 'workflow_id' => $workflow_id
 					 )
 			   );
@@ -539,6 +544,7 @@ class FCInitialization
 						 'step_info' => stripcslashes( $assignment_step_info ),
 						 'process_info' => stripcslashes( $assignment_process_info ),
 						 'create_datetime' => current_time('mysql'),
+					    'update_datetime' => current_time('mysql'),
 						 'workflow_id' => $workflow_id
 					 )
 			   );
@@ -552,6 +558,7 @@ class FCInitialization
 						 'step_info' => stripcslashes( $publish_step_info ),
 						 'process_info' => stripcslashes( $publish_process_info ),
 						 'create_datetime' => current_time('mysql'),
+					    'update_datetime' => current_time('mysql'),
 						 'workflow_id' => $workflow_id
 					 )
 			   );
@@ -618,13 +625,6 @@ class FCLoadWorkflow
 	    				'activate_plugins',
 	    				'oasiswf-admin',
 	    				array('FCLoadWorkflow','list_workflows'));
-
-	    add_submenu_page('oasiswf-admin',
-	    				__('New Workflow', 'oasisworkflow'),
-	    				__('New Workflow', 'oasisworkflow'),
-	    				'activate_plugins',
-	    				'oasiswf-add',
-	    				array('FCLoadWorkflow','create_workflow'));
 
 	    add_submenu_page('oasiswf-admin',
 	    				__('Settings', 'oasisworkflow'),
