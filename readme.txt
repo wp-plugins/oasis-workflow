@@ -42,7 +42,7 @@ The plugin provides three processes:
 - To get you started, the plugin comes with an out of the box workflow. You can also modify the workflow to suit your needs. 
 
 **If you are looking for additional functionality, check out our "Pro" version - Oasis Workflow Pro: https://www.oasisworkflow.com/pricing-purchase**
-**It comes with some additional features like, 
+**It comes with some additional features like,** 
 * [Multiple Workflows] - Allows you to create multiple workflows
 * [Copy Workflow and Copy Steps] - Allows you to quickly create workflows by using the copy workflow/copy step functionality.
 * [Auto Submit](http://www.oasisworkflow.com/auto-submit-to-workflow) - Allows you to automatically submit to workflow(s) with certain conditions.
