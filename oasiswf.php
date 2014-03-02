@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Easily create graphical workflows to manage your work.
- Version: 1.0.10
+ Version: 1.0.11
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.10' );
-define( 'OASISWF_DB_VERSION','1.0.10');
+define( 'OASISWF_VERSION' , '1.0.11' );
+define( 'OASISWF_DB_VERSION','1.0.11');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -129,7 +129,7 @@ class FCInitialization
 		FCInitialization::delete_for_site();
 	}
 
-	function run_on_activation()
+	static function run_on_activation()
 	{
 		$pluginOptions = get_site_option('oasiswf_info');
 		if ( false === $pluginOptions )
@@ -189,12 +189,12 @@ class FCInitialization
 			wp_schedule_event(time(), 'daily', 'oasiswf_email_schedule');
 	}
 
-	function run_for_site( )
+	static function run_for_site( )
 	{
 	   FCInitialization::install_site_database();
 	}
 
-	function run_on_upgrade( )
+	static function run_on_upgrade( )
 	{
 	   $pluginOptions = get_site_option('oasiswf_info');
 		if ($pluginOptions['version'] == "1.0")
@@ -241,6 +241,10 @@ class FCInitialization
 		{
 			// nothing to upgrade
 		}
+		else if ($pluginOptions['version'] == "1.0.10")
+		{
+			// nothing to upgrade
+		}
 
 		// update the version value
 		$oasiswf_info=array(
@@ -250,7 +254,7 @@ class FCInitialization
 		update_site_option('oasiswf_info', $oasiswf_info) ;
 	}
 
-	function run_on_uninstall()
+	static function run_on_uninstall()
 	{
 		if( !defined( 'ABSPATH') && !defined('WP_UNINSTALL_PLUGIN') )
 			exit();
@@ -280,7 +284,7 @@ class FCInitialization
 
 	}
 
-	function delete_for_site( )
+	static function delete_for_site( )
 	{
 	   global $wpdb;
 		$wpdb->query("DROP TABLE IF EXISTS " . FCUtility::get_emails_table_name());
@@ -288,7 +292,7 @@ class FCInitialization
 		$wpdb->query("DROP TABLE IF EXISTS " . FCUtility::get_action_table_name());
 	}
 
-	function run_on_add_blog($blog_id, $user_id, $domain, $path, $site_id, $meta )
+	static function run_on_add_blog($blog_id, $user_id, $domain, $path, $site_id, $meta )
 	{
 	    global $wpdb;
 	    if (is_plugin_active_for_network(basename( dirname( __FILE__ )) . '/oasiswf.php'))
@@ -300,7 +304,7 @@ class FCInitialization
 	    }
 	}
 
-	function run_on_delete_blog($blog_id, $drop )
+	static function run_on_delete_blog($blog_id, $drop )
 	{
 		global $wpdb;
       switch_to_blog($blog_id);
@@ -308,7 +312,20 @@ class FCInitialization
 	   restore_current_blog();
 	}
 
-	function upgrade_database_101()
+   static function add_plugin_row_meta( $input, $file ) {
+   	if ( $file != 'oasis-workflow/oasiswf.php' )
+   		return $input;
+
+   	$links = array(
+   		'<a href="https://www.oasisworkflow.com/pricing-purchase/" target="_blank">' . esc_html__( 'Get the Pro Version', 'oasisworkflow' ) . '</a>'
+   	);
+
+   	$input = array_merge( $input, $links );
+
+   	return $input;
+   }
+
+	static function upgrade_database_101()
 	{
 		//rename table for multisite support
 		global $wpdb;
@@ -349,7 +366,7 @@ class FCInitialization
 		}
 	}
 
-	function upgrade_database_103()
+	static function upgrade_database_103()
 	{
 		global $wpdb;
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -359,7 +376,7 @@ class FCInitialization
 		$wpdb->query("ALTER TABLE {$table_name} ADD COLUMN reminder_date_after date DEFAULT NULL");
 	}
 
-	function upgrade_database_104()
+	static function upgrade_database_104()
 	{
 	   $skip_workflow_roles = array("administrator");
 	   update_site_option("oasiswf_skip_workflow_roles", $skip_workflow_roles) ;
@@ -369,7 +386,7 @@ class FCInitialization
 	   update_site_option("oasiswf_activate_workflow", "active") ;
 	}
 
-	function install_admin_database()
+	static function install_admin_database()
 	{
 		global $wpdb;
 		if (!empty ($wpdb->charset))
@@ -419,7 +436,7 @@ class FCInitialization
 		FCInitialization::install_admin_data();
 	}
 
-	function install_site_database()
+	static function install_site_database()
 	{
 		global $wpdb;
 		if (!empty ($wpdb->charset))
@@ -488,7 +505,7 @@ class FCInitialization
 
    }
 
-	function install_admin_data()
+	static function install_admin_data()
 	{
 	    global $wpdb;
 
@@ -564,7 +581,7 @@ class FCInitialization
 			   );
 	}
 
-	function run_on_deactivation()
+	static function run_on_deactivation()
 	{
 		/*
 		 * Mail schedule remove
@@ -590,18 +607,18 @@ class FCLoadWorkflow
 		add_action('network_admin_menu',  array('FCLoadWorkflow', 'register_network_admin_menu_pages'));
 	}
 
-	function page_load_control()
+	static function page_load_control()
 	{
 	   FCInitialization::run_on_upgrade();
 		require_once( OASISWF_PATH . "includes/workflow-base.php" ) ;
 	}
 
-	function load_step_info()
+	static function load_step_info()
 	{
       require_once( OASISWF_PATH . "includes/pages/subpages/step-info-content.php" );
 	}
 
-   function register_network_admin_menu_pages()
+   static function register_network_admin_menu_pages()
    {
       FCLoadWorkflow::register_admin_menu_pages();
 
@@ -610,7 +627,7 @@ class FCLoadWorkflow
 		add_action('admin_footer', array('FCLoadWorkflow', 'load_js_files_footer'));
    }
 
-	function register_admin_menu_pages()
+	static function register_admin_menu_pages()
 	{
 		add_menu_page(__('Workflow Admin', 'oasisworkflow'),
 					  	__('Workflow Admin', 'oasisworkflow'),
@@ -634,7 +651,7 @@ class FCLoadWorkflow
 	    				array('FCLoadWorkflow','workflow_settings'));
 	}
 
-	function register_menu_pages()
+	static function register_menu_pages()
 	{
 		$current_role = FCWorkflowBase::get_current_user_role() ;
 		$position = FCWorkflowBase::get_menu_position() ;
@@ -674,18 +691,18 @@ class FCLoadWorkflow
 		add_action('admin_footer', array('FCLoadWorkflow', 'load_js_files_footer'));
 	}
 
-	function create_workflow()
+	static function create_workflow()
 	{
 		include( OASISWF_PATH . "includes/pages/subpages/workflow-create-message.php" ) ;
 	}
 
-	function edit_workflow()
+	static function edit_workflow()
 	{
 		$create_workflow = new FCWorkflowCRUD() ;
 		include( OASISWF_PATH . "includes/pages/workflow-create.php" ) ;
 	}
 
-	function list_workflows()
+	static function list_workflows()
 	{
 		if(isset($_GET['wf_id']) && $_GET["wf_id"]){
 			FCLoadWorkflow::edit_workflow() ;
@@ -695,24 +712,24 @@ class FCLoadWorkflow
 		}
 	}
 
-	function workflow_inbox()
+	static function workflow_inbox()
 	{
 		$inbox_workflow = new FCWorkflowInbox() ;
 		include( OASISWF_PATH . "includes/pages/workflow-inbox.php" ) ;
 	}
 
-	function workflow_history()
+	static function workflow_history()
 	{
 		$history_workflow = new FCWorkflowHistory() ;
 		include( OASISWF_PATH . "includes/pages/workflow-history.php" ) ;
 	}
 
-	function workflow_settings()
+	static function workflow_settings()
 	{
 		include( OASISWF_PATH . "includes/pages/workflow-settings.php" ) ;
 	}
 
-	function add_css_files($page)
+	static function add_css_files($page)
 	{
    	wp_enqueue_style( 'thickbox' );
 	   wp_enqueue_style( 'owf-css',
@@ -740,7 +757,7 @@ class FCLoadWorkflow
                          'all');
 	}
 
-	function add_js_files()
+	static function add_js_files()
 	{
 		echo "<script type='text/javascript'>
 					var wf_structure_data = '' ;
@@ -759,7 +776,7 @@ class FCLoadWorkflow
 		}
 	}
 
-	function load_js_files_footer()
+	static function load_js_files_footer()
 	{
 		wp_enqueue_script( 'thickbox' );
 		wp_enqueue_script( 'jquery-ui-core' ) ;
@@ -849,6 +866,7 @@ class FCLoadWorkflow
 add_action( 'wpmu_new_blog', array( 'FCInitialization', 'run_on_add_blog' ), 10, 6);
 add_action( 'delete_blog', array( 'FCInitialization', 'run_on_delete_blog' ), 10, 2);
 add_action( 'admin_init', array( 'FCInitialization', 'run_on_upgrade' ));
+add_filter( 'plugin_row_meta', array( 'FCInitialization', 'add_plugin_row_meta' ), 10, 2 );
 
 include( OASISWF_PATH . "oasiswf-utilities.php" ) ;
 $fcLoadWorkflow = new FCLoadWorkflow();

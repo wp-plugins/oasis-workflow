@@ -1,4 +1,3 @@
-<link rel='stylesheet' href='<?php echo OASISWF_URL . "css/pages/workflow-create.css";?>' type='text/css' />
 <?php
 wp_enqueue_script( 'owf-workflow-history',
                    OASISWF_URL. 'js/pages/subpages/history_graphic.js',

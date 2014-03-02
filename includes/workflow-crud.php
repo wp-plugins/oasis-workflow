@@ -52,11 +52,10 @@ class FCWorkflowCRUD extends FCWorkflowBase
 			$data = array(
 						'name' => stripcslashes( trim( $wf->name )),
 						'description' => stripcslashes( $wf->description ),
-					   /*'is_auto_submit' => $wf->is_auto_submit,
-			 	      'auto_submit_keywords' => $wf->auto_submit_keywords,*/
 						'version' => $newVersion,
 						'parent_id' => $parentId,
-						'create_datetime' => current_time('mysql')
+						'create_datetime' => current_time('mysql'),
+			         'update_datetime' => current_time('mysql')
 					);
 			$workflow_table = FCUtility::get_workflows_table_name();
 			$newWfId = FCWorkflowCRUD::insert_to_table($workflow_table, $data );

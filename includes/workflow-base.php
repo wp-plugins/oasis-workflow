@@ -7,7 +7,7 @@ global $workflow_message ;
 /*************************************/
 class FCWorkflowBase
 {
-	function get_current_user_role()
+	static function get_current_user_role()
 	{
 		global $wp_roles;
 		foreach ( $wp_roles->role_names as $role => $name ) :
@@ -16,7 +16,7 @@ class FCWorkflowBase
 		endforeach;
 	}
 
-	function get_user_role( $user_id )
+	static function get_user_role( $user_id )
 	{
 		global $wp_roles;
 		foreach ( $wp_roles->role_names as $role => $name ) :
@@ -25,7 +25,7 @@ class FCWorkflowBase
 		endforeach;
 	}
 
-	function get_menu_position()
+	static function get_menu_position()
 	{
 		global $menu ;
 		$sp = 0 ; $ep = 0 ;
@@ -39,7 +39,7 @@ class FCWorkflowBase
 		}
 	}
 
-	function get_all_workflows( )
+	static function get_all_workflows( )
 	{
 	   global $wpdb;
 	   $result = $wpdb->get_results( "SELECT * FROM " . FCUtility::get_workflows_table_name() . " ORDER BY name desc" );
@@ -48,7 +48,7 @@ class FCWorkflowBase
 
 	}
 
-	function get_workflow_by_id( $id )
+	static function get_workflow_by_id( $id )
 	{
 	   global $wpdb;
 	   $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_workflows_table_name() . " WHERE ID = %d", $id ) );
@@ -56,7 +56,7 @@ class FCWorkflowBase
 	   return $result;
 	}
 
-	function get_workflow_by_validity( $valid )
+	static function get_workflow_by_validity( $valid )
 	{
 	   global $wpdb;
 	   $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_workflows_table_name() . " WHERE is_valid = %d ORDER BY ID desc", $valid) );
@@ -64,7 +64,7 @@ class FCWorkflowBase
 	   return $result;
 	}
 
-	function get_workflow_by_auto_submit( $auto_submit )
+	static function get_workflow_by_auto_submit( $auto_submit )
 	{
 	   global $wpdb;
 	   $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_workflows_table_name() . " WHERE is_auto_submit = %d AND is_valid = 1 ORDER BY ID desc", $auto_submit) );
@@ -72,7 +72,7 @@ class FCWorkflowBase
 	   return $result;
 	}
 
-	function get_step_by_id ( $id )
+	static function get_step_by_id ( $id )
 	{
 	   global $wpdb;
 
@@ -81,7 +81,7 @@ class FCWorkflowBase
 	   return $result;
 	}
 
-	function get_all_steps( )
+	static function get_all_steps( )
 	{
 	   global $wpdb;
 
@@ -91,7 +91,7 @@ class FCWorkflowBase
 
 	}
 
-	function get_action_history($action_status, $step_id, $post_id, $from_id)
+	static function get_action_history($action_status, $step_id, $post_id, $from_id)
 	{
       global $wpdb;
       $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE action_status = %s AND step_id = %d AND post_id = %d AND from_id = %d",
@@ -100,7 +100,7 @@ class FCWorkflowBase
       return $result;
 	}
 
-   function get_action_history_by_id ( $id )
+   static function get_action_history_by_id ( $id )
    {
       global $wpdb;
       $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE ID = %d ORDER BY create_datetime DESC", $id ) );
@@ -108,7 +108,7 @@ class FCWorkflowBase
       return $result;
    }
 
-   function get_action_history_by_from_id ( $from_id )
+   static function get_action_history_by_from_id ( $from_id )
    {
       global $wpdb;
       $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE from_id = %d", $from_id ) );
@@ -116,7 +116,7 @@ class FCWorkflowBase
       return $result;
    }
 
-   function get_action_history_by_status( $action_status, $post_id )
+   static function get_action_history_by_status( $action_status, $post_id )
    {
       global $wpdb;
       if (!empty( $post_id )) {
@@ -126,7 +126,7 @@ class FCWorkflowBase
       return null;
    }
 
-   function get_action_history_by_post( $post_id )
+   static function get_action_history_by_post( $post_id )
    {
       global $wpdb;
       $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE post_id = %d ORDER BY create_datetime DESC", $post_id ) );
@@ -134,7 +134,7 @@ class FCWorkflowBase
       return $result;
    }
 
-	function get_review_action( $review_status, $actor_id, $history_id )
+	static function get_review_action( $review_status, $actor_id, $history_id )
 	{
 	   global $wpdb;
 	   $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_table_name() . " WHERE review_status = %s AND actor_id = %d AND action_history_id = %d",
@@ -142,28 +142,28 @@ class FCWorkflowBase
 	   return $result;
 	}
 
-	function get_review_action_by_id ( $id )
+	static function get_review_action_by_id ( $id )
 	{
 	   global $wpdb;
 	   $result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_table_name() . " WHERE ID = %d", $id ) );
 	   return $result;
 	}
 
-	function get_review_action_by_history_id ( $history_id )
+	static function get_review_action_by_history_id ( $history_id )
 	{
 	   global $wpdb;
 	   $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_table_name() . " WHERE action_history_id = %d ORDER BY ID DESC", $history_id ) );
 	   return $result;
 	}
 
-	function get_review_action_by_status ( $review_status, $history_id )
+	static function get_review_action_by_status ( $review_status, $history_id )
 	{
 	   global $wpdb;
 	   $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_table_name() . " WHERE review_status = %s AND action_history_id = %d ORDER BY ID DESC", $review_status, $history_id ) );
 	   return $result;
 	}
 
-	function insert_to_table($table, $data)
+	static function insert_to_table($table, $data)
 	{
 		global $wpdb;
 		$result = $wpdb->insert($table, $data);
@@ -179,7 +179,7 @@ class FCWorkflowBase
 		}
 	}
 
-	function get_users_by_role($role, $postId=null, $decision=null)
+	static function get_users_by_role($role, $postId=null, $decision=null)
 	{
 	   global $wpdb;
 	   if( count( $role ) > 0 )
@@ -233,7 +233,7 @@ class FCWorkflowBase
 
 	}
 
-	function get_new_version($parentid)
+	static function get_new_version($parentid)
 	{
 		global $wpdb;
 		$row = $wpdb->get_row( $wpdb->prepare( "SELECT max(version) as maxversion FROM " . FCUtility::get_workflows_table_name() . " WHERE parent_id=%s OR ID=%s", $parentid, $parentid));
@@ -241,7 +241,7 @@ class FCWorkflowBase
 		return $current_version + 1 ;
 	}
 
-	function same_as_save($tablename, $iid)
+	static function same_as_save($tablename, $iid)
 	{
 		global $wpdb;
 		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $tablename WHERE ID = %d", $iid ) ) ;
@@ -260,20 +260,20 @@ class FCWorkflowBase
 		}
 	}
 
-	function get_date_int($ddate=null, $frm="-")
+	static function get_date_int($ddate=null, $frm="-")
 	{
 		$ddate = ( $ddate ) ? $ddate : current_time( 'mysql', 0 ) ;
 		$arr = explode($frm, $ddate) ;
 		return $arr[0] * 10000 + $arr[1] * 100 + $arr[2] * 1   ;
 	}
 
-	function format_date_for_db($ddate, $frm="/")
+	static function format_date_for_db($ddate, $frm="/")
 	{
 		$arr = explode( $frm, $ddate ) ;
 		return $arr[2] . "-" . $arr[0] . "-" . $arr[1] ;
 	}
 
-	function format_date_for_display($ddate, $frm="-", $dateform="date")
+	static function format_date_for_display($ddate, $frm="-", $dateform="date")
 	{
 		if( $dateform == "date" ){
 			if( $ddate == "0000-00-00" ) return "";
@@ -293,7 +293,7 @@ class FCWorkflowBase
 		}
 	}
 
-	function get_page_link($count_posts,$pagenum,$per_page=20)
+	static function get_page_link($count_posts,$pagenum,$per_page=20)
 	{
 		$allpages=ceil($count_posts / $per_page);
 		$base= add_query_arg( 'paged', '%#%' );
@@ -312,7 +312,7 @@ class FCWorkflowBase
 		echo $page_links_text;
 	}
 
-	function get_postcount_in_wf($wfid)
+	static function get_postcount_in_wf($wfid)
 	{
 		global $wpdb;
 		$sql = "SELECT DISTINCT(A.post_id)
@@ -328,7 +328,7 @@ class FCWorkflowBase
 		//return $wfid ;
 	}
 
-	function get_pre_next_date($ddate, $frm="next", $days=1)
+	static function get_pre_next_date($ddate, $frm="next", $days=1)
 	{
 		$date = new DateTime($ddate);
 
@@ -342,7 +342,7 @@ class FCWorkflowBase
 		return gmdate("Y-m-d", $dstamp) ;
 	}
 
-	function get_assigned_post($postid = null, $selected_user = null, $frm = "rows")
+	static function get_assigned_post($postid = null, $selected_user = null, $frm = "rows")
 	{
 		global $wpdb;
 		if ( is_numeric( $selected_user )){
@@ -370,14 +370,14 @@ class FCWorkflowBase
 		return $result;
 	}
 
-	function get_count_assigned_post()
+	static function get_count_assigned_post()
 	{
 		$selected_user = isset( $_GET['user'] ) ? $_GET["user"] : null;
 		$wfactions = FCWorkflowBase::get_assigned_post( null, $selected_user ) ;
 		return count($wfactions);
 	}
 
-	function get_pre_next_action($fromid)
+	static function get_pre_next_action($fromid)
 	{
 		$action = FCWorkflowBase::get_action_history_by_id( $fromid ) ;
 		if($action->action_status == "processed"){
@@ -387,7 +387,7 @@ class FCWorkflowBase
 		}
 	}
 
-	function get_pre_action($wfid)
+	static function get_pre_action($wfid)
 	{
 		$action = FCWorkflowBase::get_action_history_by_id( $wfid ) ;
 		if( $action->from_id == 0 ){
@@ -397,7 +397,7 @@ class FCWorkflowBase
 		}
 	}
 
-	function get_comment_count($actionid)
+	static function get_comment_count($actionid)
 	{
 		$action = FCWorkflowInbox::get_action_history_by_id( $actionid ) ;
 		$i = 0 ;
@@ -412,7 +412,7 @@ class FCWorkflowBase
 		return $i ;
 	}
 
-	function get_gpid_dbid($wpinfo, $stepid, $frm="")
+	static function get_gpid_dbid($wpinfo, $stepid, $frm="")
 	{
 		if( is_object( $wpinfo ) ){
 			$wf_steps = $wpinfo->steps ;
@@ -451,7 +451,7 @@ class FCWorkflowBase
 		return false;
 	}
 
-	function get_process_steps($stepid, $direct="source")
+	static function get_process_steps($stepid, $direct="source")
 	{
 		$step = FCProcessFlow::get_step_by_id( $stepid ) ;
 		if( $step ){
@@ -489,7 +489,7 @@ class FCWorkflowBase
 		return false;
 	}
 
-	function get_user_name($userid)
+	static function get_user_name($userid)
 	{
 		$user = get_userdata($userid) ;
 		if( $user )return $user->data->display_name ;

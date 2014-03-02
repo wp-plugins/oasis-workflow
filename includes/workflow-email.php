@@ -50,11 +50,15 @@ class FCWorkflowEmail extends FCWorkflowBase
    		$messages->assign_subject = (!empty($subject_line)) ? $blog_name . $messages->assign_subject : $blog_name . __("You have an assignment", "oasisworkflow");
    		$messages->assign_content = (!empty($content_line)) ? $messages->assign_content : __("You have an assignment related to post - " . $post_link, "oasisworkflow");
 
-
 			foreach ($messages as $k => $v) {
 				$v = str_replace("%first_name%", $first_name, $v);
 				$v = str_replace("%last_name%", $last_name, $v);
-				$v = str_replace("%post_title%", '<a href=' . $post_url . ' target="_blank">' . $post_title . '</a>', $v);
+				if ($k === "assign_content" || $k === "reminder_content") { //replace %post_title% with a link to the post
+				   $v = str_replace("%post_title%", '<a href=' . $post_url . ' target="_blank">' . $post_title . '</a>', $v);
+				}
+				if ($k === "assign_subject" || $k === "reminder_subject") { // since its a email subject, we don't need to have a link to the post
+				   $v = str_replace("%post_title%", '"' . $post_title . '"', $v);
+				}
 				$messages->$k = $v ;
 			}
 			return 	$messages ;
