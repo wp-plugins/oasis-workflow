@@ -42,14 +42,15 @@ The plugin provides three processes:
 - To get you started, the plugin comes with an out of the box workflow. You can also modify the workflow to suit your needs. 
 
 **If you are looking for additional functionality, check out our "Pro" version - Oasis Workflow Pro: https://www.oasisworkflow.com/pricing-purchase**
-**It comes with some additional features like, 
-* [Multiple Workflows] - Allows you to create multiple workflows
-* [Copy Workflow and Copy Steps] - Allows you to quickly create workflows by using the copy workflow/copy step functionality.
-* [Auto Submit](http://www.oasisworkflow.com/auto-submit-to-workflow) - Allows you to automatically submit to workflow(s) with certain conditions.
-* [Workflow Support for Published Content] (http://www.oasisworkflow.com/workflow-support-for-updating-published-content) - Use workflow to edit your published content while keeping the published article online.
-and much more.. 
+**It comes with some additional features like,** 
 
-More details for each feature, screenshots and documentation can be found on [our website]http://www.oasisworkflow.com/
+* Multiple Workflows - Allows you to create multiple workflows.
+* Copy Workflow and Copy Steps - Allows you to quickly create workflows by using the copy workflow/copy step functionality.
+* [Auto Submit](http://www.oasisworkflow.com/auto-submit-to-workflow) - Allows you to automatically submit to workflow(s) with certain conditions.
+* [Workflow Support for Published Content](http://www.oasisworkflow.com/workflow-support-for-updating-published-content) - Use workflow to edit your published content while keeping the published article online.
+* And much more.. 
+
+More details for each feature, screenshots and documentation can be found on [our website](http://www.oasisworkflow.com/).
 
 **Supported languages**
  - English
@@ -61,7 +62,11 @@ If you need help setting up the roles, we recommend the [User Role Editor plugin
 
 Videos to help you get started with Oasis Workflow:
 
+Applicable for Oasis Workflow Pro - when creating a new workflow. However, this video is helpful to understand how to modify the out of the box workflow. 
+
 [youtube http://www.youtube.com/watch?v=PPBJns2p-zU]
+
+How does the workflow actually works? Understand the process...
 
 [youtube http://www.youtube.com/watch?v=SuOCBf_mLpc]
 
