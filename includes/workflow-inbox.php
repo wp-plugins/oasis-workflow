@@ -109,6 +109,15 @@ class FCWorkflowInbox extends FCWorkflowBase
 			$data = (array)$action ;
 			if( $data["assign_actor_id"] != -1 ){
 				unset( $data["ID"] ) ;
+				if ( empty($data['due_date']) || $data['due_date'] == '0000-00-00') {
+				   unset($data['due_date']);
+				}
+				if ( empty($data['reminder_date']) || $data['reminder_date'] == '0000-00-00') {
+				   unset($data['reminder_date']);
+				}
+				if ( empty($data['reminder_date_after']) || $data['reminder_date_after'] == '0000-00-00') {
+				   unset($data['reminder_date_after']);
+				}
 				$data["assign_actor_id"] = $_POST["reassign_id"] ;
 				$data["from_id"] = $_POST["oasiswf"] ;
 				$data["create_datetime"] = current_time('mysql') ;
@@ -131,6 +140,12 @@ class FCWorkflowInbox extends FCWorkflowBase
 				$review = (array)$review ;
 				$reviewId = $review["ID"] ;
 				unset( $review["ID"] ) ;
+				if ( empty($review['due_date']) || $review['due_date'] == '0000-00-00') {
+				   unset($review['due_date']);
+				}
+				if ( empty($review['comments'] )) {
+				   unset($review['comments']);
+				}
 				$review["actor_id"] = $_POST["reassign_id"] ;
 				$r_iid = FCWorkflowInbox::insert_to_table( $action_table, $review ) ;
 				if( $r_iid ){

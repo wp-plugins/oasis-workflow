@@ -137,13 +137,13 @@ class FCProcessFlow extends FCWorkflowBase
 	{
 	   // reminder days BEFORE the due date
 		$reminder_days = get_site_option("oasiswf_reminder_days") ;
-		if ($reminder_days) {
+		if ($reminder_days && isset($data["due_date"] )) {
 		   $data["reminder_date"] = FCProcessFlow::get_pre_next_date( $data["due_date"], "pre", $reminder_days) ;
 		}
 
 		// reminder days AFTER the due date
 		$reminder_days_after = get_site_option("oasiswf_reminder_days_after") ;
-		if ($reminder_days_after) {
+		if ($reminder_days_after && isset($data["due_date"] )) {
 		   $data["reminder_date_after"] = FCProcessFlow::get_pre_next_date( $data["due_date"], "next", $reminder_days_after) ;
 		}
 
@@ -177,7 +177,8 @@ class FCProcessFlow extends FCWorkflowBase
 
 			$redata = array(
 						'review_status' => 'assignment',
-						'action_history_id' => $iid
+						'action_history_id' => $iid,
+						'update_datetime' => current_time('mysql')
 					);
 
 			$arr = explode("@", $actors) ;
@@ -214,22 +215,22 @@ class FCProcessFlow extends FCWorkflowBase
 					'comment' => json_encode( $acomments ) ,
 					'step_id' => $stepId,
 					'post_id' => $postId,
-					'from_id' => '',
-					'due_date' => '',
+					'from_id' => '0',
 					'create_datetime' => $post->post_date
 				);
 		$aiid = FCProcessFlow::save_action( $adata, $auserid, "", "temp") ;		// This action doesn't send email.
 		//-----------------------------------------
-		$due_date = $dueDate != null ? FCWorkflowCRUD::format_date_for_db( $dueDate ) : null;
 		$data = array(
 					'action_status' => "assignment",
 					'comment' => $saveComments,
 					'step_id' => $stepId,
 					'post_id' => $postId,
 					'from_id' => $aiid,
-					'due_date' => $due_date,
 					'create_datetime' => current_time('mysql')
 				);
+		if (!empty($dueDate )) {
+		   $data["due_date"] = FCWorkflowCRUD::format_date_for_db( $dueDate );
+		}
 
 		$iid = FCProcessFlow::save_action( $data, $actors) ;
 		update_post_meta($postId, "oasis_is_in_workflow", 1); // set the post meta to 1, specifying that the post is in a workflow.
@@ -263,7 +264,9 @@ class FCProcessFlow extends FCWorkflowBase
 			$data["assign_actor_id"] = $v["re_actor_id"] ;
 			$data["step_id"] = $v["re_step_id"] ;
 			$data["comment"] = $v["re_comment"] ;
-			$data["due_date"] = $v["re_due_date"] ;
+			if (!empty($v["re_due_date"] )) {
+			   $data["due_date"] = $v["re_due_date"] ;
+			}
 			$newid = FCProcessFlow::save_action( $data, $v["re_actor_id"], $action->ID ) ;
 		}
 		//--------post status change---------------
@@ -362,32 +365,34 @@ class FCProcessFlow extends FCWorkflowBase
 		      $first_actor = $arr[0];
 		   }
          // update with the first actor
-         $due_date = (isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"])) ? FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] ) : null;
 			$updatedata = array(
 							"review_status" => $_POST["review_result"],
 							"reassign_actor_id" => $first_actor,
 							"step_id" => $_POST["hi_step_id"],
 							"comments" => $saveComments,
-							"due_date" => $due_date,
 							"update_datetime" => current_time('mysql')
 						 ) ;
+		   if ( isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"] )) {
+            $updatedata["due_date"] = FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] );
+         }
 			$wpdb->update($action_table, $updatedata, array( "actor_id" => $current_actor_id, "action_history_id" => $_POST["oasiswf"] ) ) ;
 
 		   if( !is_numeric( $_POST["hi_actor_ids"] ) ) // insert the rest of the data for other actors
 		   {
             for( $i = 1; $i < count( $arr ); $i++ )
             {
-               $due_date = (isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"])) ? FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] ) : null;
       			$redata = array(
       							"review_status" => $_POST["review_result"],
       							"reassign_actor_id" => $arr[$i],
       							"actor_id" => $current_actor_id,
       							"step_id" => $_POST["hi_step_id"],
       							"comments" => $saveComments,
-      							"due_date" => $due_date,
       							"action_history_id" => $_POST["oasiswf"],
       							"update_datetime" => current_time('mysql')
       						 ) ;
+               if ( isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"] )) {
+                  $redata["due_date"] = FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] );
+               }
                FCProcessFlow::insert_to_table( $action_table, $redata ) ;
             }
 		   }
@@ -395,16 +400,17 @@ class FCProcessFlow extends FCWorkflowBase
 			FCWorkflowEmail::delete_step_email($_POST["oasiswf"], $current_actor_id);
 			FCProcessFlow::review_result_process( $_POST["oasiswf"] ) ;
 		}else{
-		   $due_date = (isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"])) ? FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] ) : null;
 			$data = array(
 						'action_status' => "assignment",
 						'comment' => $saveComments,
 						'step_id' => $_POST["hi_step_id"],
 						'post_id' => $_POST["post_ID"],
 						'from_id' => $_POST["oasiswf"],
-						'due_date' => $due_date,
 						'create_datetime' => current_time('mysql')
 					);
+		   if ( isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"] )) {
+            $data["due_date"] = FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] );
+		   }
 			$iid = FCProcessFlow::save_action( $data, $_POST["hi_actor_ids"], $_POST["oasiswf"]) ;
 		   // delete all the unsend emails for this workflow
 			FCWorkflowEmail::delete_step_email($_POST["oasiswf"], $current_actor_id);
@@ -425,14 +431,16 @@ class FCProcessFlow extends FCWorkflowBase
 
 		$history = FCProcessFlow::get_action_history_by_id( $_POST["oasiswf_id"] ) ;
 		$currentTime = current_time('mysql') ;
+		$currentDate = date('Y-m-d');
 		$data = array(
 					'action_status' => "complete",
 					'step_id' => $history->step_id,
 					'assign_actor_id' => get_current_user_id(),
 					'post_id' => $_POST["post_id"],
 					'from_id' => $_POST["oasiswf_id"],
-					'due_date' => $currentTime,
-					'reminder_date' => $currentTime,
+				   'comment' => "",
+					'due_date' => $currentDate,
+					'reminder_date' => $currentDate,
 					'create_datetime' => $currentTime
 				);
 		$action_history_table = FCUtility::get_action_history_table_name();
@@ -663,6 +671,8 @@ class FCProcessFlow extends FCWorkflowBase
 					"post_id" => $action->post_id,
 					"comment" => json_encode($comment),
 					"from_id" => $_POST["exitId"],
+		         "step_id" => '0', // since we do not have the step id information for this
+		         "assign_actor_id" => '0', // since we do not have anyone assigned anymore.
 					'create_datetime' => current_time('mysql')
 				) ;
 		$action_history_table = FCUtility::get_action_history_table_name();
@@ -670,7 +680,7 @@ class FCProcessFlow extends FCWorkflowBase
 		if($iid){
 		   // delete all the unsend emails for this workflow
 		   FCWorkflowEmail::delete_step_email($_POST["exitId"]);
-			$wpdb->update($action_history_table, array( "action_status" => "aborted" ), array( "ID" => $_POST["exitId"] ) ) ;
+		   $wpdb->update($action_history_table, array( "action_status" => "aborted",  "create_datetime" => current_time('mysql')), array( "ID" => $_POST["exitId"] ) ) ;
 		   update_post_meta($action->post_id, "oasis_is_in_workflow", 0); // set the post meta to 0, specifying that the post is out of a workflow.
 			echo $iid ;
 		}

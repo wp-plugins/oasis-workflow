@@ -127,7 +127,7 @@ class FCWorkflowHistory extends FCWorkflowBase
 
 	static function get_signoff_date($row)
 	{
-		if( $row->action_status == "complete" ) return $row->create_datetime ;
+		if( $row->action_status == "complete" || $row->action_status == "submitted") return $row->create_datetime ;
 		if( $row->action_status == "claim_cancel" ){
 			$claimed_row = FCWorkflowHistory::get_action_history("claimed", $row->step_id, $row->post_id, $row->from_id ) ;
 			return $claimed_row->create_datetime ;

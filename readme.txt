@@ -3,7 +3,7 @@ Contributors: nuggetsol
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit
 Requires at least: 3.6
 Tested up to: 3.8.1
-Stable tag: 1.0.11
+Stable tag: 1.0.12
 
 Workflow process for WordPress made simple with Oasis Workflow.
 
@@ -160,3 +160,8 @@ If these workflows are different, they need to be recreated with this upgrade.
 * fixed the issues with Strict PHP - non static function called in static fashion
 * fixed update datetime issue with the workflow
 * changed post title to be a simple text in the subject line  
+
+= Version 1.0.12 =
+* fixed issue with workflow history discrepancies and abort workflow action.
+* fixed DB related issues with NULL and NOT NULL.
+* fixed multisite issue related to switch and restore blog.

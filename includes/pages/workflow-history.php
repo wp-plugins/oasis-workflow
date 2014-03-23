@@ -51,11 +51,40 @@ $per_page = 25;
 						$start = ($pagenum - 1) * $per_page;
 						$end = $start + $per_page;
 						foreach ($histories as $row){
+							$workflow_name = "<a href='admin.php?page=oasiswf-admin&wf_id=". $row->workflow_id . "'><strong>" . $row->wf_name;
+							if (!empty( $row->version )) {
+							   $workflow_name .= "(" . $row->version . ")";
+							}
+							$workflow_name .= "</strong></a>";
+
 							if ( $count >= $end )
 								break;
 							if ( $count >= $start )
 							{
-								if( $row->assign_actor_id == -1 ){
+								echo "<tr>";
+								echo "<th scope='row' class='check-column'><input type='checkbox' name='linkcheck[]' value='1'></th>" ;
+								echo "<td>
+										<a href='post.php?post={$row->post_id}&action=edit'><strong>{$row->post_title}</strong></a>
+									</td>";
+								echo "<td>{$history_workflow->get_user_name($row->userid)}</td>";
+                        echo "<td>{$workflow_name}</td>";
+								echo "<td>{$history_workflow->get_step_name($row)}</td>";
+								echo "<td>{$history_workflow->format_date_for_display( $row->create_datetime, "-", "datetime" )}</td>";
+								echo "<td>{$history_workflow->format_date_for_display( $history_workflow->get_signoff_date( $row ), "-", "datetime" )}</td>";
+								echo "<td>{$history_workflow->get_signoff_status( $row )}</td>" ;
+								echo "<td class='comments'>
+										<div class='post-com-count-wrapper'>
+											<strong>
+												<a href='#' actionid={$row->ID} class='post-com-count' real='history'>
+													<span class='comment-count'>{$history_workflow->get_signoff_comment_count($row)}</span>
+												</a>
+												<span class='loading' style='display:none'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+											</strong>
+										</div>
+									  </td>" ;
+								echo "</tr>";
+
+							   if( $row->assign_actor_id == -1 ){
 									$review_rows = $history_workflow->get_review_action_by_history_id($row->ID ) ;
 									if( $review_rows ){
 										foreach ($review_rows as $review_row) {
@@ -63,9 +92,7 @@ $per_page = 25;
 											echo "<th scope='row' class='check-column'><input type='checkbox' name='linkcheck[]' value='1'></th>" ;
 											echo "<td><a href='post.php?post={$row->post_id}&action=edit'><strong>{$row->post_title}</strong></a></td>" ;
 											echo "<td>{$history_workflow->get_user_name($review_row->actor_id)}</td>";
-											echo "<td>
-													<a href='admin.php?page=oasiswf-admin&wf_id=". $row->workflow_id . "'><strong>{$row->wf_name} ({$row->version})</strong></a>
-												</td>";
+                                 echo "<td>{$workflow_name}</td>";
 											echo "<td>{$history_workflow->get_step_name($row)}</td>";
 											echo "<td>{$history_workflow->format_date_for_display( $row->create_datetime, "-", "datetime" )}</td>";
 											if( $review_row->review_status == "reassigned" ){
@@ -90,38 +117,7 @@ $per_page = 25;
 											$count++;
 										}
 									}
-								}else{
-									echo "<tr>";
-									echo "<th scope='row' class='check-column'><input type='checkbox' name='linkcheck[]' value='1'></th>" ;
-									echo "<td>
-											<a href='post.php?post={$row->post_id}&action=edit'><strong>{$row->post_title}</strong></a>
-											<!--
-											<div class='row-actions'>
-												<span><a href='#' id='graphic_show'>View</a></span>
-											</div>
-											-->
-										</td>";
-									echo "<td>{$history_workflow->get_user_name($row->userid)}</td>";
-									echo "<td>
-											<a href='admin.php?page=oasiswf-admin&wf_id=". $row->workflow_id . "'><strong>{$row->wf_name} ({$row->version})</strong></a>
-										</td>";
-									echo "<td>{$history_workflow->get_step_name($row)}</td>";
-									echo "<td>{$history_workflow->format_date_for_display( $row->create_datetime, "-", "datetime" )}</td>";
-									echo "<td>{$history_workflow->format_date_for_display( $history_workflow->get_signoff_date( $row ), "-", "datetime" )}</td>";
-									echo "<td>{$history_workflow->get_signoff_status( $row )}</td>" ;
-									echo "<td class='comments'>
-											<div class='post-com-count-wrapper'>
-												<strong>
-													<a href='#' actionid={$row->ID} class='post-com-count' real='history'>
-														<span class='comment-count'>{$history_workflow->get_signoff_comment_count($row)}</span>
-													</a>
-													<span class='loading' style='display:none'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-												</strong>
-											</div>
-										  </td>" ;
-									echo "</tr>";
-								}
-
+							   }
 							}
 							$count++;
 						}

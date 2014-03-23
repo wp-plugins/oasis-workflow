@@ -193,6 +193,7 @@ class FCWorkflowCRUD extends FCWorkflowBase
 							'step_info' => stripcslashes( $_POST["stepinfo"] ),
 							'process_info' => stripcslashes( $_POST["processinfo"] ),
 							'create_datetime' => current_time('mysql'),
+						   'update_datetime' => current_time('mysql'),
 							'workflow_id' => $_POST["wfid"],
 						)
 					);

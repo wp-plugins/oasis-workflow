@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Easily create graphical workflows to manage your work.
- Version: 1.0.11
+ Version: 1.0.12
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.11' );
-define( 'OASISWF_DB_VERSION','1.0.11');
+define( 'OASISWF_VERSION' , '1.0.12' );
+define( 'OASISWF_DB_VERSION','1.0.12');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -62,15 +62,14 @@ class FCInitialization
 	        // check if it is a network activation - if so, run the activation function for each blog id
 	        if ($networkwide)
 	        {
-	            $old_blog = $wpdb->blogid;
 	            // Get all blog ids
 	            $blogids = $wpdb->get_col("SELECT blog_id FROM {$wpdb->base_prefix}blogs");
 	            foreach ($blogids as $blog_id)
 	            {
 	            	switch_to_blog($blog_id);
 	               FCInitialization::run_for_site();
+	               restore_current_blog();
 	            }
-	            switch_to_blog($old_blog);
 	            return;
 	        }
     	}
@@ -88,15 +87,14 @@ class FCInitialization
 	        // check if it is a network activation - if so, run the activation function for each blog id
 	        if ($networkwide)
 	        {
-	            $old_blog = $wpdb->blogid;
 	            // Get all blog ids
 	            $blogids = $wpdb->get_col("SELECT blog_id FROM {$wpdb->base_prefix}blogs");
 	            foreach ($blogids as $blog_id)
 	            {
 	                switch_to_blog($blog_id);
 	                FCInitialization::run_on_deactivation();
+	                restore_current_blog();
 	            }
-	            switch_to_blog($old_blog);
 	            return;
 	        }
 	    }
@@ -120,10 +118,8 @@ class FCInitialization
 				{
 					FCInitialization::delete_for_site();
 				}
+				restore_current_blog();
 			}
-
-			//Go back to the main blog and return - so that if not multisite or not network activation, run the procedure once
-			restore_current_blog();
 			return;
 		}
 		FCInitialization::delete_for_site();
@@ -202,48 +198,56 @@ class FCInitialization
 			FCInitialization::upgrade_database_101();
 			FCInitialization::upgrade_database_103();
 			FCInitialization::upgrade_database_104();
+			FCInitialization::upgrade_database_1012();
 		}
 		else if ($pluginOptions['version'] == "1.0.1")
 		{
 			FCInitialization::upgrade_database_103();
 			FCInitialization::upgrade_database_104();
+			FCInitialization::upgrade_database_1012();
 		}
 		else if ($pluginOptions['version'] == "1.0.2")
 		{
 			FCInitialization::upgrade_database_103();
 			FCInitialization::upgrade_database_104();
+			FCInitialization::upgrade_database_1012();
 		}
 		else if ($pluginOptions['version'] == "1.0.3")
 		{
 			FCInitialization::upgrade_database_104();
+			FCInitialization::upgrade_database_1012();
 		}
 		else if ($pluginOptions['version'] == "1.0.4")
 		{
-			// nothing to upgrade
+			FCInitialization::upgrade_database_1012();
 		}
 		else if ($pluginOptions['version'] == "1.0.5")
 		{
-			// nothing to upgrade
+			FCInitialization::upgrade_database_1012();
 		}
 		else if ($pluginOptions['version'] == "1.0.6")
 		{
-			// nothing to upgrade
+			FCInitialization::upgrade_database_1012();
 		}
 		else if ($pluginOptions['version'] == "1.0.7")
 		{
-			// nothing to upgrade
+			FCInitialization::upgrade_database_1012();
 		}
 		else if ($pluginOptions['version'] == "1.0.8")
 		{
-			// nothing to upgrade
+			FCInitialization::upgrade_database_1012();
 		}
 		else if ($pluginOptions['version'] == "1.0.9")
 		{
-			// nothing to upgrade
+			FCInitialization::upgrade_database_1012();
 		}
 		else if ($pluginOptions['version'] == "1.0.10")
 		{
-			// nothing to upgrade
+			FCInitialization::upgrade_database_1012();
+		}
+	   else if ($pluginOptions['version'] == "1.0.11")
+		{
+			FCInitialization::upgrade_database_1012();
 		}
 
 		// update the version value
@@ -300,7 +304,7 @@ class FCInitialization
 	        $old_blog = $wpdb->blogid;
 	        switch_to_blog($blog_id);
 	        FCInitialization::run_for_site();
-	        switch_to_blog($old_blog);
+	        restore_current_blog();
 	    }
 	}
 
@@ -386,6 +390,22 @@ class FCInitialization
 	   update_site_option("oasiswf_activate_workflow", "active") ;
 	}
 
+	static function upgrade_database_1012()
+	{
+	   global $wpdb;
+
+       //fc_workflows table alter
+      $table_name = FCUtility::get_workflows_table_name();
+      $wpdb->query("ALTER TABLE {$table_name} MODIFY start_date DATE");
+      $wpdb->query("ALTER TABLE {$table_name} MODIFY end_date DATE");
+      $wpdb->query("ALTER TABLE {$table_name} MODIFY wf_info longtext");
+
+      //fc_workflow_steps table alter
+      $table_name = FCUtility::get_workflow_steps_table_name();
+      $wpdb->query("ALTER TABLE {$table_name} MODIFY create_datetime datetime");
+      $wpdb->query("ALTER TABLE {$table_name} MODIFY update_datetime datetime");
+	}
+
 	static function install_admin_database()
 	{
 		global $wpdb;
@@ -402,16 +422,16 @@ class FCInitialization
 			      `ID` int(11) NOT NULL AUTO_INCREMENT,
 			      `name` varchar(200) NOT NULL,
 			      `description` mediumtext,
-			      `wf_info` longtext NOT NULL,
+			      `wf_info` longtext,
 			      `version` int(3) NOT NULL default 1,
 			      `parent_id` int(11) NOT NULL default 0,
-			      `start_date` date NOT NULL,
-			      `end_date` date NOT NULL,
+			      `start_date` date DEFAULT NULL,
+			      `end_date` date DEFAULT NULL,
 			      `is_auto_submit` int(2) NOT NULL default 0,
 			      `auto_submit_keywords` mediumtext,
 			      `is_valid` int(2) NOT NULL default 0,
-			      `create_datetime` datetime NOT NULL,
-			      `update_datetime` datetime NOT NULL,
+			      `create_datetime` datetime DEFAULT NULL,
+			      `update_datetime` datetime DEFAULT NULL,
 			      PRIMARY KEY (`ID`)
 	    		){$charset_collate};";
 			dbDelta($sql);
@@ -425,8 +445,8 @@ class FCInitialization
 			      `step_info` text NOT NULL,
 			      `process_info` longtext NOT NULL,
 			      `workflow_id` int(11) NOT NULL,
-			      `create_datetime` datetime NOT NULL,
-			      `update_datetime` datetime NOT NULL,
+			      `create_datetime` datetime DEFAULT NULL,
+			      `update_datetime` datetime DEFAULT NULL,
 			      PRIMARY KEY (`ID`),
 			      KEY `workflow_id` (`workflow_id`)
 	    		){$charset_collate};";
@@ -470,7 +490,7 @@ class FCInitialization
 			$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
 			    `ID` int(11) NOT NULL AUTO_INCREMENT,
 			    `action_status` varchar(20) NOT NULL,
-			    `comment` longtext NOT NULL,
+			    `comment` longtext DEFAULT NULL,
 			    `step_id` int(11) NOT NULL,
 			    `assign_actor_id` int(11) NOT NULL,
 			    `post_id` int(11) NOT NULL,
