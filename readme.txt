@@ -1,6 +1,6 @@
 === Oasis Workflow ===
 Contributors: nuggetsol
-Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit, duplicate, revision, versioning, revisions, collaboration, version control
+Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit,versioning, auto submit
 Requires at least: 3.6
 Tested up to: 3.8.1
 Stable tag: 1.0.12
