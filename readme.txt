@@ -14,12 +14,9 @@ Any online publishing organization has one or several Managing Editors responsib
 Oasis Workflow plugin is designed to automate any workflow process using a simple, intuitive graphical user interface (GUI).
 
 The plugin provides three processes:
-
-1. Assignment - represents task related to content generation.
-
-2. Review - represents task related to content review.
-
-3. Publish - represents the actual "publish" task.
+* Assignment - represents task related to content generation.
+* Review - represents task related to content review.
+* Publish - represents the actual "publish" task.
 
 **Visual Work flow Designer**
  - Configure your work flow using the easy drag and drop designer interface. See screen shots for more detail.
