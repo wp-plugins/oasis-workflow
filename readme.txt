@@ -70,7 +70,7 @@ Applicable for Oasis Workflow Pro - when creating a new workflow. However, this 
 
 [youtube http://www.youtube.com/watch?v=PPBJns2p-zU]
 
-How does the workflow actually works? Understand the process...
+How it works? Understand the process...
 
 [youtube http://www.youtube.com/watch?v=SuOCBf_mLpc]
 
