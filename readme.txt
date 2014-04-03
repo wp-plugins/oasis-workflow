@@ -58,7 +58,7 @@ More details for each feature, screenshots and documentation can be found on [ou
  - French
  - German 
  
- == Translators ==
+**Translators**
 * German (de_DE) - [meganlop](http://profiles.wordpress.org/meganlop)
 * French (fr_FR) - [Baptiste Rieg](http://www.laposte.fr/)
 
