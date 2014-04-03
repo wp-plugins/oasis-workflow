@@ -57,6 +57,10 @@ More details for each feature, screenshots and documentation can be found on [ou
  - Spanish
  - French
  - German 
+ 
+ == Translators ==
+* German (de_DE) - [meganlop](http://profiles.wordpress.org/meganlop)
+* French (fr_FR) - [Baptiste Rieg](http://www.laposte.fr/)
 
 If you need help setting up the roles, we recommend the [User Role Editor plugin](http://wordpress.org/extend/plugins/user-role-editor/ "User Role Editor plugin").
 
