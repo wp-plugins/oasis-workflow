@@ -57,6 +57,10 @@ More details for each feature, screenshots and documentation can be found on [ou
  - Spanish
  - French
  - German 
+ 
+== Translators ==
+* German (de_DE) - [meganlop](http://profiles.wordpress.org/meganlop)
+* French (fr_FR) - [Baptiste Rieg](http://www.laposte.fr/)
 
 If you need help setting up the roles, we recommend the [User Role Editor plugin](http://wordpress.org/extend/plugins/user-role-editor/ "User Role Editor plugin").
 
@@ -66,7 +70,7 @@ Applicable for Oasis Workflow Pro - when creating a new workflow. However, this 
 
 [youtube http://www.youtube.com/watch?v=PPBJns2p-zU]
 
-How does the workflow actually works? Understand the process...
+How it works? Understand the process...
 
 [youtube http://www.youtube.com/watch?v=SuOCBf_mLpc]
 
