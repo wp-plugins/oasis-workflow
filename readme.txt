@@ -52,13 +52,13 @@ The plugin provides three processes:
 
 More details for each feature, screenshots and documentation can be found on [our website](http://www.oasisworkflow.com/).
 
-**Supported languages**
- - English
- - Spanish
- - French
- - German 
+= Supported languages =
+* English
+* Spanish
+* French
+* German 
  
-**Translators**
+= Translators =
 * German (de_DE) - [meganlop](http://profiles.wordpress.org/meganlop)
 * French (fr_FR) - [Baptiste Rieg](http://www.laposte.fr/)
 
