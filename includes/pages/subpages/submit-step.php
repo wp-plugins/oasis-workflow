@@ -4,12 +4,14 @@ $oasiswf = ( isset($_GET["oasiswf"]) && $_GET["oasiswf"]) ? $_GET["oasiswf"] : $
 $editable = current_user_can('edit_posts') ;
 $parent_page = ( isset($_GET["parent_page"]) && $_GET["parent_page"] ) ? $_GET["parent_page"] : "post_edit" ; //check to be called from which page
 $task_user = ( isset($_GET["task_user"]) && $_GET["task_user"] ) ? $_GET["task_user"] : "";
+$post_id = null;
 if( $oasiswf ){
 	$current_action = FCProcessFlow::get_action_history_by_id( $oasiswf ) ;
 	$current_step = FCProcessFlow::get_step_by_id( $current_action->step_id );
 	$process = FCProcessFlow::get_gpid_dbid($current_step->workflow_id, $current_action->step_id, "process" );
 	$success_status = json_decode($current_step->step_info) ;
 	$success_status = $success_status->status ;
+	$post_id = $current_action->post_id;
 }
 $reminder_days = get_site_option('oasiswf_reminder_days');
 $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
@@ -31,9 +33,20 @@ $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
 		<div id="immediately-div">
 			<?php if($success_status == "publish"):?>
 				<label><?php echo __("Publish", "oasisworkflow");?> : </label>
-				<input type="checkbox" id="immediately-chk" checked=true />&nbsp;&nbsp;<?php echo __("Immediately", "oasisworkflow") ;?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<?php
+					$pdata = get_post($post_id);
+					$publish_date = $pdata->post_date;
+					if(strtotime("now") < strtotime($publish_date)) :
+					   $future_date = date("m/d/Y H:i:s", strtotime($publish_date));
+					   $is_future_date = true;
+					else:
+					   $future_date = date("m/d/Y H:i:s", strtotime("now"));
+					   $is_future_date = false;
+					endif;
+				?>
+				<input type="checkbox" id="immediately-chk" <?php echo  $is_future_date ? '' : 'checked="checked"';  ?> />&nbsp;&nbsp;<?php echo __("Immediately", "oasisworkflow") ;?>&nbsp;&nbsp;
 				<span id="immediately-span" style="display:none;">
-					<?php FCProcessFlow::get_immediately_content($success_status);?>
+					<?php FCProcessFlow::get_immediately_content($success_status, $future_date);?>
 				</span>
 				<br class="clear">
 			<?php endif;?>

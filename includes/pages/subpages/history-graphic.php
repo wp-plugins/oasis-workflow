@@ -1,10 +1,11 @@
 <?php
-wp_enqueue_script( 'owf-workflow-history',
+if ( is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches ) ) {
+   wp_enqueue_script( 'owf-workflow-history',
                    OASISWF_URL. 'js/pages/subpages/history_graphic.js',
                    '',
                    OASISWF_VERSION,
                    true);
-
+}
 ?>
 <?php
 global $wpdb, $chkResult ;

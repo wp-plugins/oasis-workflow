@@ -75,6 +75,17 @@ $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
 			<br class="clear">
 		</div>
 		<?php endif;?>
+		<!-- Added publish date box for user to choose future publish date. -->
+         <div class="text-info left">
+			<div class="left">
+				<label><?php echo __("Future Publish Date : ", "oasisworkflow") ;?></label>
+			</div>
+			<div class="left">
+								<input name="publish-date" id="publish-date" class="date_input" type="text"><input type="text" name="publish-hour" id="publish-hour" class="date_input" style="width:46px;" placeholder="hour" maxlength="2"><input type="text" name="publish-min" id="publish-min" class="date_input" style="width:46px;" placeholder="min"  maxlength="2">
+				<button class="date-clear" ><?php echo __("clear", "oasisworkflow") ;?></button>
+			</div>
+			<br class="clear">
+		</div>
 		<div class="text-info left" id="comments-div">
 			<div class="left">
 				<label><?php echo __("Comments : ", "oasisworkflow") ;?></label>

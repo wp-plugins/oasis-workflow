@@ -2,8 +2,8 @@
 Contributors: nuggetsol
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit,versioning, auto submit
 Requires at least: 3.6
-Tested up to: 3.8.1
-Stable tag: 1.0.12
+Tested up to: 3.9
+Stable tag: 1.0.13
 
 Workflow process for WordPress made simple with Oasis Workflow.
 
@@ -166,3 +166,9 @@ If these workflows are different, they need to be recreated with this upgrade.
 * fixed issue with workflow history discrepancies and abort workflow action.
 * fixed DB related issues with NULL and NOT NULL.
 * fixed multisite issue related to switch and restore blog.
+
+= Version 1.0.13 =
+* Load the JS and CSS scripts only when needed. This helps with compatibility issues with other plugins.
+* Allow setting of future publish date on submit to workflow.
+* fixed german translations.
+* fixed compatibility issues with Wordpress 3.9

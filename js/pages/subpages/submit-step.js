@@ -85,8 +85,16 @@ jQuery(document).ready(function() {
 			jQuery("#comments-div").hide();
 			
 			jQuery("#immediately-div").show();
+			// If future date is set then uncheck the checkbox by default & show immediate span				
+			if(jQuery('#immediately-chk').attr("checked") == "checked")
+			{
+				jQuery("#immediately-span").hide() ;
+			}
+			else
+			{
+				jQuery("#immediately-span").show() ;
+			}			
 			jQuery("#completeSave").show();
-			
 			jQuery("#sum_step_info").hide() ;
 		}
 		
@@ -289,7 +297,8 @@ jQuery(document).ready(function() {
 					jQuery.post(ajaxurl, step_status_data, function( response ) {
 						if(response){
 							jQuery("#post_status").val(response);
-							jQuery("#post").submit();
+							jQuery("#save-post").click();
+							modal_close();
 						}
 					});					
 				}				
@@ -412,7 +421,8 @@ jQuery(document).ready(function() {
 				jQuery.post(ajaxurl, step_status_data, function( status_response ) {
 					if(status_response){
 						jQuery("#post_status").val(status_response);
-						jQuery("#post").submit();
+						jQuery("#save-post").click();
+						modal_close();						
 					}
 				});
 			 }	

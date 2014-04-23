@@ -22,6 +22,9 @@ jQuery(document).ready(function() {
 	function calendar_action(){
 		jQuery("#due-date").attr("readonly", true);
 		jQuery("#due-date").datepicker();
+		// add jquery datepicker functionality to publish textbox
+		jQuery("#publish-date").attr("readonly", true);
+		jQuery("#publish-date").datepicker();		
 	}	
 	jQuery(".date-clear").click(function(){
 		jQuery(this).parent().children(".date_input").val("");
@@ -214,6 +217,42 @@ jQuery(document).ready(function() {
 			return false;
 		}
 		
+		/* 
+		* get publish date value, if not null set as post publish date
+		* if publish date is not set then proceess default.
+		* Immediate post publish date
+		*/
+		if (jQuery("#publish-date").val() != '') 
+		{
+			var publish = jQuery('#publish-date').val();
+			//split into array
+			var pdate = publish.split('/');
+			
+			//set this mm/dd/yyyy value as wordpress publish date
+			jQuery('#mm').val(pdate[0]);
+			jQuery('#jj').val(pdate[1]);
+			jQuery('#aa').val(pdate[2]);
+
+			if(jQuery('#publish-hour').val() == '')
+			{
+				jQuery('#hh').val('12');
+			}
+			else
+			{
+				jQuery('#hh').val(parseInt(jQuery('#publish-hour').val(), 10));
+			}	
+			
+			if(jQuery('#publish-min').val() == '')
+			{
+				jQuery('#mn').val('00');
+			}
+			else
+			{			
+				jQuery('#mn').val(parseInt(jQuery('#publish-min').val(), 10));
+			}
+						
+		}		
+		
 		var actors = assign_actor_chk() ;
 		if(!actors)return;
 		/* This is for checking that reminder email checkbox is selected in workflow settings.
@@ -243,8 +282,8 @@ jQuery(document).ready(function() {
 		jQuery.post(ajaxurl, step_status_data, function( response ) {
 			if(response){
 				jQuery("#post_status").val(response);
-				jQuery("#post").submit();
-				modal_close();		
+				jQuery("#save-post").click();
+				modal_close();
 				return;
 			}
 		});	

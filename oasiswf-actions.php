@@ -37,7 +37,8 @@ class FCWorkflowActions
 
 	static function workflow_submit_popup()
 	{
-		if( get_site_option("oasiswf_activate_workflow") == "active" ){
+		if( get_site_option("oasiswf_activate_workflow") == "active" &&
+		   is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches )){
 
 			wp_enqueue_script( 'owf_submit_workflow',
 			                   OASISWF_URL. 'js/pages/subpages/submit-workflow.js',
@@ -59,7 +60,8 @@ class FCWorkflowActions
 		global $wpdb, $chkResult;
 		$selected_user = isset($_GET['user']) ? $_GET["user"] : get_current_user_id();
 		$chkResult = FCProcessFlow::workflow_submit_check($selected_user);
-		if( get_site_option("oasiswf_activate_workflow") == "active" ){
+		if( get_site_option("oasiswf_activate_workflow") == "active" &&
+		   is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches )){
 
 			if( $chkResult == "inbox" ){
             wp_enqueue_script( 'owf_submit_step',
@@ -69,7 +71,8 @@ class FCWorkflowActions
                          true);
             FCWorkflowActions::localize_submit_step_script();
 			}
-		   else if( $chkResult == "submit" ){
+		   else if( $chkResult == "submit" &&
+		      is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches )){
 			   include( OASISWF_PATH . "includes/pages/subpages/submit-workflow.php" ) ;
 			   wp_enqueue_script( 'owf_submit_workflow',
 			                   OASISWF_URL. 'js/pages/subpages/submit-workflow.js',
@@ -78,7 +81,8 @@ class FCWorkflowActions
 			                   true);
             FCWorkflowActions::localize_submit_workflow_script();
 			}else{
-				if( is_numeric( $chkResult ) ){
+				if( is_numeric( $chkResult ) &&
+				   is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches )){
 				   include( OASISWF_PATH . "includes/pages/subpages/submit-step.php" ) ;
                wp_enqueue_script( 'owf_submit_step',
                            OASISWF_URL. 'js/pages/subpages/submit-step.js',

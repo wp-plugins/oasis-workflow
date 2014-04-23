@@ -586,11 +586,19 @@ class FCProcessFlow extends FCWorkflowBase
 				global $wpdb;
 				if($immediately){
 					if($step_status == "publish")$step_status = "future" ;
-					$publish_post = array(
+					/**
+					* added parameter to wp_update_post arguments
+					* For more details visit below link:
+					* http://codex.wordpress.org/Function_Reference/wp_update_post#Scheduling_posts
+					*
+					* @param 'edit_date=>true'
+					*/
+			      $publish_post = array(
    	   			"ID" => $postid,
-					   "post_date_gmt" => $immediately,
-					   "post_date" => $immediately,
-						"post_status" => $step_status
+					   "post_date_gmt" => gmdate("Y-m-d H:i:s", strtotime($immediately)),
+					   "post_date" => date("Y-m-d H:i:s", strtotime($immediately)),
+						"post_status" => $step_status,
+						"edit_date" => true
 					);
 					wp_update_post( $publish_post );
 				}else{
@@ -688,23 +696,32 @@ class FCProcessFlow extends FCWorkflowBase
 	}
 
 	//-----------get immediately content----------------
-	static function get_immediately_content($status)
+	static function get_immediately_content($status, $future_date)
 	{
 		if( $status != "publish" )return;
-		$months = array(1 => "01-Jan", 2 => "02-Feb", 3 => "03-Mar", 4 => "04-Apr", 5 => "05-May", 6 => "06-Jun", 7 => "07-Jul", 8 => "08-Aug", 9 => "09-Sep", 10 => "10-Oct", 11 => "11-Nov", 12 => "12-Dec") ;
-		$today = getdate();
+		if(isset($future_date))
+		{
+			$date = getdate(strtotime($future_date));
+		}
+		else
+		{
+			$date = getdate();
+		}
+	   $months = array(1 => "01-Jan", 2 => "02-Feb", 3 => "03-Mar", 4 => "04-Apr", 5 => "05-May", 6 => "06-Jun", 7 => "07-Jul", 8 => "08-Aug", 9 => "09-Sep", 10 => "10-Oct", 11 => "11-Nov", 12 => "12-Dec") ;
+
 		echo "<select id='im-mon'>" ;
 			foreach ($months as $k => $v) {
-				if( $today["mon"] * 1 == $k )
+				if( $date["mon"] * 1 == $k )
 					echo "<option value={$k} selected>{$v}</option>" ;
 				else
 					echo "<option value={$k}>{$v}</option>" ;
 			}
 		echo "</select>" ;
-		echo "<input type='text' id='im-day' value='{$today["mday"]}' class='immediately' size='2' maxlength='2' autocomplete='off'>,
-			  <input type='text' id='im-year' value='{$today["year"]}' class='immediately' size='4' maxlength='4' autocomplete='off'> @
-			  <input type='text' id='im-hh' value='{$today["hours"]}' class='immediately' size='2' maxlength='2' autocomplete='off'> :
-			  <input type='text' id='im-mn' value='{$today["minutes"]}' class='immediately' size='2' maxlength='2' autocomplete='off'>";
+		echo "<input type='text' id='im-day' value='{$date["mday"]}' class='immediately' size='2' maxlength='2' autocomplete='off'>,
+			  <input type='text' id='im-year' value='{$date["year"]}' class='immediately' size='4' maxlength='4' autocomplete='off'> @
+			  <input type='text' id='im-hh' value='{$date["hours"]}' class='immediately' size='2' maxlength='2' autocomplete='off'> :
+			  <input type='text' id='im-mn' value='{$date["minutes"]}' class='immediately' size='2' maxlength='2' autocomplete='off'>";
+
 	}
 }
 include(OASISWF_PATH . "includes/workflow-email.php") ;

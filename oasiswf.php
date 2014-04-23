@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Easily create graphical workflows to manage your work.
- Version: 1.0.12
+ Version: 1.0.13
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.12' );
-define( 'OASISWF_DB_VERSION','1.0.12');
+define( 'OASISWF_VERSION' , '1.0.13' );
+define( 'OASISWF_DB_VERSION','1.0.13');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -248,6 +248,10 @@ class FCInitialization
 	   else if ($pluginOptions['version'] == "1.0.11")
 		{
 			FCInitialization::upgrade_database_1012();
+		}
+		else if ($pluginOptions['version'] == "1.0.12")
+		{
+         // nothing to upgrade
 		}
 
 		// update the version value
@@ -751,41 +755,47 @@ class FCLoadWorkflow
 
 	static function add_css_files($page)
 	{
-   	wp_enqueue_style( 'thickbox' );
-	   wp_enqueue_style( 'owf-css',
-   	                   OASISWF_URL. 'css/pages/context-menu.css',
-   	                   false,
-   	                   OASISWF_VERSION,
-                         'all');
+	   // ONLY load OWF scripts on OWF plugin pages
+	   if ( is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches ) ) {
+      	wp_enqueue_style( 'thickbox' );
+   	   wp_enqueue_style( 'owf-css',
+      	                   OASISWF_URL. 'css/pages/context-menu.css',
+      	                   false,
+      	                   OASISWF_VERSION,
+                            'all');
 
-	   wp_enqueue_style( 'owf-modal-css',
-   	                   OASISWF_URL. 'css/lib/modal/simple-modal.css',
-   	                   false,
-   	                   OASISWF_VERSION,
-                         'all');
+   	   wp_enqueue_style( 'owf-modal-css',
+      	                   OASISWF_URL. 'css/lib/modal/simple-modal.css',
+      	                   false,
+      	                   OASISWF_VERSION,
+                            'all');
 
-	   wp_enqueue_style( 'owf-calendar-css',
-   	                   OASISWF_URL. 'css/lib/calendar/datepicker.css',
-   	                   false,
-   	                   OASISWF_VERSION,
-                         'all');
+   	   wp_enqueue_style( 'owf-calendar-css',
+      	                   OASISWF_URL. 'css/lib/calendar/datepicker.css',
+      	                   false,
+      	                   OASISWF_VERSION,
+                            'all');
 
-	   wp_enqueue_style( 'owf-oasis-workflow-css',
-   	                   OASISWF_URL. 'css/pages/oasis-workflow.css',
-   	                   false,
-   	                   OASISWF_VERSION,
-                         'all');
+   	   wp_enqueue_style( 'owf-oasis-workflow-css',
+      	                   OASISWF_URL. 'css/pages/oasis-workflow.css',
+      	                   false,
+      	                   OASISWF_VERSION,
+                            'all');
+	   }
 	}
 
 	static function add_js_files()
 	{
-		echo "<script type='text/javascript'>
-					var wf_structure_data = '' ;
-					var wfeditable = '' ;
-					var wfPluginUrl  = '" . OASISWF_URL . "' ;
-				</script>";
+	   // ONLY load OWF scripts on OWF plugin pages
+	   if ( is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches ) ) {
+   		echo "<script type='text/javascript'>
+   					var wf_structure_data = '' ;
+   					var wfeditable = '' ;
+   					var wfPluginUrl  = '" . OASISWF_URL . "' ;
+   				</script>";
+	   }
 
-		if( isset($_GET['page']) && ($_GET["page"] == "oasiswf-inbox" ||
+		if( is_admin() && isset($_GET['page']) && ($_GET["page"] == "oasiswf-inbox" ||
 		      $_GET["page"] == "oasiswf-history" ))
 		{
 			wp_enqueue_script( 'owf-workflow-inbox',
@@ -798,21 +808,25 @@ class FCLoadWorkflow
 
 	static function load_js_files_footer()
 	{
-		wp_enqueue_script( 'thickbox' );
-		wp_enqueue_script( 'jquery-ui-core' ) ;
-		wp_enqueue_script( 'jquery-ui-widget' ) ;
-		wp_enqueue_script( 'jquery-ui-mouse' ) ;
-		wp_enqueue_script( 'jquery-ui-sortable' ) ;
-		wp_enqueue_script( 'jquery-ui-datepicker' ) ;
-		wp_enqueue_script( 'jquery-json',
-		                   OASISWF_URL. 'js/lib/jquery.json.js',
-		                   '',
-		                   '2.3',
-		                   true);
+	   // ONLY load OWF scripts on OWF plugin pages
+	   if ( is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches ) ) {
+   		wp_enqueue_script( 'thickbox' );
+   		wp_enqueue_script( 'jquery-ui-core' ) ;
+   		wp_enqueue_script( 'jquery-ui-widget' ) ;
+   		wp_enqueue_script( 'jquery-ui-mouse' ) ;
+   		wp_enqueue_script( 'jquery-ui-sortable' ) ;
+   		wp_enqueue_script( 'jquery-ui-datepicker' ) ;
+   		wp_enqueue_script( 'jquery-json',
+   		                   OASISWF_URL. 'js/lib/jquery.json.js',
+   		                   '',
+   		                   '2.3',
+   		                   true);
 
-		wp_enqueue_script( 'jquery-ui-draggable' ) ;
-		wp_enqueue_script( 'jquery-ui-droppable' ) ;
-		if(( isset($_GET['page']) && ($_GET["page"] == "oasiswf-admin"  || $_GET["page"] == "oasiswf-add")) ||
+   		wp_enqueue_script( 'jquery-ui-draggable' ) ;
+   		wp_enqueue_script( 'jquery-ui-droppable' ) ;
+	   }
+
+		if(is_admin() && ( isset($_GET['page']) && ($_GET["page"] == "oasiswf-admin"  || $_GET["page"] == "oasiswf-add")) ||
 		   (isset($_GET['oasiswf']) && $_GET["oasiswf"] ))
 		{
    		wp_enqueue_script( 'jsPlumb',
@@ -834,50 +848,53 @@ class FCLoadWorkflow
                  ));
 		}
 
-		wp_enqueue_script( 'owf-workflow-create',
-		                   OASISWF_URL. 'js/pages/workflow-create.js',
-		                   '',
-		                   OASISWF_VERSION,
-		                   true);
-      wp_localize_script( 'owf-workflow-create', 'owf_workflow_create_vars', array(
-						'alreadyExistWorkflow' => __( 'There is an existing workflow with the same name. Please choose another name.', 'oasisworkflow' ),
-      				'unsavedChanges' => __( 'You have unsaved changes.', 'oasisworkflow' )
-              ));
+		if ( is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches ) ) {
 
-	   wp_enqueue_script( 'jquery-simplemodal',
-		                   OASISWF_URL. 'js/lib/modal/jquery.simplemodal.js',
-		                   array('thickbox'),
-		                   '1.4.4',
-		                   true);
+   		wp_enqueue_script( 'owf-workflow-create',
+   		                   OASISWF_URL. 'js/pages/workflow-create.js',
+   		                   '',
+   		                   OASISWF_VERSION,
+   		                   true);
+         wp_localize_script( 'owf-workflow-create', 'owf_workflow_create_vars', array(
+   						'alreadyExistWorkflow' => __( 'There is an existing workflow with the same name. Please choose another name.', 'oasisworkflow' ),
+         				'unsavedChanges' => __( 'You have unsaved changes.', 'oasisworkflow' )
+                 ));
 
-		wp_enqueue_script( 'owf-workflow-util',
-		                   OASISWF_URL. 'js/pages/workflow-util.js',
-		                   '',
-		                   OASISWF_VERSION,
-		                   true);
-      wp_localize_script( 'owf-workflow-util', 'owf_workflow_util_vars', array(
-						'dueDateInPast' => __( 'Due date cannot be in the past.', 'oasisworkflow' )
-             ));
+   	   wp_enqueue_script( 'jquery-simplemodal',
+   		                   OASISWF_URL. 'js/lib/modal/jquery.simplemodal.js',
+   		                   array('thickbox'),
+   		                   '1.4.4',
+   		                   true);
 
-      wp_enqueue_script( 'text-edit-whizzywig',
-                      OASISWF_URL. 'js/lib/textedit/whizzywig63.js',
-                      '',
-                      '63',
-                      true);
+   		wp_enqueue_script( 'owf-workflow-util',
+   		                   OASISWF_URL. 'js/pages/workflow-util.js',
+   		                   '',
+   		                   OASISWF_VERSION,
+   		                   true);
+         wp_localize_script( 'owf-workflow-util', 'owf_workflow_util_vars', array(
+   						'dueDateInPast' => __( 'Due date cannot be in the past.', 'oasisworkflow' )
+                ));
 
-      wp_enqueue_script( 'owf-workflow-step-info',
-                      OASISWF_URL. 'js/pages/subpages/step-info.js',
-                      array('text-edit-whizzywig'),
-                      OASISWF_VERSION,
-                      true);
-      wp_localize_script( 'owf-workflow-step-info', 'owf_workflow_step_info_vars', array(
-						'stepNameRequired' => __( 'Step name is required.', 'oasisworkflow' ),
-      				'stepNameAlreadyExists' => __( 'Step name already exists. Please use a different name.', 'oasisworkflow' ),
-      				'selectAssignees' => __( 'Please select assignee(s).', 'oasisworkflow' ),
-                  'statusOnSuccess' => __( 'Please select status on success.', 'oasisworkflow' ),
-                  'statusOnFailure' => __( 'Please select status on failure.', 'oasisworkflow' ),
-      				'selectPlaceholder' => __('Please select a placeholder.', 'oasisworkflow' )
-            ));
+         wp_enqueue_script( 'text-edit-whizzywig',
+                         OASISWF_URL. 'js/lib/textedit/whizzywig63.js',
+                         '',
+                         '63',
+                         true);
+
+         wp_enqueue_script( 'owf-workflow-step-info',
+                         OASISWF_URL. 'js/pages/subpages/step-info.js',
+                         array('text-edit-whizzywig'),
+                         OASISWF_VERSION,
+                         true);
+         wp_localize_script( 'owf-workflow-step-info', 'owf_workflow_step_info_vars', array(
+   						'stepNameRequired' => __( 'Step name is required.', 'oasisworkflow' ),
+         				'stepNameAlreadyExists' => __( 'Step name already exists. Please use a different name.', 'oasisworkflow' ),
+         				'selectAssignees' => __( 'Please select assignee(s).', 'oasisworkflow' ),
+                     'statusOnSuccess' => __( 'Please select status on success.', 'oasisworkflow' ),
+                     'statusOnFailure' => __( 'Please select status on failure.', 'oasisworkflow' ),
+         				'selectPlaceholder' => __('Please select a placeholder.', 'oasisworkflow' )
+               ));
+		}
 
 	}
 }
