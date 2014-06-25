@@ -85,10 +85,12 @@ For [Frequently Asked Questions](http://oasisworkflow.com/faq) plus documentatio
 == Screenshots ==
 
 1. Visual Work flow designer
-2. Role-based routing
-3. Inbox
-4. Sign off
-5. Process history
+2. More examples.. of the workflow designer
+3. Even more examples.. of the workflow designer
+4. Role-based routing
+5. Inbox
+6. Sign off
+7. Process history
 
 
 == Changelog ==
