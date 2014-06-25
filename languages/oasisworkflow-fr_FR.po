@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: oasis-workflow\n"
 "POT-Creation-Date: 2014-04-22 21:55-0800\n"
-"PO-Revision-Date: 2014-04-22 21:55-0800\n"
+"PO-Revision-Date: 2014-06-25 04:26-0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -35,20 +35,17 @@ msgid "The selected workflow is not valid.\\n Please check this workflow."
 msgstr ""
 "Le workflow sélectionné n'est pas valide.\\n Veuillez vérifier le workflow."
 
-#: oasiswf-actions.php:227
-#: oasiswf-actions.php:247
+#: oasiswf-actions.php:227 oasiswf-actions.php:247
 msgid "No users found for the given role."
 msgstr "Aucun utilisateur trouvé pour le profil donné."
 
-#: oasiswf-actions.php:228
-#: oasiswf-actions.php:252
+#: oasiswf-actions.php:228 oasiswf-actions.php:252
 msgid "You can select multiple users only for review step.\\n Selected step is"
 msgstr ""
 "Vous ne pouvez sélectionner plusieurs utilisateurs que pour la phase de "
 "relecture.\\n L'étape actuellement sélectionnée est"
 
-#: oasiswf-actions.php:229
-#: oasiswf-actions.php:253
+#: oasiswf-actions.php:229 oasiswf-actions.php:253
 msgid "step."
 msgstr "phase."
 
@@ -56,8 +53,7 @@ msgstr "phase."
 msgid "Please select a workflow."
 msgstr "Veuillez sélectionner un workflow"
 
-#: oasiswf-actions.php:231
-#: oasiswf-actions.php:249
+#: oasiswf-actions.php:231 oasiswf-actions.php:249
 msgid "Please select a step."
 msgstr "Veuillez sélectionner une étape."
 
@@ -65,24 +61,21 @@ msgstr "Veuillez sélectionner une étape."
 msgid "This step is not defined."
 msgstr "Cette phase n'est pas définie."
 
-#: oasiswf-actions.php:233
-#: oasiswf-actions.php:250
+#: oasiswf-actions.php:233 oasiswf-actions.php:250
 msgid "Please enter a due date."
 msgstr "Veuillez choisir une date butoir."
 
-#: oasiswf-actions.php:234
-#: oasiswf-actions.php:251
+#: oasiswf-actions.php:234 oasiswf-actions.php:251
 msgid "No assigned actor(s)."
 msgstr "Aucun acteur assigné."
 
-#: oasiswf-actions.php:243
-#: includes/pages/workflow-inbox.php:103
+#: oasiswf-actions.php:243 includes/pages/workflow-inbox.php:103
 #: includes/pages/subpages/submit-step.php:20
 #: includes/pages/subpages/submit-step.php:117
 #: includes/pages/subpages/submit-step.php:118
 #: includes/pages/subpages/submit-step.php:119
 msgid "Sign Off"
-msgstr "Se déconnecter"
+msgstr "Approuver"
 
 #: oasiswf-actions.php:244
 msgid "Go to Workflow Inbox"
@@ -189,36 +182,27 @@ msgstr "titre de l'article"
 msgid "Get the Pro Version"
 msgstr "Obtenez la version Pro"
 
-#: oasiswf.php:656
-#: oasiswf.php:657
+#: oasiswf.php:656 oasiswf.php:657
 msgid "Workflow Admin"
 msgstr "flux de travail d'administration"
 
-#: oasiswf.php:664
-#: oasiswf.php:665
+#: oasiswf.php:664 oasiswf.php:665
 msgid "Edit Workflows"
 msgstr "Editer"
 
-#: oasiswf.php:671
-#: oasiswf.php:672
-#: includes/pages/workflow-settings.php:46
+#: oasiswf.php:671 oasiswf.php:672 includes/pages/workflow-settings.php:46
 msgid "Settings"
 msgstr "Paramètres"
 
-#: oasiswf.php:692
-#: oasiswf.php:693
+#: oasiswf.php:692 oasiswf.php:693
 msgid "Workflows"
 msgstr "workflows"
 
-#: oasiswf.php:699
-#: oasiswf.php:700
-#: includes/pages/workflow-inbox.php:14
+#: oasiswf.php:699 oasiswf.php:700 includes/pages/workflow-inbox.php:14
 msgid "Inbox"
 msgstr "Boîte de réception"
 
-#: oasiswf.php:706
-#: oasiswf.php:707
-#: includes/pages/workflow-history.php:11
+#: oasiswf.php:706 oasiswf.php:707 includes/pages/workflow-history.php:11
 msgid "Workflow History"
 msgstr "Historique"
 
@@ -305,8 +289,7 @@ msgstr "Cible"
 msgid "Path"
 msgstr "Chemin"
 
-#: includes/workflow-crud.php:135
-#: includes/pages/workflow-create.php:150
+#: includes/workflow-crud.php:135 includes/pages/workflow-create.php:150
 #: includes/pages/workflow-create.php:155
 #: includes/pages/workflow-settings.php:141
 #: includes/pages/subpages/reassign.php:26
@@ -347,8 +330,7 @@ msgstr "Date limite (fermeture)"
 msgid "Due date"
 msgstr "Date butoir"
 
-#: includes/workflow-history.php:40
-#: includes/workflow-list.php:34
+#: includes/workflow-history.php:40 includes/workflow-list.php:34
 msgid "Title"
 msgstr "Titre"
 
@@ -360,8 +342,7 @@ msgstr "Acteur"
 msgid "Workflow(version)"
 msgstr "workflow(version)"
 
-#: includes/workflow-history.php:51
-#: includes/workflow-inbox.php:12
+#: includes/workflow-history.php:51 includes/workflow-inbox.php:12
 msgid "Step"
 msgstr "Etape"
 
@@ -377,8 +358,7 @@ msgstr "Date limite (fermeture)"
 msgid "Result"
 msgstr "Résultat"
 
-#: includes/workflow-history.php:60
-#: includes/workflow-inbox.php:15
+#: includes/workflow-history.php:60 includes/workflow-inbox.php:15
 msgid "Comments"
 msgstr "Commentaires"
 
@@ -489,8 +469,7 @@ msgid "Save as new version"
 msgstr "Enregistrer en tant que nouvelle version"
 
 #: includes/pages/workflow-create.php:172
-#: includes/pages/workflow-create.php:179
-#: includes/pages/workflow-inbox.php:93
+#: includes/pages/workflow-create.php:179 includes/pages/workflow-inbox.php:93
 #: includes/pages/workflow-list.php:60
 msgid "Edit"
 msgstr "Editer"
