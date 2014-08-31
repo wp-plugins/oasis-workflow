@@ -61,9 +61,9 @@ More details for each feature, screenshots and documentation can be found on [ou
 
 If you need help setting up the roles, we recommend the [User Role Editor plugin](http://wordpress.org/extend/plugins/user-role-editor/ "User Role Editor plugin").
 
-Videos to help you get started with Oasis Workflow:
+= Videos to help you get started with Oasis Workflow =
 
-Applicable for Oasis Workflow Pro - when creating a new workflow. However, this video is helpful to understand how to modify the out of the box workflow. 
+Creating and Editing a workflow
 
 [youtube https://www.youtube.com/watch?v=PKHJN_X--Vs]
 
