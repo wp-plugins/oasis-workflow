@@ -65,11 +65,11 @@ Videos to help you get started with Oasis Workflow:
 
 Applicable for Oasis Workflow Pro - when creating a new workflow. However, this video is helpful to understand how to modify the out of the box workflow. 
 
-[youtube http://www.youtube.com/watch?v=PPBJns2p-zU]
+[youtube https://www.youtube.com/watch?v=PKHJN_X--Vs]
 
 How it works? Understand the process...
 
-[youtube http://www.youtube.com/watch?v=SuOCBf_mLpc]
+[youtube https://www.youtube.com/watch?v=_R2uVWQicsM]
 
 == Installation ==
 
