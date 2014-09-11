@@ -390,7 +390,7 @@ var jQueryCgmp = jQuery.noConflict();
 				   };							
 			jQuery.post(ajaxurl, step_edit_data, function( response ) {
 				jQuery("#step-info-update").html(response);
-				jQuery("#step-info-update").modal({
+				jQuery("#step-info-update").owfmodal({
 				    containerCss: {
 				        padding: 0,
 				        width: 650
@@ -412,10 +412,6 @@ var jQueryCgmp = jQuery.noConflict();
 
 			   	makeWhizzyWig("assignment-email-content","all");
 			   	makeWhizzyWig("reminder-email-content","all");
-
-			   	jQuery("#TB_window").css({"top":"53%"});
-			   	jQuery("#TB_overlay").addClass("hidden");
-			   	jQuery("#TB_load").css({"display":"none"});
 			});	    	
 	    	jQuery("#stepMenu").hide();
 	    	return true;

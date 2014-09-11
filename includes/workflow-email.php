@@ -11,11 +11,15 @@ class FCWorkflowEmail extends FCWorkflowBase
 			$user = get_user_by('email', $touser);
 		}
 
-		$headers = array("From: " . get_option( 'blogname' ) . " <" . get_site_option( 'admin_email' ) . ">", "Content-Type: text/html");
-		$h = implode("\r\n",$headers) . "\r\n";
+		$decoded_blog_name = html_entity_decode (  get_option( 'blogname' ), ENT_QUOTES, 'UTF-8' );
+		$headers = array("From: " .  $decoded_blog_name . " <" . get_site_option( 'admin_email' ) . ">", "Content-Type: text/html; charset=iso-8859-1");
 
-		wp_mail($user->data->user_email, $title, $message, $h) ;
-	}
+		$h = implode("\r\n",$headers) . "\r\n";
+		$decoded_title = html_entity_decode (  $title, ENT_QUOTES, 'UTF-8' );
+		$decoded_message = html_entity_decode (  $message, ENT_QUOTES, 'UTF-8' );
+
+		wp_mail($user->data->user_email, $decoded_title, $decoded_message, $h) ;
+   }
 
 	static function get_step_mail_content($actionid, $stepid, $touserid, $postid)
 	{
@@ -28,9 +32,9 @@ class FCWorkflowEmail extends FCWorkflowBase
 		$last_name = ( $last_name ) ? $last_name : $nickname ;
 
 		$post = get_post( $postid ) ;
-		$post_title = $post->post_title ;
+		$post_title = addslashes( $post->post_title );
 		$post_url = admin_url( 'post.php?post=' . $postid . '&action=edit&oasiswf=' . $actionid );
-      $blog_name = '[' . get_bloginfo( 'name' ) . '] ';
+      $blog_name = '[' . addslashes( get_bloginfo( 'name' )) . '] ';
 
 		if( $step && $post ){
 			$messages = json_decode( $step->process_info ) ;
@@ -45,7 +49,7 @@ class FCWorkflowEmail extends FCWorkflowBase
    		$content_line = str_replace(array("\\r\\n", "\\r", "\\n", "\\t", "<br />", ' '), '', trim( $message_content ));
 
    		if (empty($content_line)) {
-   		   $post_link = '<a href=' . $post_url . ' target="_blank">' . $post_title . '</a>';
+   		   $post_link = '<a href="' . $post_url . '" target="_blank">' . $post_title . '</a>';
    		}
    		$messages->assign_subject = (!empty($subject_line)) ? $blog_name . $messages->assign_subject : $blog_name . __("You have an assignment", "oasisworkflow");
    		$messages->assign_content = (!empty($content_line)) ? $messages->assign_content : __("You have an assignment related to post - " . $post_link, "oasisworkflow");
@@ -54,7 +58,7 @@ class FCWorkflowEmail extends FCWorkflowBase
 				$v = str_replace("%first_name%", $first_name, $v);
 				$v = str_replace("%last_name%", $last_name, $v);
 				if ($k === "assign_content" || $k === "reminder_content") { //replace %post_title% with a link to the post
-				   $v = str_replace("%post_title%", '<a href=' . $post_url . ' target="_blank">' . $post_title . '</a>', $v);
+				   $v = str_replace("%post_title%", '<a href="' . $post_url . '" target="_blank">' . $post_title . '</a>', $v);
 				}
 				if ($k === "assign_subject" || $k === "reminder_subject") { // since its a email subject, we don't need to have a link to the post
 				   $v = str_replace("%post_title%", '"' . $post_title . '"', $v);

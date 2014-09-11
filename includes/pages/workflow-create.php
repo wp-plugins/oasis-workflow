@@ -176,7 +176,7 @@ echo "<div id='connection-setting'>{$create_workflow->connection_setting_html()}
 <ul id="stepMenu" class="contextMenu">
 	<div>Step Menu</div>
 	<li class="edit" id="stepEdit">
-		<a class="thickbox"><?php echo __("Edit", "oasisworkflow") ?></a></li>
+		<a><?php echo __("Edit", "oasisworkflow") ?></a></li>
 	<?php if($wfeditable):?>
 		<li class="delete" id="stepDelete"><a href="#delete"><?php echo __("Delete", "oasisworkflow") ?></a></li>
 	<?php endif;?>
@@ -188,6 +188,6 @@ echo "<div id='connection-setting'>{$create_workflow->connection_setting_html()}
 	jQuery("#wpbody").css({"position":"inherit"});
 	function call_modal(param){
 		jQuery('.contextMenu').hide();
-		jQuery('#'+param).modal();
+		jQuery('#'+param).owfmodal();
 	}
 </script>

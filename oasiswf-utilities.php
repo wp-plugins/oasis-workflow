@@ -64,7 +64,7 @@ class FCUtility {
                 <div style="width:100%; float:left; align: center">' .
 					 	__("If you are looking for additional functionality like \"Multiple Workflows\", \"Workflow Support for Published Content\", \"Auto Submit\", \"Reports\", and much more...", "oasisworkflow")
 					 	. '<br/>' .
-					 	__("check out our \"Pro\" version at - ", "oasisworkflow")
+					 	__("check out our \"Pro\" version at ", "oasisworkflow")
 					 	. '<a target="_blank" href="https://www.oasisworkflow.com/pricing-purchase">' .  __("Oasis Workflow Pro", "oasisworkflow") . '</a>'
                 	. '</div>
              </div>';

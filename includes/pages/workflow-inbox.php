@@ -91,10 +91,6 @@ $current_user_id = get_current_user_id();
 											echo "<div class='row-actions'>" ;
 											if($posteditable || ($user->ID == $current_user_id )){
 												echo "<span><a href='post.php?post={$wfaction->post_id}&action=edit&oasiswf={$wfaction->ID}&user={$selected_user}' class='edit' real={$wfaction->post_id}>" . __("Edit", "oasisworkflow"). "</a></span>&nbsp;|&nbsp;" ;
-												echo "<span>
-															<a href='#' class='editinline' real='{$post->post_type}'>" . __("Quick Edit", "oasisworkflow") . "</a>
-															<span class='loading'>$sspace</span>
-													</span>&nbsp;|&nbsp; ";
 											}
 
 												echo "<span><a href='" . get_permalink($wfaction->post_id) . "'>" . __("View", "oasisworkflow") . "</a></span>&nbsp;|&nbsp;";

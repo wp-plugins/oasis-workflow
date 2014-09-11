@@ -2,8 +2,8 @@
 Contributors: nuggetsol
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit,versioning, auto submit
 Requires at least: 3.6
-Tested up to: 3.9
-Stable tag: 1.0.13
+Tested up to: 4.0
+Stable tag: 1.0.14
 
 Workflow process for WordPress made simple with Oasis Workflow.
 
@@ -63,13 +63,17 @@ If you need help setting up the roles, we recommend the [User Role Editor plugin
 
 = Videos to help you get started with Oasis Workflow =
 
-Creating and Editing a workflow
+Creating and/or Editing a workflow
 
 [youtube https://www.youtube.com/watch?v=PKHJN_X--Vs]
 
 How it works? Understand the process...
 
 [youtube https://www.youtube.com/watch?v=_R2uVWQicsM]
+
+How to manage published content via workflow - revise published content (applicable to "Pro" version only)
+
+[youtube http://www.youtube.com/watch?v=J4qJG7-F1qQ]
 
 == Installation ==
 
@@ -174,3 +178,10 @@ If these workflows are different, they need to be recreated with this upgrade.
 * Allow setting of future publish date on submit to workflow.
 * fixed german translations.
 * fixed compatibility issues with Wordpress 3.9
+
+= Version 1.0.14 =
+* fixed compatibility issues with Wordpress 4.0
+* added missing calendar images
+* fixed compatibility issues with Visual Composer Plugin.
+* removed "quick edit" from Workflow Inbox
+* bug fixes

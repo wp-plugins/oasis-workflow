@@ -145,7 +145,7 @@
 	 *
 	 * @param {object} [options] An optional object containing options overrides
 	 */
-	$.fn.modal = function (options) {
+	$.fn.owfmodal = function (options) {
 		return $.modal.impl.init(this, options);
 	};
 

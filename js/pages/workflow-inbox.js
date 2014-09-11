@@ -347,7 +347,7 @@ jQuery(document).ready(function() {
 		});
 		call_modal = function(){
 			jQuery(inbox_obj).parent().children(".loading").hide();
-			jQuery("#new-step-submit-div").modal({
+			jQuery("#new-step-submit-div").owfmodal({
 			    onShow: function (dlg) {
 			        jQuery(dlg.container).css('height', 'auto');
 			        jQuery(dlg.wrap).css('overflow', 'auto'); // or try ;
@@ -382,7 +382,7 @@ jQuery(document).ready(function() {
 		
 		call_reassign_modal = function(){
 			jQuery(inbox_obj).parent().children(".loading").hide();
-			jQuery("#reassgn-setting").modal();
+			jQuery("#reassgn-setting").owfmodal();
 		}
 	});
 	
@@ -419,7 +419,7 @@ jQuery(document).ready(function() {
 		
 		call_comment_modal = function(){
 			jQuery(inbox_obj).parent().children(".loading").hide();
-			jQuery("#stepcomment-setting").modal();
+			jQuery("#stepcomment-setting").owfmodal();
 		}
 	});
 });

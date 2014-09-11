@@ -439,8 +439,6 @@ class FCProcessFlow extends FCWorkflowBase
 					'post_id' => $_POST["post_id"],
 					'from_id' => $_POST["oasiswf_id"],
 				   'comment' => "",
-					'due_date' => $currentDate,
-					'reminder_date' => $currentDate,
 					'create_datetime' => $currentTime
 				);
 		$action_history_table = FCUtility::get_action_history_table_name();

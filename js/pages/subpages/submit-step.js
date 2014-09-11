@@ -47,7 +47,7 @@ jQuery(document).ready(function() {
 	}
 	
 	jQuery( document ).on("click", "#step_submit", function(){
-		jQuery("#new-step-submit-div").modal({
+		jQuery("#new-step-submit-div").owfmodal({
 		    onShow: function (dlg) {
 		        jQuery(dlg.container).css('height', 'auto');
 		        jQuery(dlg.wrap).css('overflow', 'auto'); // or try ;

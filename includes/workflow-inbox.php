@@ -73,6 +73,15 @@ class FCWorkflowInbox extends FCWorkflowBase
 					$newData["action_status"] = "assignment" ;
 					$newData["from_id"] = $action->ID ;
 					$newData["create_datetime"] = current_time('mysql') ;
+				   if ( empty( $action->due_date )) {
+                  unset( $newData["due_date"] );
+               }
+				   if ( empty( $action->reminder_date )) {
+                  unset( $newData["reminder_date"] );
+               }
+				   if ( empty( $action->reminder_date_after )) {
+                  unset( $newData["reminder_date_after"] );
+               }
 					$iid = FCWorkflowInbox::insert_to_table( $action_history_table, $newData ) ;
 					// delete reminder emails, since the assignment is now claimed
 					FCWorkflowEmail::delete_step_email($action->ID, $action->assign_actor_id);

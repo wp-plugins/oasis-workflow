@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Easily create graphical workflows to manage your work.
- Version: 1.0.13
+ Version: 1.0.14
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.13' );
-define( 'OASISWF_DB_VERSION','1.0.13');
+define( 'OASISWF_VERSION' , '1.0.14' );
+define( 'OASISWF_DB_VERSION','1.0.14');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -250,6 +250,10 @@ class FCInitialization
 			FCInitialization::upgrade_database_1012();
 		}
 		else if ($pluginOptions['version'] == "1.0.12")
+		{
+         // nothing to upgrade
+		}
+	   else if ($pluginOptions['version'] == "1.0.13")
 		{
          // nothing to upgrade
 		}
@@ -757,7 +761,6 @@ class FCLoadWorkflow
 	{
 	   // ONLY load OWF scripts on OWF plugin pages
 	   if ( is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches ) ) {
-      	wp_enqueue_style( 'thickbox' );
    	   wp_enqueue_style( 'owf-css',
       	                   OASISWF_URL. 'css/pages/context-menu.css',
       	                   false,
@@ -810,7 +813,6 @@ class FCLoadWorkflow
 	{
 	   // ONLY load OWF scripts on OWF plugin pages
 	   if ( is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches ) ) {
-   		wp_enqueue_script( 'thickbox' );
    		wp_enqueue_script( 'jquery-ui-core' ) ;
    		wp_enqueue_script( 'jquery-ui-widget' ) ;
    		wp_enqueue_script( 'jquery-ui-mouse' ) ;
@@ -831,7 +833,7 @@ class FCLoadWorkflow
 		{
    		wp_enqueue_script( 'jsPlumb',
    		                   OASISWF_URL. 'js/lib/jquery.jsPlumb-all-min.js',
-   		                   array('thickbox', 'jquery-ui-core', 'jquery-ui-draggable', 'jquery-ui-droppable'),
+   		                   array('jquery-ui-core', 'jquery-ui-draggable', 'jquery-ui-droppable'),
    		                   '1.4.1',
    		                   true);
    		wp_enqueue_script( 'drag-drop-jsplumb',
@@ -862,8 +864,8 @@ class FCLoadWorkflow
 
    	   wp_enqueue_script( 'jquery-simplemodal',
    		                   OASISWF_URL. 'js/lib/modal/jquery.simplemodal.js',
-   		                   array('thickbox'),
-   		                   '1.4.4',
+   		                   '',
+   		                   '1.4.5',
    		                   true);
 
    		wp_enqueue_script( 'owf-workflow-util',

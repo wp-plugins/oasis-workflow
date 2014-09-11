@@ -31,7 +31,7 @@ jQuery(document).ready(function() {
 	});
 	
 	jQuery( document ).on( "click", "#workflow_submit", function(){
-		jQuery("#new-workflow-submit-div").modal();
+		jQuery("#new-workflow-submit-div").owfmodal();
 		calendar_action();
 	});
 		

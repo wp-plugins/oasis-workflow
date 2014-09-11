@@ -27,7 +27,8 @@ class FCWorkflowActions
 			    'context' => 'normal',
 			    'priority' => 'high'
 			    );
-			add_meta_box($mbox['id'], $mbox['title'], array('FCWorkflowActions','history_graphic_box'), $mbox['page'], $mbox['context'], $mbox['priority']);
+		    // TODO: this might cause issues with other plugins - compatibility issues - for the time being this feature is turned off.
+		    // add_meta_box($mbox['id'], $mbox['title'], array('FCWorkflowActions','history_graphic_box'), $mbox['page'], $mbox['context'], $mbox['priority']);
 		}
 	}
 

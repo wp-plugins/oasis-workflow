@@ -174,7 +174,7 @@ jQuery(document).ready(function() {
 		}
 		
 		if(!jQuery("#step-failure-status-select").val()){
-			alert(owf_workflow_step_info_varsstatusOnFailure) ;
+			alert(owf_workflow_step_info_vars.statusOnFailure) ;
 			return false ;
 		}
 		
