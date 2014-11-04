@@ -67,7 +67,7 @@ Editing the Out of the box workflow (applicable to both the "free" and "pro" ver
 
 [youtube https://www.youtube.com/watch?v=TLWrjTvsTRs]
 
-How it works? Understand the process...
+How it works? Understand the process (applicable to both the "free" and "pro" version)
 
 [youtube https://www.youtube.com/watch?v=_R2uVWQicsM]
 
