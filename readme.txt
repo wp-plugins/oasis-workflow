@@ -63,13 +63,17 @@ If you need help setting up the roles, we recommend the [User Role Editor plugin
 
 = Videos to help you get started with Oasis Workflow =
 
-Creating and/or Editing a workflow
+Editing the Out of the box workflow (applicable to both the "free" and "pro" version)
 
-[youtube https://www.youtube.com/watch?v=PKHJN_X--Vs]
+[youtube https://www.youtube.com/watch?v=TLWrjTvsTRs]
 
 How it works? Understand the process...
 
 [youtube https://www.youtube.com/watch?v=_R2uVWQicsM]
+
+Creating and Editing a workflow (applicable to "Pro" version only)
+
+[youtube https://www.youtube.com/watch?v=PKHJN_X--Vs]
 
 How to manage published content via workflow - revise published content (applicable to "Pro" version only)
 
