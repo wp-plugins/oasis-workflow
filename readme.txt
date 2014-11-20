@@ -44,7 +44,7 @@ Oasis Workflow plugin is designed to automate any workflow process using a simpl
 * Multiple Workflows - Allows you to create multiple workflows.
 * Copy Workflow and Copy Steps - Allows you to quickly create workflows by using the copy workflow/copy step functionality.
 * [Auto Submit](http://www.oasisworkflow.com/auto-submit-to-workflow) - Allows you to automatically submit to workflow(s) with certain conditions.
-* [Workflow Support for Published Content](http://www.oasisworkflow.com/workflow-support-for-updating-published-content) - Use workflow to edit your published content while keeping the published article online.
+* [Revise published content and add Workflow Support to revised content](http://www.oasisworkflow.com/workflow-support-for-updating-published-content) - Use workflow to edit your published content while keeping the published article online.
 * And much more.. 
 
 More details for each feature, screenshots and documentation can be found on [our website](http://www.oasisworkflow.com/).
@@ -71,7 +71,7 @@ How it works? Understand the process (applicable to both the "free" and "pro" ve
 
 [youtube https://www.youtube.com/watch?v=_R2uVWQicsM]
 
-Modify a workflow which has posts/pages currently in progress of your workflow (applicable to both the "free" and "pro" version)
+Modify a workflow which has posts/pages currently in progress (applicable to both the "free" and "pro" version)
 
 [youtube https://www.youtube.com/watch?v=8fbSEAYV-WU]
 
