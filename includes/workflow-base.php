@@ -357,7 +357,7 @@ class FCWorkflowBase
 		else
 			$w = "WHERE assign_actor_id = $user_id OR actor_id = $user_id" ;
 
-		$sql = "SELECT A.*, B.review_status, B.actor_id, B.reassign_actor_id, B.step_id as review_step_id, B.action_history_id, B.update_datetime FROM
+		$sql = "SELECT A.*, B.review_status, B.actor_id, B.next_assign_actors, B.step_id as review_step_id, B.action_history_id, B.update_datetime FROM
 							(SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE action_status = 'assignment') as A
 							LEFT OUTER JOIN
 							(SELECT * FROM " . FCUtility::get_action_table_name() . " WHERE review_status = 'assignment') as B

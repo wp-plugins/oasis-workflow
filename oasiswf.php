@@ -2,13 +2,13 @@
 /*
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
- Description: Easily create graphical workflows to manage your work.
- Version: 1.0.14
+ Description: Automate your WordPress Editorial Workflow.
+ Version: 1.0.15
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
 ----------------------------------------------------------------------
-Copyright 2011-2014 Nugget Solutions Inc.
+Copyright 2011-2015 Nugget Solutions Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.14' );
-define( 'OASISWF_DB_VERSION','1.0.14');
+define( 'OASISWF_VERSION' , '1.0.15' );
+define( 'OASISWF_DB_VERSION','1.0.15');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -199,63 +199,79 @@ class FCInitialization
 			FCInitialization::upgrade_database_103();
 			FCInitialization::upgrade_database_104();
 			FCInitialization::upgrade_database_1012();
+			FCInitialization::upgrade_database_1015();
 		}
 		else if ($pluginOptions['version'] == "1.0.1")
 		{
 			FCInitialization::upgrade_database_103();
 			FCInitialization::upgrade_database_104();
 			FCInitialization::upgrade_database_1012();
+			FCInitialization::upgrade_database_1015();
 		}
 		else if ($pluginOptions['version'] == "1.0.2")
 		{
 			FCInitialization::upgrade_database_103();
 			FCInitialization::upgrade_database_104();
 			FCInitialization::upgrade_database_1012();
+			FCInitialization::upgrade_database_1015();
 		}
 		else if ($pluginOptions['version'] == "1.0.3")
 		{
 			FCInitialization::upgrade_database_104();
 			FCInitialization::upgrade_database_1012();
+			FCInitialization::upgrade_database_1015();
 		}
 		else if ($pluginOptions['version'] == "1.0.4")
 		{
 			FCInitialization::upgrade_database_1012();
+			FCInitialization::upgrade_database_1015();
 		}
 		else if ($pluginOptions['version'] == "1.0.5")
 		{
 			FCInitialization::upgrade_database_1012();
+			FCInitialization::upgrade_database_1015();
 		}
 		else if ($pluginOptions['version'] == "1.0.6")
 		{
 			FCInitialization::upgrade_database_1012();
+			FCInitialization::upgrade_database_1015();
 		}
 		else if ($pluginOptions['version'] == "1.0.7")
 		{
 			FCInitialization::upgrade_database_1012();
+			FCInitialization::upgrade_database_1015();
 		}
 		else if ($pluginOptions['version'] == "1.0.8")
 		{
 			FCInitialization::upgrade_database_1012();
+			FCInitialization::upgrade_database_1015();
 		}
 		else if ($pluginOptions['version'] == "1.0.9")
 		{
 			FCInitialization::upgrade_database_1012();
+			FCInitialization::upgrade_database_1015();
 		}
 		else if ($pluginOptions['version'] == "1.0.10")
 		{
 			FCInitialization::upgrade_database_1012();
+			FCInitialization::upgrade_database_1015();
 		}
 	   else if ($pluginOptions['version'] == "1.0.11")
 		{
 			FCInitialization::upgrade_database_1012();
+			FCInitialization::upgrade_database_1015();
 		}
 		else if ($pluginOptions['version'] == "1.0.12")
 		{
-         // nothing to upgrade
+         FCInitialization::upgrade_database_1015();
 		}
 	   else if ($pluginOptions['version'] == "1.0.13")
 		{
-         // nothing to upgrade
+         FCInitialization::upgrade_database_1015();
+		}
+		else if ($pluginOptions['version'] == "1.0.14")
+		{
+         FCInitialization::upgrade_database_1015();
 		}
 
 		// update the version value
@@ -414,6 +430,118 @@ class FCInitialization
       $wpdb->query("ALTER TABLE {$table_name} MODIFY update_datetime datetime");
 	}
 
+   static function upgrade_database_1015()
+   {
+      global $wpdb;
+
+      //fc_workflows table alter, add new column "wf_additional_info" at end
+      $table_name = FCUtility::get_workflows_table_name();
+      $wpdb->query("ALTER TABLE {$table_name} ADD wf_additional_info mediumtext");
+
+      // set default values to new added field
+      $additional_info = stripcslashes( 'a:2:{s:16:"wf_for_new_posts";i:1;s:20:"wf_for_revised_posts";i:1;}' );
+      $wpdb->query( "UPDATE {$table_name} SET wf_additional_info = '" . $additional_info . "'" );
+
+	   // look through each of the blogs and upgrade the DB
+      if (function_exists('is_multisite') && is_multisite())
+      {
+         //Get all blog ids; foreach them and call the uninstall procedure on each of them
+         $blog_ids = $wpdb->get_col("SELECT blog_id FROM {$wpdb->base_prefix}blogs");
+
+         //Get all blog ids; foreach them and call the install procedure on each of them if the plugin table is found
+         foreach ( $blog_ids as $blog_id )
+         {
+            switch_to_blog( $blog_id );
+            if( $wpdb->query( "SHOW TABLES FROM ".$wpdb->dbname." LIKE '".$wpdb->prefix."fc_%'" ) )
+            {
+               FCInitialization::upgrade_helper_1015();
+            }
+            restore_current_blog();
+         }
+         return;
+      }
+      FCInitialization::upgrade_helper_1015();
+   }
+
+   static function upgrade_helper_1015 () {
+   	global $wpdb;
+	   $action_table = FCUtility::get_action_table_name();
+	   $action_history_table = FCUtility::get_action_history_table_name();
+
+	   // get all the records for action_history_id, step_id and actor_id combination
+		$multiple_records = $wpdb->get_results("select t1.id AS id,	t1.action_history_id, concat(t1.action_history_id, '-', t1.step_id, '-', t1.actor_id) AS historyid_stepid_actorid, t1.reassign_actor_id AS next_actors FROM {$action_table} AS t1 ORDER BY t1.action_history_id, t1.actor_id");
+
+		// make historyid_stepid_actorid as key and get all the next assigned actors
+		$multi_actors =array();
+		$affected_action_history = array();
+		foreach($multiple_records as $record)
+		{
+			$multi_actors[][$record->historyid_stepid_actorid] = $record;
+		   if (!in_array($record->action_history_id, $affected_action_history))
+         {
+             $affected_action_history[] = $record->action_history_id;
+         }
+		}
+		$ressigned_actors = array();
+		foreach($multi_actors as $actor)
+		{
+			foreach($actor as $id => $a)
+			{
+				if(array_key_exists($id, $ressigned_actors))
+				{
+					$ressigned_actors[$id] .= ','.$a->next_actors;
+				}
+				else
+				{
+					$ressigned_actors[$id] = $a->next_actors;
+				}
+			}
+		}
+		foreach( $ressigned_actors as $k=>$v )
+		{
+			$ressigned_actors[$k] = explode(',', $v);
+		}
+
+		// we should now have all the next_assign_actors for a given history, step and actor combination
+		// now add the new column to the database
+		$new_col = $wpdb->query("ALTER TABLE {$action_table} add next_assign_actors text after reassign_actor_id");
+
+		// lets assign the value to this new attribute
+		foreach( $ressigned_actors as $k=>$v )
+		{
+		   $key = explode('-', $k);
+		   $history_id = $key[0];
+		   $step_id = $key[1];
+		   $actor_id = $key[2];
+
+			$result = $wpdb->update(
+						$action_table,
+						array(
+							'next_assign_actors' => json_encode($v)
+						),
+						array(
+						'action_history_id' => $history_id,
+						'step_id' => $step_id,
+						'actor_id' => $actor_id
+						)
+					);
+		}
+
+
+
+		// delete duplicate records
+		$remove_dup_records = $wpdb->query("DELETE t1 FROM {$action_table} t1, {$action_table} t2
+					WHERE t1.id > t2.id
+					AND t1.action_history_id = t2.action_history_id
+					AND t1.step_id = t2.step_id
+					AND t1.actor_id = t2.actor_id");
+
+		// remove the old column
+		$remove_old_col = $wpdb->query("ALTER TABLE {$action_table} DROP reassign_actor_id");
+
+   }
+
+
 	static function install_admin_database()
 	{
 		global $wpdb;
@@ -519,7 +647,7 @@ class FCInitialization
 			    `ID` int(11) NOT NULL AUTO_INCREMENT,
 			    `review_status` varchar(20) NOT NULL,
 			    `actor_id` int(11) NOT NULL,
-			    `reassign_actor_id` int(11) NOT NULL,
+			    `next_assign_actors` text NOT NULL,
 			    `step_id` int(11) NOT NULL,
 			    `comments` mediumtext,
 			    `due_date` date DEFAULT NULL,
@@ -545,8 +673,8 @@ class FCInitialization
 					'name' => 'Test Workflow',
 					'description' => 'sample workflow',
 		         'wf_info' => $workflow_info,
-		         'start_date' => date('Y-m-d'),
-		         'end_date' => date('Y-m-d', strtotime('+1 years')),
+		         'start_date' => date("Y-m-d", current_time('timestamp')),
+		         'end_date' => date("Y-m-d", current_time('timestamp') + YEAR_IN_SECONDS),
 		         'is_valid' => 1,
 					'create_datetime' => current_time('mysql'),
 		 			'update_datetime' => current_time('mysql')

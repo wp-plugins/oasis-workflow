@@ -2,6 +2,8 @@
 $workflow = FCProcessFlow::get_workflow_by_validity( 1 ) ;
 $reminder_days = get_site_option('oasiswf_reminder_days');
 $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
+$publish_date = current_time("m/d/Y");
+$publish_time_array = explode("-", current_time("H-i"));
 ?>
 <div class="info-setting" id="new-workflow-submit-div">
 	<div class="dialog-title"><strong><?php echo __("Submit", "oasisworkflow") ;?></strong></div>
@@ -81,7 +83,9 @@ $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
 				<label><?php echo __("Future Publish Date : ", "oasisworkflow") ;?></label>
 			</div>
 			<div class="left">
-								<input name="publish-date" id="publish-date" class="date_input" type="text"><input type="text" name="publish-hour" id="publish-hour" class="date_input" style="width:46px;" placeholder="hour" maxlength="2"><input type="text" name="publish-min" id="publish-min" class="date_input" style="width:46px;" placeholder="min"  maxlength="2">
+				<input name="publish-date" id="publish-date" class="date_input" type="text" value="<?php echo $publish_date; ?>">@
+				<input type="text" name="publish-hour" id="publish-hour" class="date_input wf-time" placeholder="hour" maxlength="2" value="<?php echo $publish_time_array[0]; ?>">:
+				<input type="text" name="publish-min" id="publish-min" class="date_input wf-time" placeholder="min"  maxlength="2" value="<?php echo $publish_time_array[1]; ?>">
 				<button class="date-clear" ><?php echo __("clear", "oasisworkflow") ;?></button>
 			</div>
 			<br class="clear">

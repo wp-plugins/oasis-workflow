@@ -35,18 +35,17 @@ $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
 				<label><?php echo __("Publish", "oasisworkflow");?> : </label>
 				<?php
 					$pdata = get_post($post_id);
-					$publish_date = $pdata->post_date;
-					if(strtotime("now") < strtotime($publish_date)) :
-					   $future_date = date("m/d/Y H:i:s", strtotime($publish_date));
+					$publish_date = strtotime( get_gmt_from_date(get_the_date('Y-m-d H:i:s', $post_id )));
+               $current_gmt_time = current_time('timestamp', 1);
+					if($current_gmt_time < $publish_date) :
 					   $is_future_date = true;
 					else:
-					   $future_date = date("m/d/Y H:i:s", strtotime("now"));
 					   $is_future_date = false;
 					endif;
 				?>
 				<input type="checkbox" id="immediately-chk" <?php echo  $is_future_date ? '' : 'checked="checked"';  ?> />&nbsp;&nbsp;<?php echo __("Immediately", "oasisworkflow") ;?>&nbsp;&nbsp;
 				<span id="immediately-span" style="display:none;">
-					<?php FCProcessFlow::get_immediately_content($success_status, $future_date);?>
+					<?php FCProcessFlow::get_immediately_content($post_id, $success_status, $is_future_date);?>
 				</span>
 				<br class="clear">
 			<?php endif;?>

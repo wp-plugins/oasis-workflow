@@ -707,3 +707,12 @@ a.owf_about_link:hover {
    margin-top: 10px;
    width: 100%;
 }
+
+.inside-section {
+   border-width: 1px;
+   border-bottom: 1px black solid;
+}
+.wf-time
+{
+   width:46px !important;
+}

@@ -1,9 +1,9 @@
 === Oasis Workflow ===
 Contributors: nuggetsol
-Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit,versioning, auto submit, approval workflow, editorial workflow, notifications, oasis workflow, editorial, revisions, document revision, version control, collaboration, document management, revision scheduling, duplication, clone
+Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit,versioning, auto submit, approval workflow, editorial workflow, notifications, oasis workflow, editorial, revisions, document revision, version control, collaboration, document management, revision scheduling, duplication, clone, revise, revise article
 Requires at least: 3.6
 Tested up to: 4.0
-Stable tag: 1.0.14
+Stable tag: 1.0.15
 
 Workflow process for WordPress made simple with Oasis Workflow.
 
@@ -70,6 +70,10 @@ Editing the Out of the box workflow (applicable to both the "free" and "pro" ver
 How it works? Understand the process (applicable to both the "free" and "pro" version)
 
 [youtube https://www.youtube.com/watch?v=_R2uVWQicsM]
+
+Modify a workflow which has posts/pages currently in progress of your workflow (applicable to both the "free" and "pro" version)
+
+[youtube https://www.youtube.com/watch?v=8fbSEAYV-WU]
 
 Creating and Editing a workflow (applicable to "Pro" version only)
 
@@ -189,3 +193,8 @@ If these workflows are different, they need to be recreated with this upgrade.
 * fixed compatibility issues with Visual Composer Plugin.
 * removed "quick edit" from Workflow Inbox
 * bug fixes
+
+= Version 1.0.15 =
+* Fixed future date issue related to timezones
+* Fixed post revision schedule
+* Modified the DB to make it easier to add more features

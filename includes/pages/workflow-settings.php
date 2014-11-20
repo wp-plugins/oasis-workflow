@@ -104,19 +104,23 @@ FCUtility::owf_pro_features();
 				<h3 style="cursor: default;">
 					<span><?php _e("About this Plugin:", "oasisworkflow"); ?> </span>
 				</h3>
-				<div class="inside">
+				<div class="inside inside-section">
 					</a> <a class="owf_about_link" style="background-image:url(<?php echo OASISWF_URL . 'img/publish.gif'; ?>);" target="_blank" href="http://oasisworkflow.com/"><?php _e('Plugin webpage', "oasisworkflow"); ?>
 					</a> <a class="owf_about_link" style="background-image:url(<?php echo OASISWF_URL . '/img/faq-icon.png'; ?>);" target="_blank" href="http://oasisworkflow.com/faq/"><?php _e('FAQ', "oasisworkflow"); ?>
 					</a>
 				</div>
             <h3><span><?php _e('Help us Improve:', 'oasisworkflow') ?></span></h3>
-               <div class="inside">
-                   <p><a href="https://www.oasisworkflow.com/submit-a-query" target="_blank"><?php _e('Suggest', 'oasisworkflow') ?></a> <?php _e('features', 'oasisworkflow') ?>.</p>
-                   <p><a href="http://wordpress.org/support/view/plugin-reviews/oasis-workflow/" target="_blank"><?php _e('Rate', 'oasisworkflow') ?></a> <?php _e('the plugin 5 stars on WordPress.org', 'oasisworkflow') ?>.</p>
-                   <p><a href="https://www.facebook.com/oasisworkflow" target="_blank"><?php _e('Like us', 'oasisworkflow') ?></a> <?php _e('on', 'oasisworkflow') ?> Facebook. </p>
-               </div>
+            <div class="inside inside-section">
+                <p><a href="https://www.oasisworkflow.com/submit-a-query" target="_blank"><?php _e('Suggest', 'oasisworkflow') ?></a> <?php _e('features', 'oasisworkflow') ?>.</p>
+                <p><a href="http://wordpress.org/support/view/plugin-reviews/oasis-workflow/" target="_blank"><?php _e('Rate', 'oasisworkflow') ?></a> <?php _e('the plugin 5 stars on WordPress.org', 'oasisworkflow') ?>.</p>
+                <p><a href="https://www.facebook.com/oasisworkflow" target="_blank"><?php _e('Like us', 'oasisworkflow') ?></a> <?php _e('on', 'oasisworkflow') ?> Facebook. </p>
             </div>
-        </div>
+            <h3><span><?php _e('Go Pro:', 'oasisworkflow') ?></span></h3>
+            <div class="inside inside-section">
+             	<p><a href="https://www.oasisworkflow.com/pricing-purchase" target="_blank"><?php _e('Pricing & Purchase', 'oasisworkflow') ?></a></p>
+            </div>
+        	 </div>
+       </div>
 	</div>
 </div>
 <script type='text/javascript'>

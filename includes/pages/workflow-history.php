@@ -5,7 +5,6 @@ $count_posts = $history_workflow->get_history_count($selected_post);
 $pagenum = (isset( $_GET['paged'] ) && $_GET["paged"]) ? $_GET["paged"] : 1;
 $per_page = 25;
 ?>
-<style type="text/css">.wrap, .wrap h2{font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;}</style>
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-posts-post"><br></div>
 	<h2><?php echo __("Workflow History", "oasisworkflow") ;?></h2>
@@ -13,7 +12,7 @@ $per_page = 25;
 		<div class="tablenav">
 			<div class="alignleft actions">
 				<select id="post_filter">
-					<option selected="selected"><?php echo __("View Post/Page Workflow History", "oasisworkflow")?></option>
+					<option selected="selected" value="0"><?php echo __("View Post/Page Workflow History", "oasisworkflow")?></option>
 					<?php
 					$wf_posts = $history_workflow->get_workflow_posts();
 					if( $wf_posts )
@@ -61,13 +60,19 @@ $per_page = 25;
 								break;
 							if ( $count >= $start )
 							{
+							if( $row->assign_actor_id != -1 && $row->action_status != "aborted"){
 								echo "<tr>";
 								echo "<th scope='row' class='check-column'><input type='checkbox' name='linkcheck[]' value='1'></th>" ;
 								echo "<td>
 										<a href='post.php?post={$row->post_id}&action=edit'><strong>{$row->post_title}</strong></a>
+										<!--
+										<div class='row-actions'>
+											<span><a href='#' id='graphic_show'>View</a></span>
+										</div>
+										-->
 									</td>";
 								echo "<td>{$history_workflow->get_user_name($row->userid)}</td>";
-                        echo "<td>{$workflow_name}</td>";
+								echo "<td>{$workflow_name}</td>";
 								echo "<td>{$history_workflow->get_step_name($row)}</td>";
 								echo "<td>{$history_workflow->format_date_for_display( $row->create_datetime, "-", "datetime" )}</td>";
 								echo "<td>{$history_workflow->format_date_for_display( $history_workflow->get_signoff_date( $row ), "-", "datetime" )}</td>";
@@ -83,16 +88,16 @@ $per_page = 25;
 										</div>
 									  </td>" ;
 								echo "</tr>";
-
-							   if( $row->assign_actor_id == -1 ){
-									$review_rows = $history_workflow->get_review_action_by_history_id($row->ID ) ;
+								}
+								if( $row->assign_actor_id == -1 ){
+									$review_rows = $history_workflow->get_review_action_by_history_id($row->ID, "update_datetime" ) ;
 									if( $review_rows ){
 										foreach ($review_rows as $review_row) {
 											echo "<tr>" ;
 											echo "<th scope='row' class='check-column'><input type='checkbox' name='linkcheck[]' value='1'></th>" ;
 											echo "<td><a href='post.php?post={$row->post_id}&action=edit'><strong>{$row->post_title}</strong></a></td>" ;
 											echo "<td>{$history_workflow->get_user_name($review_row->actor_id)}</td>";
-                                 echo "<td>{$workflow_name}</td>";
+											echo "<td>{$workflow_name}</td>";
 											echo "<td>{$history_workflow->get_step_name($row)}</td>";
 											echo "<td>{$history_workflow->format_date_for_display( $row->create_datetime, "-", "datetime" )}</td>";
 											if( $review_row->review_status == "reassigned" ){
@@ -102,7 +107,16 @@ $per_page = 25;
 												$signoff_date = $review_row->update_datetime ;
 											}
 											echo "<td>{$history_workflow->format_date_for_display( $signoff_date, "-", "datetime" )}</td>";
-											echo "<td>{$history_workflow->get_review_signoff_status( $row, $review_row )}</td>" ;
+											// If editors' review status is "no_action" (Not acted upon) then set user status as "No action taken"
+											if($review_row->review_status == "no_action")
+											{
+												$review_status = __("No Action Taken", "oasisworkflow");
+											}
+											else
+											{
+												$review_status = $history_workflow->get_review_signoff_status( $row, $review_row );
+											}
+											echo "<td>$review_status</td>" ;
 											echo "<td class='comments'>
 													<div class='post-com-count-wrapper'>
 														<strong>
@@ -117,7 +131,8 @@ $per_page = 25;
 											$count++;
 										}
 									}
-							   }
+								}
+
 							}
 							$count++;
 						}
@@ -131,6 +146,7 @@ $per_page = 25;
 				?>
 			</tbody>
 		</table>
+
 		<div class="tablenav">
 			<div class="tablenav-pages">
 				<?php $history_workflow->get_page_link($count_posts,$pagenum, $per_page);?>
@@ -138,4 +154,5 @@ $per_page = 25;
 		</div>
 	</div>
 </div>
+
 <div id="post_com_count_content"></div>

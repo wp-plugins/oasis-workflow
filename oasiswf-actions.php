@@ -99,32 +99,37 @@ class FCWorkflowActions
 
          // do not hide the ootb publish section for skip_workflow_roles option, but hide it if the post is in the workflow
          $skip_workflow_roles = get_site_option('oasiswf_skip_workflow_roles') ;
+         $row = null;
+         if( isset($_GET['post']) && $_GET["post"] && isset($_GET['action']) && $_GET["action"] == "edit")
+         {
+            $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE post_id = %d AND action_status = 'assignment'", $_GET["post"] )) ;
+         }
          if( (is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles ))){
             FCWorkflowActions::ootb_publish_section_hide() ;
          }
 
+		   // if the item is in the workflow, hide the OOTB publish section
+         if ( $row ) {
+            FCWorkflowActions::ootb_publish_section_hide() ;
+         }
 
-		   if( isset($_GET['post']) && $_GET["post"] && isset($_GET['action']) && $_GET["action"] == "edit")
-			{
-            $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE post_id = %d AND action_status = 'assignment'", $_GET["post"] )) ;
 
-   			//--------generate abort workflow link---------
+			//--------generate abort workflow link---------
 
-   			if( $role == "administrator" ){
-   				if( $row ){
-   					echo "<script type='text/javascript'>var exit_wfid = $row->ID ;</script>" ;
-                  wp_enqueue_script( 'owf-abort-workflow',
-                            OASISWF_URL. 'js/pages/subpages/exit.js',
-                            '',
-                      		 OASISWF_VERSION,
-                            true);
+			if( $role == "administrator" ){
+				if( $row ){
+					echo "<script type='text/javascript'>var exit_wfid = $row->ID ;</script>" ;
+               wp_enqueue_script( 'owf-abort-workflow',
+                         OASISWF_URL. 'js/pages/subpages/exit.js',
+                         '',
+                   		 OASISWF_VERSION,
+                         true);
 
-                  wp_localize_script( 'owf-abort-workflow', 'owf_abort_workflow_vars', array(
-            						'abortWorkflow' => __( 'Abort workflow', 'oasisworkflow' ),
-                  				'abortWorkflowConfirm' => __( 'Are you sure to abort the workflow?', 'oasisworkflow' )
-                          ));
-   				}
-   			}
+               wp_localize_script( 'owf-abort-workflow', 'owf_abort_workflow_vars', array(
+         						'abortWorkflow' => __( 'Abort workflow', 'oasisworkflow' ),
+               				'abortWorkflowConfirm' => __( 'Are you sure to abort the workflow?', 'oasisworkflow' )
+                       ));
+				}
 			}
 		}
 	}

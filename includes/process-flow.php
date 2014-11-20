@@ -133,108 +133,119 @@ class FCProcessFlow extends FCWorkflowBase
       exit();
 	}
 
-	static function save_action($data, $actors, $actionid=null, $actionfrm=null)
-	{
-	   // reminder days BEFORE the due date
-		$reminder_days = get_site_option("oasiswf_reminder_days") ;
-		if ($reminder_days && isset($data["due_date"] )) {
-		   $data["reminder_date"] = FCProcessFlow::get_pre_next_date( $data["due_date"], "pre", $reminder_days) ;
-		}
+   // this function will simply insert the data for the next step and update the previous action as "processed"
+   static function save_action( $data, $actors, $actionid=null )
+   {
+      // reminder days BEFORE the due date
+      $reminder_days = get_site_option("oasiswf_reminder_days") ;
+      if ($reminder_days && isset($data["due_date"] )) {
+         $data["reminder_date"] = FCProcessFlow::get_pre_next_date( $data["due_date"], "pre", $reminder_days) ;
+      }
 
-		// reminder days AFTER the due date
-		$reminder_days_after = get_site_option("oasiswf_reminder_days_after") ;
-		if ($reminder_days_after && isset($data["due_date"] )) {
-		   $data["reminder_date_after"] = FCProcessFlow::get_pre_next_date( $data["due_date"], "next", $reminder_days_after) ;
-		}
+      // reminder days AFTER the due date
+      $reminder_days_after = get_site_option("oasiswf_reminder_days_after") ;
+      if ($reminder_days_after && isset($data["due_date"] )) {
+         $data["reminder_date_after"] = FCProcessFlow::get_pre_next_date( $data["due_date"], "next", $reminder_days_after) ;
+      }
 
-		$action_history_table = FCUtility::get_action_history_table_name();
-		$action_table = FCUtility::get_action_table_name();
+      $action_history_table = FCUtility::get_action_history_table_name();
+      $action_table = FCUtility::get_action_table_name();
       $wf_info = FCProcessFlow::get_step_by_id( $data["step_id"] ) ;
-		if($wf_info)
-		{
-			$step_info = json_decode( $wf_info->step_info ) ;
-		}
-		if( is_numeric( $actors ) )
-		{
-			$data["assign_actor_id"] = $actors ;
-			$iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
-			if( !$actionfrm )FCWorkflowEmail::send_step_email( $iid ) ; // send mail to the actor .
-		}
-		else if (!is_numeric( $actors ) && ($step_info->process == "assignment" || $step_info->process == "publish" )) //multiple actors are assigned in assignment step or publish step
-		{
-         $arr = explode("@", $actors) ;
+      if($wf_info)
+      {
+         $step_info = json_decode( $wf_info->step_info ) ;
+      }
+
+      if ( $step_info->process == "assignment" || $step_info->process == "publish" ) //multiple actors are assigned in assignment/publish step
+      {
+         if( is_numeric( $actors ) ) {
+            $arr[] = $actors;
+         }
+         else {
+            $arr = explode("@", $actors) ;
+         }
+
          for( $i = 0; $i < count( $arr ); $i++ )
          {
             $data["assign_actor_id"] = $arr[$i];
-			   $iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
-			   if( !$actionfrm )FCWorkflowEmail::send_step_email( $iid ) ; // send mail to the actor .
+            $iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
+            FCWorkflowEmail::send_step_email( $iid ) ; // send mail to the actor .
          }
-		}
-		else
-		{
-			$data["assign_actor_id"] = -1 ;
-			$iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
+      }
+      else if ( $step_info->process == "review" )
+      {
+         $data["assign_actor_id"] = -1 ;
+         $iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
 
-			$redata = array(
+         $redata = array(
 						'review_status' => 'assignment',
-						'action_history_id' => $iid,
-						'update_datetime' => current_time('mysql')
-					);
+						'action_history_id' => $iid
+         );
 
-			$arr = explode("@", $actors) ;
-			for( $i = 0; $i < count( $arr ); $i++ ){
-				if(!$arr[$i])continue;
-				$redata["actor_id"] = $arr[$i] ;
-				FCProcessFlow::insert_to_table( $action_table, $redata ) ;
-				FCWorkflowEmail::send_step_email($iid, $arr[$i]) ; // send mail to the actor .
-			}
-		}
+         if( is_numeric( $actors ) ) {
+            $arr[] = $actors;
+         }
+         else {
+            $arr = explode("@", $actors) ;
+         }
 
-		if( $actionid ){
-			global $wpdb;
-			$wpdb->update($action_history_table, array( "action_status" => "processed" ), array( "ID" => $actionid ) ) ;
-		}
+         for( $i = 0; $i < count( $arr ); $i++ ){
+            if(!$arr[$i])continue;
+            $redata["actor_id"] = $arr[$i] ;
+            FCProcessFlow::insert_to_table( $action_table, $redata ) ;
+            FCWorkflowEmail::send_step_email($iid, $arr[$i]) ; // send mail to the actor .
+         }
+      }
 
-		return $iid ;
-	}
+      //some clean up, only if there is a previous history about the action
+      if( $actionid ){
+         global $wpdb;
+         $wpdb->update($action_history_table, array( "action_status" => "processed" ), array( "ID" => $actionid ) ) ;
+         // delete all the unsend emails for this workflow
+         FCWorkflowEmail::delete_step_email( $actionid );
+      }
+
+      return $iid ;
+   }
 
 	static function submit_post_to_workflow_internal($stepId, $postId, $actors, $dueDate, $userComments)
 	{
-		$userId = get_current_user_id() ;
+      $userId = get_current_user_id() ;
 
-		$comments[] = array( "send_id" => $userId, "comment" => stripcslashes($userComments) ) ;
-		$saveComments = json_encode( $comments ) ;
+      $comments[] = array( "send_id" => $userId, "comment" => stripcslashes($userComments) ) ;
+      $saveComments = json_encode( $comments ) ;
 
-		//--- post create and sign off by admin ----
-		$post = get_post($postId) ;
-		$auserid= get_current_user_id() ;
-		$auser = FCProcessFlow::get_user_name($auserid) ;
-		$acomments[] = array( "send_id" => "System", "comment" => "Post/Page was submitted to the workflow by " . $auser ) ;
-		$adata = array(
+      //--- post create and sign off by admin ----
+      $post = FCUtility::get_post($postId) ;
+      $auserid= get_current_user_id() ;
+      $auser = FCProcessFlow::get_user_name($auserid) ;
+      $acomments[] = array( "send_id" => "System", "comment" => "Post/Page was submitted to the workflow by " . $auser ) ;
+      $adata = array(
 					'action_status' => "submitted",
 					'comment' => json_encode( $acomments ) ,
 					'step_id' => $stepId,
 					'post_id' => $postId,
 					'from_id' => '0',
 					'create_datetime' => $post->post_date
-				);
-		$aiid = FCProcessFlow::save_action( $adata, $auserid, "", "temp") ;		// This action doesn't send email.
-		//-----------------------------------------
-		$data = array(
-					'action_status' => "assignment",
-					'comment' => $saveComments,
-					'step_id' => $stepId,
-					'post_id' => $postId,
-					'from_id' => $aiid,
-					'create_datetime' => current_time('mysql')
-				);
-		if (!empty($dueDate )) {
-		   $data["due_date"] = FCWorkflowCRUD::format_date_for_db( $dueDate );
-		}
+      );
+      $action_history_table = FCUtility::get_action_history_table_name();
+      $adata["assign_actor_id"] = $auserid ;
+      $aiid = FCProcessFlow::insert_to_table( $action_history_table, $adata ) ;  // insert record in history table for workflow submit
 
-		$iid = FCProcessFlow::save_action( $data, $actors) ;
-		update_post_meta($postId, "oasis_is_in_workflow", 1); // set the post meta to 1, specifying that the post is in a workflow.
-		// update_option( "workflow_" . $iid, $userId ) ;
+      //-----------------------------------------
+      $data = array(
+				'action_status' => "assignment",
+				'comment' => $saveComments,
+				'step_id' => $stepId,
+				'post_id' => $postId,
+				'from_id' => $aiid,
+				'create_datetime' => current_time('mysql')
+      );
+      if (!empty($dueDate )) {
+         $data["due_date"] = FCWorkflowCRUD::format_date_for_db( $dueDate );
+      }
+      $iid = FCProcessFlow::save_action( $data, $actors) ;
+      add_post_meta($postId, "oasis_is_in_workflow", 1, true); // set the post meta to 1, specifying that the post is in a workflow.
 	}
 
    static function submit_post_to_workflow()
@@ -248,31 +259,6 @@ class FCProcessFlow extends FCWorkflowBase
       FCProcessFlow::submit_post_to_workflow_internal($stepId, $postId, $actors, $dueDate, $comments);
 
    }
-
-	//----------------review process-------------------------
-	static function review_result_process_internal($ddata, $actionId, $result)
-	{
-		$action = FCProcessFlow::get_action_history_by_id( $actionId ) ;
-		$data = array(
-					'action_status' => "assignment",
-					'post_id' => $action->post_id,
-					'from_id' => $action->ID,
-					'create_datetime' => current_time('mysql')
-				);
-
-		foreach ($ddata as $k => $v) {
-			$data["assign_actor_id"] = $v["re_actor_id"] ;
-			$data["step_id"] = $v["re_step_id"] ;
-			$data["comment"] = $v["re_comment"] ;
-			if (!empty($v["re_due_date"] )) {
-			   $data["due_date"] = $v["re_due_date"] ;
-			}
-			$newid = FCProcessFlow::save_action( $data, $v["re_actor_id"], $action->ID ) ;
-		}
-		//--------post status change---------------
-
-		FCProcessFlow::copy_step_status_to_post($_POST["post_ID"], $action->step_id, $result) ;
-	}
 
 	static function get_review_result_data($ddata)
 	{
@@ -304,121 +290,199 @@ class FCProcessFlow extends FCWorkflowBase
 		return $getdata ;
 	}
 
-	static function review_result_process($actionid)
+	static function review_step_procedure($action_history_id)
 	{
-		$reviews = FCProcessFlow::get_review_action_by_history_id( $actionid ) ;
+		$total_reviews = FCProcessFlow::get_review_action_by_history_id( $action_history_id ) ;
 
-		if( $reviews ){
-			foreach ($reviews as $review) {
-				$r = array(
-						"re_actor_id" => $review->reassign_actor_id,
-						"re_step_id" => $review->step_id,
-						"re_comment" => $review->comments,
-						"re_due_date" => $review->due_date
-					) ;
-				$data[$review->review_status][] = $r ;
-			}
-		}
+	      // create a consolidated view of all the reviews, so far
+      if( $total_reviews ){
+         foreach ($total_reviews as $review) {
+            $next_assign_actors = json_decode($review->next_assign_actors);
+            if( empty($next_assign_actors )) // the action is still not completed by the user
+            {
+               $r = array(
+   					"re_actor_id" => $next_assign_actors,
+   					"re_step_id" => $review->step_id,
+   					"re_comment" => $review->comments,
+   					"re_due_date" => $review->due_date
+               ) ;
+               $review_data[$review->review_status][] = $r ;
+            }
+            else // action completed by user and we know the review results
+            {
+               foreach ( $next_assign_actors as $actor ) :
+                  $r = array(
+      						"re_actor_id" => $actor,
+      						"re_step_id" => $review->step_id,
+      						"re_comment" => $review->comments,
+      						"re_due_date" => $review->due_date
+                  ) ;
+                  $review_data[$review->review_status][] = $r ;
+               endforeach;
+            }
+         }
+      }
 
-		if( isset($data["assignment"]) && $data["assignment"] )return false;
-
-		if( isset($data["unable"]) && $data["unable"] ){
-			$ddata = FCProcessFlow::get_review_result_data($data["unable"]) ;
-			FCProcessFlow::review_result_process_internal($ddata, $actionid, "unable") ;
-			return false;
-		}
-
-		if( isset($data["complete"]) && $data["complete"] ){
-			$ddata = FCProcessFlow::get_review_result_data($data["complete"]) ;
-			FCProcessFlow::review_result_process_internal($ddata, $actionid, "complete") ;
-			return false;
-		}
+      FCProcessFlow::review_step_everyone( $review_data,  $action_history_id );
 
 	}
+
+
+   // everyone has to approve before the item moves to the next step
+   static function review_step_everyone( $review_data,  $action_history_id ) {
+      /*
+       * If assignment (not yet completed) are found, return false; we cannot make any decision yet
+       * If we find even one rejected review, complete the step as failed.
+       * If all the reviews are approved, then move to the success step.
+       */
+
+      if( isset($review_data["assignment"]) && $review_data["assignment"] ) return false; // there are users who haven't completed their review
+
+      if( isset($review_data["unable"]) && $review_data["unable"] ) { // even if we see one rejected, we need to go to failure path.
+         FCProcessFlow::save_review_action( $review_data["unable"], $action_history_id, "unable") ;
+         return false; // since we found our condition
+      }
+
+      if( isset($review_data["complete"]) && $review_data["complete"] ) { // looks like we only have completed/approved reviews, lets complete this step.
+         FCProcessFlow::save_review_action( $review_data["complete"], $action_history_id, "complete" ) ;
+         return false; // since we found our condition
+      }
+
+   }
+
+   // get the review result data
+   static function save_review_action( $ddata, $action_history_id, $result )
+   {
+      $action = FCProcessFlow::get_action_history_by_id( $action_history_id ) ;
+
+      $review_data = array(
+   		'action_status' => "assignment",
+   		'post_id' => $action->post_id,
+   		'from_id' => $action->ID,
+   		'create_datetime' => current_time('mysql')
+      );
+
+      $next_assign_actors = array();
+      $all_comments = array();
+      $due_date = '';
+      for( $i = 0; $i < count( $ddata ); $i++ )
+      {
+         if ( !in_array( $ddata[$i]["re_actor_id"] , $next_assign_actors )) { //only add unique actors to the array
+            $next_assign_actors[] = $ddata[$i]["re_actor_id"];
+         }
+
+         // combine all commments into one set
+         $temp_comment = json_decode($ddata[$i]["re_comment"], true) ;
+         foreach($temp_comment as $temp_key=>$temp_value){
+            $exists = 0;
+            foreach($all_comments as $all_key=>$all_value){
+               if( $all_value["send_id"] === $temp_value["send_id"] ){ // if the comment already exists, then skip it
+                  $exists = 1;
+               }
+            }
+            if ( $exists == 0 ) {
+                $all_comments[] = $temp_value;
+            }
+         }
+         // TODO: temp fix - it takes the last action assigned step
+         $next_step_id = $ddata[$i]["re_step_id"];
+
+         //-----get minimal due date--------
+         $temp1_date = FCProcessFlow::get_date_int( $ddata[$i]["re_due_date"] ) ;
+         if ( !empty( $due_date )) {
+            $temp2_date = FCProcessFlow::get_date_int( $due_date );
+            $due_date = ( $temp1_date < $temp2_date ) ? $ddata[$i]["re_due_date"] : $due_date;
+         }
+         else {
+            $due_date = $ddata[$i]["re_due_date"];
+         }
+      }
+
+      $next_actors = implode( "@", $next_assign_actors );
+      $review_data["comment"] = json_encode( $all_comments );
+      if (!empty( $due_date )) {
+         $review_data["due_date"] = $due_date;
+      }
+      $review_data["step_id"] = $next_step_id;
+
+      // we have all the data to generated the next set of tasks
+
+      $newid = FCProcessFlow::save_action( $review_data, $next_actors, $action->ID ) ;
+
+      //--------post status change---------------
+      FCProcessFlow::copy_step_status_to_post($action->post_id, $action->step_id, $result) ;
+
+   }
 
 	static function submit_post_to_step()
 	{
 		global $wpdb ;
 
-		$action = FCProcessFlow::get_action_history_by_id( $_POST["oasiswf"] ) ;
-		$userId = get_current_user_id() ;
-		if( isset($_POST["hi_task_user"]) && $_POST["hi_task_user"] != "" )
-		{
-		  $current_actor_id = $_POST["hi_task_user"];
-		}
-		else
-		{
-		  $current_actor_id = $userId;
-		}
-		$comments[] = array( "send_id" => $userId, "comment" => stripcslashes($_POST["hi_comment"]) ) ;
+		$history_details = FCProcessFlow::get_action_history_by_id( $_POST["oasiswf"] ) ;
+
+		//find out who is signing off the task; sometimes the admin can signoff on behalf of the actual user
+	   if( isset($_POST["hi_task_user"]) && $_POST["hi_task_user"] != "" ) {
+         $task_actor_id = $_POST["hi_task_user"];
+      }
+      else {
+         $task_actor_id = get_current_user_id();
+      }
+
+		$comments[] = array( "send_id" => $task_actor_id, "comment" => stripcslashes($_POST["hi_comment"]) ) ;
 		$saveComments = json_encode( $comments ) ;
 		$action_table = FCUtility::get_action_table_name();
-		if( $action->assign_actor_id == -1 )
-		{
-		   if( is_numeric( $_POST["hi_actor_ids"] ) )
-		   {
-		      $first_actor = $_POST["hi_actor_ids"];
-		   }
-		   else
-		   {
-		      $arr = explode("@", $_POST["hi_actor_ids"]) ;
-		      $first_actor = $arr[0];
-		   }
-         // update with the first actor
-			$updatedata = array(
-							"review_status" => $_POST["review_result"],
-							"reassign_actor_id" => $first_actor,
-							"step_id" => $_POST["hi_step_id"],
-							"comments" => $saveComments,
-							"update_datetime" => current_time('mysql')
-						 ) ;
-		   if ( isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"] )) {
-            $updatedata["due_date"] = FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] );
+		$actors = $_POST["hi_actor_ids"];
+	   if( $history_details->assign_actor_id == -1 ) { // the current step is a review step, so review decision check is required
+         // let's first save the review action
+         // find the next assign actors
+         if( is_numeric( $actors ) )
+         {
+            $next_assign_actors[] = $actors;
          }
-			$wpdb->update($action_table, $updatedata, array( "actor_id" => $current_actor_id, "action_history_id" => $_POST["oasiswf"] ) ) ;
+         else
+         {
+            $arr = explode("@", $actors) ;
+            $next_assign_actors = $arr;
+         }
 
-		   if( !is_numeric( $_POST["hi_actor_ids"] ) ) // insert the rest of the data for other actors
-		   {
-            for( $i = 1; $i < count( $arr ); $i++ )
-            {
-      			$redata = array(
-      							"review_status" => $_POST["review_result"],
-      							"reassign_actor_id" => $arr[$i],
-      							"actor_id" => $current_actor_id,
-      							"step_id" => $_POST["hi_step_id"],
-      							"comments" => $saveComments,
-      							"action_history_id" => $_POST["oasiswf"],
-      							"update_datetime" => current_time('mysql')
-      						 ) ;
-               if ( isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"] )) {
-                  $redata["due_date"] = FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] );
-               }
-               FCProcessFlow::insert_to_table( $action_table, $redata ) ;
-            }
-		   }
-		   // delete all the unsend emails for this workflow
-			FCWorkflowEmail::delete_step_email($_POST["oasiswf"], $current_actor_id);
-			FCProcessFlow::review_result_process( $_POST["oasiswf"] ) ;
-		}else{
-			$data = array(
-						'action_status' => "assignment",
-						'comment' => $saveComments,
-						'step_id' => $_POST["hi_step_id"],
-						'post_id' => $_POST["post_ID"],
-						'from_id' => $_POST["oasiswf"],
-						'create_datetime' => current_time('mysql')
-					);
-		   if ( isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"] )) {
+         $review_data = array(
+   			"review_status" => $_POST['review_result'],
+   			"next_assign_actors" => json_encode( $next_assign_actors ),
+   			"step_id" => $_POST["hi_step_id"], // represents success/failure step id
+   			"comments" => json_encode( $comments ),
+   			"update_datetime" => current_time('mysql')
+         ) ;
+
+         if ( isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"] )) {
+            $review_data["due_date"] = FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] );
+         }
+
+         $action_table = FCUtility::get_action_table_name();
+         $wpdb->update($action_table, $review_data, array( "actor_id" => $task_actor_id, "action_history_id" => $_POST["oasiswf"] )) ;
+
+         // invoke the review step procedure to make a review decision
+         FCProcessFlow::review_step_procedure( $_POST["oasiswf"] );
+      }
+      else { // the current step is either an assignment or publish step, so no review decision check required
+
+         $data = array(
+   			'action_status' => "assignment",
+   			'comment' => json_encode( $comments ),
+   			'step_id' => $_POST["hi_step_id"],
+   			'post_id' => $_POST["post_ID"],
+   			'from_id' => $_POST["oasiswf"],
+   			'create_datetime' => current_time('mysql')
+         );
+         if ( isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"] )) {
             $data["due_date"] = FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] );
-		   }
-			$iid = FCProcessFlow::save_action( $data, $_POST["hi_actor_ids"], $_POST["oasiswf"]) ;
-		   // delete all the unsend emails for this workflow
-			FCWorkflowEmail::delete_step_email($_POST["oasiswf"], $current_actor_id);
-			//------post status chage----------
-			FCProcessFlow::copy_step_status_to_post($_POST["post_ID"], $action->step_id, $_POST["review_result"]) ;
-		}
-		echo "success";
-		exit();
+         }
+
+         // insert data from the next step
+         $iid = FCProcessFlow::save_action( $data, $actors, $_POST["oasiswf"]) ;
+
+         //------post status change----------
+         FCProcessFlow::copy_step_status_to_post($_POST["post_ID"], $history_details->step_id, $_POST["review_result"]) ;
+      }
 	}
 	//-----------------------------------------------------------
 	static function change_workflow_status_to_complete()
@@ -593,9 +657,9 @@ class FCProcessFlow extends FCWorkflowBase
 					*/
 			      $publish_post = array(
    	   			"ID" => $postid,
-					   "post_date_gmt" => gmdate("Y-m-d H:i:s", strtotime($immediately)),
+					   "post_date_gmt" => get_gmt_from_date( date("Y-m-d H:i:s", strtotime($immediately ))),
 					   "post_date" => date("Y-m-d H:i:s", strtotime($immediately)),
-						"post_status" => $step_status,
+			      	"post_status" => $step_status,
 						"edit_date" => true
 					);
 					wp_update_post( $publish_post );
@@ -694,33 +758,37 @@ class FCProcessFlow extends FCWorkflowBase
 	}
 
 	//-----------get immediately content----------------
-	static function get_immediately_content($status, $future_date)
-	{
-		if( $status != "publish" )return;
-		if(isset($future_date))
-		{
-			$date = getdate(strtotime($future_date));
-		}
-		else
-		{
-			$date = getdate();
-		}
-	   $months = array(1 => "01-Jan", 2 => "02-Feb", 3 => "03-Mar", 4 => "04-Apr", 5 => "05-May", 6 => "06-Jun", 7 => "07-Jul", 8 => "08-Aug", 9 => "09-Sep", 10 => "10-Oct", 11 => "11-Nov", 12 => "12-Dec") ;
+   static function get_immediately_content($post_id, $status, $is_future_date)
+   {
+      if( $status != "publish" )return;
+      if( $is_future_date )
+      {
+         $date = get_the_date( 'Y-n-d', $post_id );
+         $date_array = explode("-", $date);
+         $time = get_the_time('G-i', $post_id);
+         $time_array = explode("-", $time);
+      }
+      else
+      {
+         $date_array = explode("-", current_time("Y-n-d"));
+         $time_array = explode("-", current_time("H-i"));
+      }
+      $months = array(1 => "01-Jan", 2 => "02-Feb", 3 => "03-Mar", 4 => "04-Apr", 5 => "05-May", 6 => "06-Jun", 7 => "07-Jul", 8 => "08-Aug", 9 => "09-Sep", 10 => "10-Oct", 11 => "11-Nov", 12 => "12-Dec") ;
 
-		echo "<select id='im-mon'>" ;
-			foreach ($months as $k => $v) {
-				if( $date["mon"] * 1 == $k )
-					echo "<option value={$k} selected>{$v}</option>" ;
-				else
-					echo "<option value={$k}>{$v}</option>" ;
-			}
-		echo "</select>" ;
-		echo "<input type='text' id='im-day' value='{$date["mday"]}' class='immediately' size='2' maxlength='2' autocomplete='off'>,
-			  <input type='text' id='im-year' value='{$date["year"]}' class='immediately' size='4' maxlength='4' autocomplete='off'> @
-			  <input type='text' id='im-hh' value='{$date["hours"]}' class='immediately' size='2' maxlength='2' autocomplete='off'> :
-			  <input type='text' id='im-mn' value='{$date["minutes"]}' class='immediately' size='2' maxlength='2' autocomplete='off'>";
+      echo "<select id='im-mon'>" ;
+      foreach ($months as $k => $v) {
+         if( $date_array[1] * 1 == $k )
+         echo "<option value={$k} selected>{$v}</option>" ;
+         else
+         echo "<option value={$k}>{$v}</option>" ;
+      }
+      echo "</select>" ;
+      echo "<input type='text' id='im-day' value='{$date_array[2]}' class='immediately' size='2' maxlength='2' autocomplete='off'>,
+			  <input type='text' id='im-year' value='{$date_array[0]}' class='immediately' size='4' maxlength='4' autocomplete='off'> @
+			  <input type='text' id='im-hh' value='{$time_array[0]}' class='immediately' size='2' maxlength='2' autocomplete='off'> :
+			  <input type='text' id='im-mn' value='{$time_array[1]}' class='immediately' size='2' maxlength='2' autocomplete='off'>";
 
-	}
+   }
 }
 include(OASISWF_PATH . "includes/workflow-email.php") ;
 ?>
