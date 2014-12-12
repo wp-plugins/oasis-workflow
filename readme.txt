@@ -73,7 +73,7 @@ How it works? Understand the process (applicable to both the "free" and "pro" ve
 
 Modify a workflow which has posts/pages currently in progress (applicable to both the "free" and "pro" version)
 
-[youtube https://www.youtube.com/watch?v=8fbSEAYV-WU]
+[youtube https://www.youtube.com/watch?v=mJ2hPsSBGcE]
 
 Creating and Editing a workflow (applicable to "Pro" version only)
 
