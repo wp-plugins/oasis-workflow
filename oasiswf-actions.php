@@ -40,17 +40,27 @@ class FCWorkflowActions
 	{
 		if( get_site_option("oasiswf_activate_workflow") == "active" &&
 		   is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches )){
+		   
+			$is_post_published = false;
+			if( isset($_GET['post']) && $_GET["post"] && isset($_GET['action']) && $_GET["action"] == "edit")
+			{
+				$post_status = get_post_status( $_GET["post"]);
+				if ($post_status == "publish" || $post_status == "future") {
+					$is_post_published = true;
+				}
+			}
 
-			wp_enqueue_script( 'owf_submit_workflow',
-			                   OASISWF_URL. 'js/pages/subpages/submit-workflow.js',
-			                   array('jquery'),
-			                   OASISWF_VERSION,
-			                   true);
-         FCWorkflowActions::localize_submit_workflow_script();
-
+			if ( !$is_post_published ) {	
+				wp_enqueue_script( 'owf_submit_workflow',
+								   OASISWF_URL. 'js/pages/subpages/submit-workflow.js',
+								   array('jquery'),
+								   OASISWF_VERSION,
+								   true);
+				FCWorkflowActions::localize_submit_workflow_script();
+			}
 			$role = FCProcessFlow::get_current_user_role() ;
 			$skip_workflow_roles = get_site_option('oasiswf_skip_workflow_roles') ;
-			if( is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles) ){ // do not hide the ootb publish section for skip_workflow_roles option
+			if( is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles) && !$is_post_published ){ // do not hide the ootb publish section for skip_workflow_roles option
 			   FCWorkflowActions::ootb_publish_section_hide() ;
 			}
 		}
@@ -61,6 +71,14 @@ class FCWorkflowActions
 		global $wpdb, $chkResult;
 		$selected_user = isset($_GET['user']) ? $_GET["user"] : get_current_user_id();
 		$chkResult = FCProcessFlow::workflow_submit_check($selected_user);
+		$is_post_published = false;
+		if( isset($_GET['post']) && $_GET["post"] && isset($_GET['action']) && $_GET["action"] == "edit")
+		{
+			$post_status = get_post_status( $_GET["post"]);
+			if ($post_status == "publish" || $post_status == "future") {
+				$is_post_published = true;
+			}
+		}		
 		if( get_site_option("oasiswf_activate_workflow") == "active" &&
 		   is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches )){
 
@@ -73,7 +91,8 @@ class FCWorkflowActions
             FCWorkflowActions::localize_submit_step_script();
 			}
 		   else if( $chkResult == "submit" &&
-		      is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches )){
+		      is_admin() && preg_match_all('/page=oasiswf(.*)|post-new\.(.*)|post\.(.*)/', $_SERVER['REQUEST_URI'], $matches )
+			  && !$is_post_published){
 			   include( OASISWF_PATH . "includes/pages/subpages/submit-workflow.php" ) ;
 			   wp_enqueue_script( 'owf_submit_workflow',
 			                   OASISWF_URL. 'js/pages/subpages/submit-workflow.js',
@@ -104,7 +123,8 @@ class FCWorkflowActions
          {
             $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE post_id = %d AND action_status = 'assignment'", $_GET["post"] )) ;
          }
-         if( (is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles ))){
+		 
+         if( is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles ) && !$is_post_published ){
             FCWorkflowActions::ootb_publish_section_hide() ;
          }
 

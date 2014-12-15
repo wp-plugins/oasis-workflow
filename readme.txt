@@ -2,10 +2,10 @@
 Contributors: nuggetsol
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit,versioning, auto submit, approval workflow, editorial workflow, notifications, oasis workflow, editorial, revisions, document revision, version control, collaboration, document management, revision scheduling, duplication, clone, revise, revise article
 Requires at least: 3.6
-Tested up to: 4.0
-Stable tag: 1.0.15
+Tested up to: 4.1
+Stable tag: 1.0.16
 
-Workflow process for WordPress made simple with Oasis Workflow.
+Automate your WordPress Editorial Workflow with Oasis Workflow.
 
 == Description ==
 
@@ -198,3 +198,9 @@ If these workflows are different, they need to be recreated with this upgrade.
 * Fixed future date issue related to timezones
 * Fixed post revision schedule
 * Modified the DB to make it easier to add more features
+
+= Version 1.0.16 =
+* Fixed compatibility issues with Wordpress 4.1
+* Added Italian translation
+* bug fixes
+

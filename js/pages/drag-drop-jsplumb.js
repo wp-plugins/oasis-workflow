@@ -56,7 +56,11 @@ var jQueryCgmp = jQuery.noConflict();
 			hoverClass: "ui-state-active",
 			drop: function( event, ui ) {
 				//if(jQuery(ui.draggable).attr('class') == "w ui-draggable ui-droppable" ){return;} //No workflow info box droppable
-				if(ui.draggable.context.className.indexOf("w ui-draggable ui-droppable") >= 0) {return;} //No workflow info box droppable
+				if(ui.draggable.context.className.indexOf("w ui-draggable ui-droppable") >= 0 ||
+						ui.draggable.context.className.indexOf("w ui-draggable ui-draggable-handle ui-droppable") >= 0) 
+				{
+					return;
+				} //No workflow process box droppable
 				stepNum = 0;
 				var getNum = get_step_id_num(stepNum);
 				var lbl = jQuery(ui.draggable).children().html() ;

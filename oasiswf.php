@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Automate your WordPress Editorial Workflow.
- Version: 1.0.15
+ Version: 1.0.16
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.15' );
-define( 'OASISWF_DB_VERSION','1.0.15');
+define( 'OASISWF_VERSION' , '1.0.16' );
+define( 'OASISWF_DB_VERSION','1.0.16');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -200,6 +200,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_104();
 			FCInitialization::upgrade_database_1012();
 			FCInitialization::upgrade_database_1015();
+			FCInitialization::upgrade_database_1016();
 		}
 		else if ($pluginOptions['version'] == "1.0.1")
 		{
@@ -207,6 +208,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_104();
 			FCInitialization::upgrade_database_1012();
 			FCInitialization::upgrade_database_1015();
+			FCInitialization::upgrade_database_1016();
 		}
 		else if ($pluginOptions['version'] == "1.0.2")
 		{
@@ -214,17 +216,20 @@ class FCInitialization
 			FCInitialization::upgrade_database_104();
 			FCInitialization::upgrade_database_1012();
 			FCInitialization::upgrade_database_1015();
+			FCInitialization::upgrade_database_1016();
 		}
 		else if ($pluginOptions['version'] == "1.0.3")
 		{
 			FCInitialization::upgrade_database_104();
 			FCInitialization::upgrade_database_1012();
 			FCInitialization::upgrade_database_1015();
+			FCInitialization::upgrade_database_1016();
 		}
 		else if ($pluginOptions['version'] == "1.0.4")
 		{
 			FCInitialization::upgrade_database_1012();
 			FCInitialization::upgrade_database_1015();
+			FCInitialization::upgrade_database_1016();
 		}
 		else if ($pluginOptions['version'] == "1.0.5")
 		{
@@ -235,6 +240,7 @@ class FCInitialization
 		{
 			FCInitialization::upgrade_database_1012();
 			FCInitialization::upgrade_database_1015();
+			FCInitialization::upgrade_database_1016();
 		}
 		else if ($pluginOptions['version'] == "1.0.7")
 		{
@@ -245,16 +251,19 @@ class FCInitialization
 		{
 			FCInitialization::upgrade_database_1012();
 			FCInitialization::upgrade_database_1015();
+			FCInitialization::upgrade_database_1016();
 		}
 		else if ($pluginOptions['version'] == "1.0.9")
 		{
 			FCInitialization::upgrade_database_1012();
 			FCInitialization::upgrade_database_1015();
+			FCInitialization::upgrade_database_1016();
 		}
 		else if ($pluginOptions['version'] == "1.0.10")
 		{
 			FCInitialization::upgrade_database_1012();
 			FCInitialization::upgrade_database_1015();
+			FCInitialization::upgrade_database_1016();
 		}
 	   else if ($pluginOptions['version'] == "1.0.11")
 		{
@@ -264,15 +273,22 @@ class FCInitialization
 		else if ($pluginOptions['version'] == "1.0.12")
 		{
          FCInitialization::upgrade_database_1015();
+		 FCInitialization::upgrade_database_1016();
 		}
 	   else if ($pluginOptions['version'] == "1.0.13")
 		{
          FCInitialization::upgrade_database_1015();
+		 FCInitialization::upgrade_database_1016();
 		}
 		else if ($pluginOptions['version'] == "1.0.14")
 		{
          FCInitialization::upgrade_database_1015();
+		 FCInitialization::upgrade_database_1016();
 		}
+		else if ($pluginOptions['version'] == "1.0.15")
+		{
+         FCInitialization::upgrade_database_1016();
+		}		
 
 		// update the version value
 		$oasiswf_info=array(
@@ -462,6 +478,13 @@ class FCInitialization
       }
       FCInitialization::upgrade_helper_1015();
    }
+   
+   static private function upgrade_database_1016()
+   {
+   	global $wpdb;
+   	$table_name = FCUtility::get_workflows_table_name();
+   	$wpdb->query("ALTER TABLE {$table_name} CHANGE COLUMN `auto_submit_keywords` `auto_submit_info` mediumtext");
+   }   
 
    static function upgrade_helper_1015 () {
    	global $wpdb;
@@ -564,7 +587,7 @@ class FCInitialization
 			      `start_date` date DEFAULT NULL,
 			      `end_date` date DEFAULT NULL,
 			      `is_auto_submit` int(2) NOT NULL default 0,
-			      `auto_submit_keywords` mediumtext,
+			      `auto_submit_info` mediumtext,
 			      `is_valid` int(2) NOT NULL default 0,
 			      `create_datetime` datetime DEFAULT NULL,
 			      `update_datetime` datetime DEFAULT NULL,
@@ -672,10 +695,10 @@ class FCInitialization
 		 $data = array(
 					'name' => 'Test Workflow',
 					'description' => 'sample workflow',
-		         'wf_info' => $workflow_info,
-		         'start_date' => date("Y-m-d", current_time('timestamp')),
-		         'end_date' => date("Y-m-d", current_time('timestamp') + YEAR_IN_SECONDS),
-		         'is_valid' => 1,
+					'wf_info' => $workflow_info,
+					'start_date' => date("Y-m-d", current_time('timestamp')),
+					'end_date' => date("Y-m-d", current_time('timestamp') + YEAR_IN_SECONDS),
+					'is_valid' => 1,
 					'create_datetime' => current_time('mysql'),
 		 			'update_datetime' => current_time('mysql')
 				);
@@ -703,7 +726,7 @@ class FCInitialization
 						 'step_info' => stripcslashes( $review_step_info ),
 						 'process_info' => stripcslashes( $review_process_info ),
 						 'create_datetime' => current_time('mysql'),
-					    'update_datetime' => current_time('mysql'),
+						 'update_datetime' => current_time('mysql'),
 						 'workflow_id' => $workflow_id
 					 )
 			   );
@@ -717,7 +740,7 @@ class FCInitialization
 						 'step_info' => stripcslashes( $assignment_step_info ),
 						 'process_info' => stripcslashes( $assignment_process_info ),
 						 'create_datetime' => current_time('mysql'),
-					    'update_datetime' => current_time('mysql'),
+					     'update_datetime' => current_time('mysql'),
 						 'workflow_id' => $workflow_id
 					 )
 			   );
@@ -731,7 +754,7 @@ class FCInitialization
 						 'step_info' => stripcslashes( $publish_step_info ),
 						 'process_info' => stripcslashes( $publish_process_info ),
 						 'create_datetime' => current_time('mysql'),
-					    'update_datetime' => current_time('mysql'),
+					     'update_datetime' => current_time('mysql'),
 						 'workflow_id' => $workflow_id
 					 )
 			   );
