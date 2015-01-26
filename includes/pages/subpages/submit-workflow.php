@@ -2,7 +2,12 @@
 $workflow = FCProcessFlow::get_workflow_by_validity( 1 ) ;
 $reminder_days = get_site_option('oasiswf_reminder_days');
 $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
-$publish_date = current_time("m/d/Y");
+$default_due_days = get_site_option('oasiswf_default_due_days') ;
+$default_date = '';
+if ( !empty( $default_due_days )) {
+	$default_date = date(get_option( 'date_format' ), current_time('timestamp') + DAY_IN_SECONDS * $default_due_days);
+}
+$publish_date = current_time(get_option( 'date_format' ));
 $publish_time_array = explode("-", current_time("H-i"));
 ?>
 <div class="info-setting" id="new-workflow-submit-div">
@@ -65,13 +70,13 @@ $publish_time_array = explode("-", current_time("H-i"));
 			</div>
 			<br class="clear">
 		</div>
-		<?php if ($reminder_days != '' || $reminder_days_after != ''):?>
+		<?php if ($default_due_days != '' || $reminder_days != '' || $reminder_days_after != ''):?>
 		<div class="text-info left">
 			<div class="left">
 				<label><?php echo __("Due Date : ", "oasisworkflow") ;?></label>
 			</div>
 			<div class="left">
-				<input class="date_input" name="due-date" id="due-date"  />
+				<input class="date_input" name="due-date" id="due-date"  value="<?php echo $default_date;?>"/>
 		        <button class="date-clear" ><?php echo __("clear", "oasisworkflow") ;?></button>
 			</div>
 			<br class="clear">

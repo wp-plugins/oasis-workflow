@@ -2,7 +2,10 @@ jQuery(document).ready(function() {
 	var wfpath = "" ;
 	var stepProcess = "" ; // process of selected step
 	function calendar_action(){
-		jQuery( "#due-date" ).datepicker();
+		jQuery("#due-date").datepicker({ 
+			autoSize: true,
+			dateFormat: owf_submit_step_vars.dateFormat
+		});
 	}
 	
 	// When page is colled from post edit page 

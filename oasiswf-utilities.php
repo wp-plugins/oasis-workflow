@@ -134,5 +134,25 @@ class FCUtility {
 		$post = get_post($postId);
 		return $post;
 	}
+	
+	/**
+	 * Convert a date format to a jQuery UI DatePicker format
+	 *
+	 * @param string $dateFormat a date format
+	 * @return string
+	 */
+	public static function owf_date_format_to_jquery_ui_format($dateFormat) {
+	
+		$chars = array(
+				// Day
+				'd' => 'dd', 'j' => 'd', 'l' => 'DD', 'D' => 'D',
+				// Month
+				'm' => 'mm', 'n' => 'm', 'F' => 'MM', 'M' => 'M',
+				// Year
+				'Y' => 'yy', 'y' => 'y'
+		);
+	
+		return strtr((string)$dateFormat, $chars);
+	}	
 }
 ?>

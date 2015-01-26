@@ -119,22 +119,24 @@ echo "<script type='text/javascript'>
 							<div class="div-line"></div>
 							<table>
 								<tr>
-									<td width="50%"><label><?php echo  __("Start Date :", "oasisworkflow");?></label></td>
-									<td><label><?php echo  __("End date :", "oasisworkflow");?></label></td>
+									<td><label><?php echo  __("Start Date :", "oasisworkflow");?></label></td>
 								</tr>
-								<tr><td></td><td></td></tr>
 								<tr>
 									<td>
 										<input class="date_input" id="start-date" name="start-date" readonly value="<?php echo $startdate ;?>" />
 										<?php if($wfeditable):?>
 											<button class="date-clear"><?php echo __("clear", "oasisworkflow") ;?></button>
-											<script type="text/javascript">jQuery(function() {jQuery( "#start-date" ).datepicker({onSelect: function(dateText, inst) {jQuery(this).css("background-color", "white");}});});</script>
 										<?php endif;?>
 									</td>
+								</tr>
+								<tr height="10px;"><td>&nbsp;</td><td>&nbsp;</td></tr>
+								<tr>
+									<td><label><?php echo  __("End date :", "oasisworkflow");?></label></td>
+								</tr>								
+								<tr>	
 									<td>
 										<input class="date_input" id="end-date" name="end-date" readonly value="<?php echo $enddate ;?>" />
 										<button class="date-clear"><?php echo __("clear", "oasisworkflow") ;?></button>
-										<script type="text/javascript">jQuery(function() {jQuery( "#end-date" ).datepicker({onSelect: function(dateText, inst) {jQuery(this).css("background-color", "white");}});});</script>
 									</td>
 								</tr>
 							</table>

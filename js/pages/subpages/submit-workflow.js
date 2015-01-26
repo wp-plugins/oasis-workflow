@@ -21,10 +21,16 @@ jQuery(document).ready(function() {
 	
 	function calendar_action(){
 		jQuery("#due-date").attr("readonly", true);
-		jQuery("#due-date").datepicker();
+		jQuery("#due-date").datepicker({ 
+			autoSize: true,
+			dateFormat: owf_submit_workflow_vars.dateFormat
+		});
 		// add jquery datepicker functionality to publish textbox
 		jQuery("#publish-date").attr("readonly", true);
-		jQuery("#publish-date").datepicker();		
+		jQuery("#publish-date").datepicker({
+			autoSize: true,
+			dateFormat: owf_submit_workflow_vars.dateFormat
+		});			
 	}	
 	jQuery(".date-clear").click(function(){
 		jQuery(this).parent().children(".date_input").val("");
@@ -226,7 +232,8 @@ jQuery(document).ready(function() {
 		{
 			var publish = jQuery('#publish-date').val();
 			//split into array
-			var pdate = publish.split('/');
+			var publish_date_mm_dd_yyyy = jQuery.datepicker.formatDate('mm/dd/yy', new Date(publish));
+			var pdate = publish_date_mm_dd_yyyy.split('/');
 			
 			//set this mm/dd/yyyy value as wordpress publish date
 			jQuery('#mm').val(pdate[0]);
@@ -263,7 +270,7 @@ jQuery(document).ready(function() {
 				alert(owf_submit_workflow_vars.dueDateRequired);
 				return false;
 			}
-			if(!chk_due_date("due-date")){
+			if(!chk_due_date("due-date", owf_submit_workflow_vars.dateFormat)){
 				return false;
 			}
 		}		

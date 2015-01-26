@@ -259,7 +259,8 @@ class FCWorkflowActions
             'dueDateRequired' => __( 'Please enter a due date.', 'oasisworkflow' ),
             'noAssignedActors' => __( 'No assigned actor(s).', 'oasisworkflow' ),
 				'drdb' =>  get_site_option('oasiswf_reminder_days'),
-				'drda' =>  get_site_option('oasiswf_reminder_days_after')
+				'drda' =>  get_site_option('oasiswf_reminder_days_after'),
+				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( get_option( 'date_format' ))
       ));
 	}
 
@@ -278,7 +279,8 @@ class FCWorkflowActions
 				'multipleUsers' => __( 'You can select multiple users only for review step.\n Selected step is', 'oasisworkflow' ),
 				'step' => __( 'step.', 'oasisworkflow' ),
       		'drdb' =>  get_site_option('oasiswf_reminder_days'),
-				'drda' =>  get_site_option('oasiswf_reminder_days_after')
+				'drda' =>  get_site_option('oasiswf_reminder_days_after'),
+				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( get_option( 'date_format' ))
       ));
 	}
 }

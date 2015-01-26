@@ -83,7 +83,7 @@ $current_user_id = get_current_user_id();
 										if( $chk_claim ){
 											echo "<div class='row-actions'>
 													<span>
-														<a href='#' class='claim' actionid={$wfaction->ID}>Claim</a>
+														<a href='#' class='claim' actionid={$wfaction->ID}>" . __("Claim", "oasisworkflow") . "</a>
 														<span class='loading'>$sspace</span>
 													</span>
 												</div>" ;

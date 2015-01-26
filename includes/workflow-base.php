@@ -267,31 +267,34 @@ class FCWorkflowBase
 		return $arr[0] * 10000 + $arr[1] * 100 + $arr[2] * 1   ;
 	}
 
-	static function format_date_for_db($ddate, $frm="/")
-	{
-		$arr = explode( $frm, $ddate ) ;
-		return $arr[2] . "-" . $arr[0] . "-" . $arr[1] ;
-	}
+   static function format_date_for_db($ddate, $frm="/")
+   {
+   	$date = DateTime::createFromFormat(get_option( 'date_format' ), $ddate );
+   	$date_with_mysql_format = $date->format('Y-m-d');
+      return $date_with_mysql_format ;
+   }
 
-	static function format_date_for_display($ddate, $frm="-", $dateform="date")
-	{
-		if( $dateform == "date" ){
-			if( $ddate == "0000-00-00" ) return "";
-			if( $ddate ){
-				$arr = explode( $frm, $ddate ) ;
-				return $arr[1] . "/" . $arr[2] . "/" . $arr[0] ;
-			}
-		}else{
-			$s_ddate = explode( " ", $ddate ) ;
+   static function format_date_for_display($ddate, $frm="-", $dateform="date")
+   {
+   	// only date
+      if( $dateform == "date" ){
+         if( $ddate == "0000-00-00" ) return "";
+         if( $ddate ){
+            $formatted_date = mysql2date( get_option( 'date_format' ), $ddate );
+            return $formatted_date;
+         }
+      }else{ //date and time both
+         $s_ddate = explode( " ", $ddate ) ;
 
-			if( $s_ddate[0] == "0000-00-00" ) return "";
+         if( $s_ddate[0] == "0000-00-00" ) return "";
 
-			if( $s_ddate[0] ){
-				$arr = explode( $frm, $s_ddate[0] ) ;
-				return $arr[1] . "/" . $arr[2] . "/" . $arr[0] . " " . $s_ddate[1] ;
-			}
-		}
-	}
+         if( $s_ddate[0] ){
+         	$date_time_format = get_option( 'date_format' ) . " " . get_option('time_format');
+            $formatted_date = mysql2date( $date_time_format, $ddate );
+            return $formatted_date;
+         }
+      }
+   }
 
 	static function get_page_link($count_posts,$pagenum,$per_page=20)
 	{

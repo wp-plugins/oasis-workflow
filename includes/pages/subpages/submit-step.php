@@ -13,6 +13,11 @@ if( $oasiswf ){
 	$success_status = $success_status->status ;
 	$post_id = $current_action->post_id;
 }
+$default_due_days = get_site_option('oasiswf_default_due_days') ;
+$default_date = '';
+if ( !empty( $default_due_days )) {
+	$default_date = date(get_option( 'date_format' ), current_time('timestamp') + DAY_IN_SECONDS * $default_due_days);
+}
 $reminder_days = get_site_option('oasiswf_reminder_days');
 $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
 ?>
@@ -89,14 +94,14 @@ $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
 				</div>
 				<br class="clear">
 			</div>
-			<?php if ($reminder_days != '' || $reminder_days_after != ''):?>
+			<?php if ($default_due_days != '' || $reminder_days != '' || $reminder_days_after != ''):?>
 			<div class="text-info left">
 				<div class="left">
 					<label><?php echo __("Due Date : ", "oasisworkflow") ;?></label>
 				</div>
 				<div class="left">
-					<input class="date_input" id="due-date" value=""/>
-			        <button class="date-clear"><?php echo __("clear", "oasisworkflow") ;?></button>
+					<input class="date_input" id="due-date" value="<?php echo $default_date;?>"/>
+			      <button class="date-clear"><?php echo __("clear", "oasisworkflow") ;?></button>
 				</div>
 				<br class="clear">
 			</div>

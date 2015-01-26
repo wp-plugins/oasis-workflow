@@ -245,7 +245,7 @@ class FCProcessFlow extends FCWorkflowBase
          $data["due_date"] = FCWorkflowCRUD::format_date_for_db( $dueDate );
       }
       $iid = FCProcessFlow::save_action( $data, $actors) ;
-      add_post_meta($postId, "oasis_is_in_workflow", 1, true); // set the post meta to 1, specifying that the post is in a workflow.
+      update_post_meta($postId, "oasis_is_in_workflow", 1, true); // set the post meta to 1, specifying that the post is in a workflow.
 	}
 
    static function submit_post_to_workflow()

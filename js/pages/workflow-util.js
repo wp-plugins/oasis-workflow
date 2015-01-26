@@ -60,12 +60,14 @@ function numKeys(obj)
     return count;
 }
 
-function chk_date_input(id1, id2)
+function chk_workflow_dates(id1, id2)
 {
 	var s_d = jQuery("#" + id1).val();
 	var e_d = jQuery("#" + id2).val();
-	var arr_s_d = s_d.split("/") ;
-	var arr_e_d = e_d.split("/") ;
+	var s_d_mm_dd_yyyy = jQuery.datepicker.formatDate('mm/dd/yy', new Date(s_d));
+	var e_d_mm_dd_yyyy = jQuery.datepicker.formatDate('mm/dd/yy', new Date(e_d));
+	var arr_s_d = s_d_mm_dd_yyyy.split("/") ;
+	var arr_e_d = e_d_mm_dd_yyyy.split("/") ;
 	var startDate = new Date(arr_s_d[0], arr_s_d[1], arr_s_d[2]) ; 
 	var endDate = new Date(arr_e_d[0], arr_e_d[1], arr_e_d[2]) ;
 	if(startDate > endDate){
@@ -74,18 +76,21 @@ function chk_date_input(id1, id2)
 	return true;
 }
 
-function chk_due_date(id1)
+function chk_due_date(id1, dateFormat)
 {
 	var d_date = jQuery("#" + id1).val();
 	if(!d_date){
 		jQuery("#" + id1).css({"background-color":"#FBF3F3"});
 		return;
 	}
+	//split into array
+	var due_date_mm_dd_yyyy = jQuery.datepicker.formatDate('mm/dd/yy', new Date(d_date));
+	
 	var c_datetime = new Date();
 	var c_d = c_datetime.getDate() ;
 	var c_m = c_datetime.getMonth() + 1 ;
 	var c_y = c_datetime.getFullYear() ;	
-	var arr_date = d_date.split("/") ;	
+	var arr_date = due_date_mm_dd_yyyy.split("/") ;	
 	if( (c_y*10000 + c_m*100 + c_d*1) > (arr_date[2]*10000 + arr_date[0]*100 + arr_date[1]*1) ){
 		alert(owf_workflow_util_vars.dueDateInPast);
 		return false ;

@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Automate your WordPress Editorial Workflow.
- Version: 1.0.16
+ Version: 1.0.17
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.16' );
-define( 'OASISWF_DB_VERSION','1.0.16');
+define( 'OASISWF_VERSION' , '1.0.17' );
+define( 'OASISWF_DB_VERSION','1.0.17');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -311,6 +311,9 @@ class FCInitialization
 		delete_site_option('oasiswf_status');
 		delete_site_option('oasiswf_review');
 		delete_site_option('oasiswf_placeholders');
+		if (get_site_option('oasiswf_default_due_days')) {
+			delete_site_option('oasiswf_default_due_days');
+		}		
 		if (get_site_option('oasiswf_reminder_days')) {
 		   delete_site_option('oasiswf_reminder_days');
 		}
@@ -591,6 +594,7 @@ class FCInitialization
 			      `is_valid` int(2) NOT NULL default 0,
 			      `create_datetime` datetime DEFAULT NULL,
 			      `update_datetime` datetime DEFAULT NULL,
+			      `wf_additional_info` mediumtext DEFAULT NULL,
 			      PRIMARY KEY (`ID`)
 	    		){$charset_collate};";
 			dbDelta($sql);
@@ -692,6 +696,7 @@ class FCInitialization
 	    $table_name = FCUtility::get_workflows_table_name();
 	    $workflow_id = '';
        $workflow_info = stripcslashes('{"steps":{"step0":{"fc_addid":"step0","fc_label":"assignment","fc_dbid":"2","fc_process":"assignment","fc_position":["326px","568px"]},"step1":{"fc_addid":"step1","fc_label":"review","fc_dbid":"1","fc_process":"review","fc_position":["250px","358px"]},"step2":{"fc_addid":"step2","fc_label":"publish","fc_dbid":"3","fc_process":"publish","fc_position":["119px","622px"]}},"conns":{"0":{"sourceId":"step1","targetId":"step2","connset":{"connector":"StateMachine","paintStyle":{"lineWidth":3,"strokeStyle":"blue"}}},"1":{"sourceId":"step2","targetId":"step1","connset":{"connector":"StateMachine","paintStyle":{"lineWidth":3,"strokeStyle":"red"}}},"2":{"sourceId":"step1","targetId":"step0","connset":{"connector":"StateMachine","paintStyle":{"lineWidth":3,"strokeStyle":"red"}}},"3":{"sourceId":"step2","targetId":"step0","connset":{"connector":"StateMachine","paintStyle":{"lineWidth":3,"strokeStyle":"red"}}},"4":{"sourceId":"step0","targetId":"step1","connset":{"connector":"StateMachine","paintStyle":{"lineWidth":3,"strokeStyle":"blue"}}}},"first_step":["step1"]}');
+       $additional_info = stripcslashes( 'a:2:{s:16:"wf_for_new_posts";i:1;s:20:"wf_for_revised_posts";i:1;}' );
 		 $data = array(
 					'name' => 'Test Workflow',
 					'description' => 'sample workflow',
@@ -700,7 +705,8 @@ class FCInitialization
 					'end_date' => date("Y-m-d", current_time('timestamp') + YEAR_IN_SECONDS),
 					'is_valid' => 1,
 					'create_datetime' => current_time('mysql'),
-		 			'update_datetime' => current_time('mysql')
+		 			'update_datetime' => current_time('mysql'),
+		 		   'wf_additional_info' => $additional_info
 				);
 		 $result = $wpdb->insert($table_name, $data);
 		 if( $result ){
@@ -956,6 +962,10 @@ class FCLoadWorkflow
 			                   OASISWF_URL. 'js/pages/workflow-inbox.js',
 			                   array('jquery'),
 			                   OASISWF_VERSION);
+			
+			wp_localize_script( 'owf-workflow-inbox', 'owf_workflow_inbox_vars', array(
+				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( get_option( 'date_format' ))
+			));			
 
 		}
 	}
@@ -1010,7 +1020,8 @@ class FCLoadWorkflow
    		                   true);
          wp_localize_script( 'owf-workflow-create', 'owf_workflow_create_vars', array(
    						'alreadyExistWorkflow' => __( 'There is an existing workflow with the same name. Please choose another name.', 'oasisworkflow' ),
-         				'unsavedChanges' => __( 'You have unsaved changes.', 'oasisworkflow' )
+         				'unsavedChanges' => __( 'You have unsaved changes.', 'oasisworkflow' ),
+         				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( get_option( 'date_format' ))
                  ));
 
    	   wp_enqueue_script( 'jquery-simplemodal',

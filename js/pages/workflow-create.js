@@ -4,6 +4,22 @@ var jQueryCgmp = jQuery.noConflict();
 		var changed_step_chk = false ;
 		var deleted_step = new Array(); // IDs of Deleted step
 		
+		jQuery( "#start-date" ).datepicker({
+			autoSize: true,
+			dateFormat: owf_workflow_create_vars.dateFormat,			
+			onSelect: function(dateText, inst) {
+				jQuery(this).css("background-color", "white");
+			}
+		});
+		
+		jQuery( "#end-date" ).datepicker({
+			autoSize: true,
+			dateFormat: owf_workflow_create_vars.dateFormat,			
+			onSelect: function(dateText, inst) {
+				jQuery(this).css("background-color", "white");
+			}
+		});		
+		
 		//------------changed workflow check----------
 		set_step_chaned_status = function(){
 	    	changed_step_chk = true;
@@ -37,7 +53,7 @@ var jQueryCgmp = jQuery.noConflict();
 	    	if(!wfInfo)return false;
 	    	jQuery("#wf_graphic_data_hi").val(wfInfo);
 	    	
-	    	if(!chk_date_input())return;		
+	    	if(!chk_workflow_dates())return;		
 	    	
 	    	if( deleted_step.length > 0 ){
 	    		var delIdStr = "" ; 

@@ -1,18 +1,107 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oasis-workflow\n"
-"POT-Creation-Date: 2014-11-19 09:25-0800\n"
-"PO-Revision-Date: 2014-11-19 09:26-0800\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2015-01-25 16:53-0800\n"
+"PO-Revision-Date: 2015-01-25 16:58-0800\n"
+"Last-Translator: Oasis Workflow <support@oasisworkflow.com>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.9\n"
+"X-Generator: Poedit 1.7.3\n"
 "X-Poedit-KeywordsList: __;_e;_c;__ngettext;esc_html__\n"
 "X-Poedit-Basepath: .\n"
-"X-Poedit-SearchPath-0: C:\\workspaces\\plugins\\oasis-workflow-free\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: C:\\dev\\php-workspace\\oasis-workflow-basic\n"
+
+#: js/lib/textedit/nicEdit.js:13
+msgid "Click to Bold"
+msgstr "Cliquez pour Gras"
+
+#: js/lib/textedit/nicEdit.js:14
+msgid "Click to Italic"
+msgstr "Cliquez pour Italic"
+
+#: js/lib/textedit/nicEdit.js:15
+msgid "Click to Underline"
+msgstr "Cliquez pour Souligner"
+
+#: js/lib/textedit/nicEdit.js:16
+msgid "Left Align"
+msgstr "Alignement à gauche"
+
+#: js/lib/textedit/nicEdit.js:17
+msgid "Center Align"
+msgstr "Centre Aligner"
+
+#: js/lib/textedit/nicEdit.js:18
+msgid "Right Align"
+msgstr "Alignement à droite"
+
+#: js/lib/textedit/nicEdit.js:19
+msgid "Justify Align"
+msgstr "Aligner"
+
+#: js/lib/textedit/nicEdit.js:20
+msgid "Insert Ordered List"
+msgstr "Insérez liste ordonnée"
+
+#: js/lib/textedit/nicEdit.js:21
+msgid "Insert Unordered List"
+msgstr "Insérez Liste non ordonnée"
+
+#: js/lib/textedit/nicEdit.js:22
+msgid "Click to Subscript"
+msgstr "Cliquez pour Indice"
+
+#: js/lib/textedit/nicEdit.js:23
+msgid "Click to Superscript"
+msgstr "Cliquez pour exposant"
+
+#: js/lib/textedit/nicEdit.js:24
+msgid "Click to Strike Through"
+msgstr "Cliquez pour Barré"
+
+#: js/lib/textedit/nicEdit.js:25
+msgid "Remove Formatting"
+msgstr "Supprimer la mise en page"
+
+#: js/lib/textedit/nicEdit.js:26
+msgid "Indent Text"
+msgstr "Texte tiret"
+
+#: js/lib/textedit/nicEdit.js:27
+msgid "Remove Indent"
+msgstr "Retirer le retrait"
+
+#: js/lib/textedit/nicEdit.js:28
+msgid "Horizontal Rule"
+msgstr "Ligne horizontale"
+
+#: js/lib/textedit/nicEdit.js:55
+msgid "Select Font Size"
+msgstr "Taille de la police"
+
+#: js/lib/textedit/nicEdit.js:56
+msgid "Select Font Family"
+msgstr "Sélectionnez famille de polices"
+
+#: js/lib/textedit/nicEdit.js:57
+msgid "Select Font Format"
+msgstr "Sélectionnez Font Format"
+
+#: js/lib/textedit/nicEdit.js:76
+msgid "Change Text Color"
+msgstr "Changez de vue"
+
+#: js/lib/textedit/nicEdit.js:77
+msgid "Change Background Color"
+msgstr "Changer la couleur de fond"
+
+#: js/lib/textedit/nicEdit.js:96
+msgid "Save this content"
+msgstr "Enregistrer ce contenu"
 
 #: includes/pages/subpages/action-comments.php:27
 msgid "Comment(s)"
@@ -29,8 +118,8 @@ msgstr "Date de clôture : "
 #: includes/pages/subpages/action-comments.php:50
 #: includes/pages/subpages/reassign.php:28
 #: includes/pages/subpages/step-info-content.php:226
-#: includes/pages/subpages/submit-step.php:120
-#: includes/pages/subpages/submit-workflow.php:105
+#: includes/pages/subpages/submit-step.php:125
+#: includes/pages/subpages/submit-workflow.php:110
 #: includes/workflow-crud.php:138
 msgid "Cancel"
 msgstr "Annuler"
@@ -46,9 +135,9 @@ msgstr "Utilisateur sélectionné : "
 
 #: includes/pages/subpages/reassign.php:26
 #: includes/pages/subpages/step-info-content.php:223
-#: includes/pages/workflow-create.php:150
-#: includes/pages/workflow-create.php:155
-#: includes/pages/workflow-settings.php:94
+#: includes/pages/workflow-create.php:152
+#: includes/pages/workflow-create.php:157
+#: includes/pages/workflow-settings.php:105
 #: includes/workflow-crud.php:135
 msgid "Save"
 msgstr "Sauvegarder"
@@ -66,14 +155,14 @@ msgid "Assignee(s) :"
 msgstr "Destinataire(s) :"
 
 #: includes/pages/subpages/step-info-content.php:24
-#: includes/pages/subpages/submit-step.php:72
-#: includes/pages/subpages/submit-workflow.php:48
+#: includes/pages/subpages/submit-step.php:77
+#: includes/pages/subpages/submit-workflow.php:53
 msgid "Available"
 msgstr "Disponible"
 
 #: includes/pages/subpages/step-info-content.php:40
-#: includes/pages/subpages/submit-step.php:84
-#: includes/pages/subpages/submit-workflow.php:60
+#: includes/pages/subpages/submit-step.php:89
+#: includes/pages/subpages/submit-workflow.php:65
 msgid "Assigned"
 msgstr "Assigné"
 
@@ -139,92 +228,91 @@ msgstr "Message : "
 msgid "Reminder Email"
 msgstr "Email de relance"
 
-#: includes/pages/subpages/submit-step.php:20
-#: includes/pages/subpages/submit-step.php:116
-#: includes/pages/subpages/submit-step.php:117
-#: includes/pages/subpages/submit-step.php:118
+#: includes/pages/subpages/submit-step.php:25
+#: includes/pages/subpages/submit-step.php:121
+#: includes/pages/subpages/submit-step.php:122
+#: includes/pages/subpages/submit-step.php:123
 #: includes/pages/workflow-inbox.php:99
-#: oasiswf-actions.php:249
+#: oasiswf-actions.php:270
 msgid "Sign Off"
 msgstr "Approuver"
 
-#: includes/pages/subpages/submit-step.php:24
+#: includes/pages/subpages/submit-step.php:29
 msgid "Action : "
 msgstr "action:"
 
-#: includes/pages/subpages/submit-step.php:27
+#: includes/pages/subpages/submit-step.php:32
 #: includes/workflow-history.php:192
 #: includes/workflow-history.php:212
 msgid "Approved"
 msgstr "Approuvé"
 
-#: includes/pages/subpages/submit-step.php:27
+#: includes/pages/subpages/submit-step.php:32
 #: includes/workflow-history.php:215
 msgid "Complete"
 msgstr "Complet"
 
-#: includes/pages/subpages/submit-step.php:28
+#: includes/pages/subpages/submit-step.php:33
 msgid "Reject"
 msgstr "Rejeté"
 
-#: includes/pages/subpages/submit-step.php:28
+#: includes/pages/subpages/submit-step.php:33
 #: includes/workflow-history.php:196
 #: includes/workflow-history.php:216
 msgid "Unable to Complete"
 msgstr "Impossible de compléter"
 
-#: includes/pages/subpages/submit-step.php:35
+#: includes/pages/subpages/submit-step.php:40
 msgid "Publish"
 msgstr "Publier"
 
-#: includes/pages/subpages/submit-step.php:46
+#: includes/pages/subpages/submit-step.php:51
 msgid "Immediately"
 msgstr "Immédiatement"
 
-#: includes/pages/subpages/submit-step.php:56
-#: includes/pages/subpages/submit-workflow.php:31
+#: includes/pages/subpages/submit-step.php:61
+#: includes/pages/subpages/submit-workflow.php:36
 msgid "Step : "
 msgstr "Etape : "
 
-#: includes/pages/subpages/submit-step.php:63
-#: includes/pages/subpages/submit-workflow.php:38
+#: includes/pages/subpages/submit-step.php:68
+#: includes/pages/subpages/submit-workflow.php:43
 msgid "Assign actor : "
 msgstr "Personne désignée : "
 
-#: includes/pages/subpages/submit-step.php:69
-#: includes/pages/subpages/submit-workflow.php:45
+#: includes/pages/subpages/submit-step.php:74
+#: includes/pages/subpages/submit-workflow.php:50
 msgid "Assign actor(s) :"
 msgstr "Personne(s) désignée(s) :"
 
-#: includes/pages/subpages/submit-step.php:95
-#: includes/pages/subpages/submit-workflow.php:71
+#: includes/pages/subpages/submit-step.php:100
+#: includes/pages/subpages/submit-workflow.php:76
 msgid "Due Date : "
 msgstr "Date butoir : "
 
-#: includes/pages/subpages/submit-step.php:99
-#: includes/pages/subpages/submit-workflow.php:75
-#: includes/pages/subpages/submit-workflow.php:89
-#: includes/pages/workflow-create.php:130
-#: includes/pages/workflow-create.php:136
+#: includes/pages/subpages/submit-step.php:104
+#: includes/pages/subpages/submit-workflow.php:80
+#: includes/pages/subpages/submit-workflow.php:94
+#: includes/pages/workflow-create.php:128
+#: includes/pages/workflow-create.php:139
 msgid "clear"
 msgstr "effacer"
 
-#: includes/pages/subpages/submit-step.php:107
-#: includes/pages/subpages/submit-workflow.php:95
+#: includes/pages/subpages/submit-step.php:112
+#: includes/pages/subpages/submit-workflow.php:100
 msgid "Comments : "
 msgstr "Commentaires : "
 
-#: includes/pages/subpages/submit-workflow.php:9
-#: includes/pages/subpages/submit-workflow.php:103
+#: includes/pages/subpages/submit-workflow.php:14
+#: includes/pages/subpages/submit-workflow.php:108
 msgid "Submit"
 msgstr "Soumettre"
 
-#: includes/pages/subpages/submit-workflow.php:12
+#: includes/pages/subpages/submit-workflow.php:17
 msgid "Workflow : "
 msgstr "workflow:"
 
-#: includes/pages/subpages/submit-workflow.php:83
-#, fuzzy
+#: includes/pages/subpages/submit-workflow.php:88
 msgid "Future Publish Date : "
 msgstr "Future Date de publication:"
 
@@ -247,9 +335,8 @@ msgstr ""
 
 #: includes/pages/subpages/workflow-create-message.php:4
 #: oasiswf-utilities.php:68
-#, fuzzy
 msgid "Oasis Workflow Pro"
-msgstr "Oasis Workflow Pro clé de licence"
+msgstr "Oasis Workflow Pro"
 
 #: includes/pages/subpages/workflow-create-message.php:7
 msgid "Close"
@@ -289,38 +376,38 @@ msgstr "description:"
 msgid "Start Date :"
 msgstr "Date de début :"
 
-#: includes/pages/workflow-create.php:123
+#: includes/pages/workflow-create.php:134
 msgid "End date :"
 msgstr "Date de fin :"
 
-#: includes/pages/workflow-create.php:152
+#: includes/pages/workflow-create.php:154
 msgid "Clear Workflow"
 msgstr "Effacer Workflow"
 
-#: includes/pages/workflow-create.php:154
+#: includes/pages/workflow-create.php:156
 msgid "Save as new version"
 msgstr "Enregistrer en tant que nouvelle version"
 
-#: includes/pages/workflow-create.php:172
-#: includes/pages/workflow-create.php:179
+#: includes/pages/workflow-create.php:174
+#: includes/pages/workflow-create.php:181
 #: includes/pages/workflow-inbox.php:93
 #: includes/pages/workflow-list.php:60
 msgid "Edit"
 msgstr "Editer"
 
-#: includes/pages/workflow-create.php:173
-#: includes/pages/workflow-create.php:181
+#: includes/pages/workflow-create.php:175
+#: includes/pages/workflow-create.php:183
 msgid "Delete"
 msgstr "Supprimer"
 
-#: includes/pages/workflow-create.php:174
-#: includes/pages/workflow-create.php:183
+#: includes/pages/workflow-create.php:176
+#: includes/pages/workflow-create.php:185
 msgid "Quit"
 msgstr "Quitter"
 
 #: includes/pages/workflow-history.php:10
-#: oasiswf.php:838
-#: oasiswf.php:839
+#: oasiswf.php:867
+#: oasiswf.php:868
 msgid "Workflow History"
 msgstr "Historique"
 
@@ -333,17 +420,16 @@ msgid "Filter"
 msgstr "Filtrer"
 
 #: includes/pages/workflow-history.php:113
-#, fuzzy
 msgid "No Action Taken"
-msgstr "action:"
+msgstr "Aucune mesure n'a été prise."
 
 #: includes/pages/workflow-history.php:142
 msgid "No workflow history data found."
 msgstr "Aucun historique trouvé."
 
 #: includes/pages/workflow-inbox.php:14
-#: oasiswf.php:831
-#: oasiswf.php:832
+#: oasiswf.php:860
+#: oasiswf.php:861
 msgid "Inbox"
 msgstr "Boîte de réception"
 
@@ -354,6 +440,10 @@ msgstr "Voir boîte de réception de "
 #: includes/pages/workflow-inbox.php:37
 msgid "Show"
 msgstr "Afficher"
+
+#: includes/pages/workflow-inbox.php:86
+msgid "Claim"
+msgstr "Revendication"
 
 #: includes/pages/workflow-inbox.php:96
 msgid "View"
@@ -376,95 +466,101 @@ msgid "Inactive"
 msgstr "Inactif"
 
 #: includes/pages/workflow-list.php:73
-#, fuzzy
 msgid "You don't have any workflows."
-msgstr "Vous n'avez aucun workflow. Allez"
+msgstr "Vous n'avez pas tous les workflows."
 
-#: includes/pages/workflow-settings.php:47
-#: oasiswf.php:803
-#: oasiswf.php:804
+#: includes/pages/workflow-settings.php:50
+#: oasiswf.php:832
+#: oasiswf.php:833
 msgid "Settings"
 msgstr "Paramètres"
 
-#: includes/pages/workflow-settings.php:49
+#: includes/pages/workflow-settings.php:52
 msgid "Settings saved successfully."
 msgstr "Paramètres sauvegardés avec succès."
 
-#: includes/pages/workflow-settings.php:52
+#: includes/pages/workflow-settings.php:55
 msgid "Auto submit completed successfully. "
 msgstr "Soumission automatique complète"
 
-#: includes/pages/workflow-settings.php:63
+#: includes/pages/workflow-settings.php:66
 msgid "Activate Workflow process ?"
 msgstr "Activer le processus de workflow ?"
 
-#: includes/pages/workflow-settings.php:69
-#: includes/pages/workflow-settings.php:77
+#: includes/pages/workflow-settings.php:72
+msgid "Set default Due date as CURRENT DATE + "
+msgstr "Définir la date d'échéance par défaut comme date du jour +"
+
+#: includes/pages/workflow-settings.php:75
+msgid "day(s)."
+msgstr "jour(s)."
+
+#: includes/pages/workflow-settings.php:80
+#: includes/pages/workflow-settings.php:88
 msgid " Send Reminder Email"
 msgstr " Envoyer un email de rappel "
 
-#: includes/pages/workflow-settings.php:72
+#: includes/pages/workflow-settings.php:83
 msgid "day(s) before due date."
 msgstr "jour(s) avant la date butoir"
 
-#: includes/pages/workflow-settings.php:80
+#: includes/pages/workflow-settings.php:91
 msgid "day(s) after due date."
 msgstr "jour(s) après la date butoir"
 
-#: includes/pages/workflow-settings.php:84
+#: includes/pages/workflow-settings.php:95
 msgid "Which role(s) can skip the workflow and use the out of the box options?"
 msgstr "Quel(s) rôle(s) peut forcer le workflow ?"
 
-#: includes/pages/workflow-settings.php:105
+#: includes/pages/workflow-settings.php:116
 msgid "About this Plugin:"
 msgstr "A propos de ce plugin :"
 
-#: includes/pages/workflow-settings.php:108
+#: includes/pages/workflow-settings.php:119
 msgid "Plugin webpage"
 msgstr "Page web du plugin"
 
-#: includes/pages/workflow-settings.php:109
+#: includes/pages/workflow-settings.php:120
 msgid "FAQ"
 msgstr "FAQ"
 
-#: includes/pages/workflow-settings.php:112
+#: includes/pages/workflow-settings.php:123
 msgid "Help us Improve:"
 msgstr "Aidez-nous à améliorer:"
 
-#: includes/pages/workflow-settings.php:114
+#: includes/pages/workflow-settings.php:125
 msgid "Suggest"
 msgstr "suggérer"
 
-#: includes/pages/workflow-settings.php:114
+#: includes/pages/workflow-settings.php:125
 msgid "features"
 msgstr "traits"
 
-#: includes/pages/workflow-settings.php:115
+#: includes/pages/workflow-settings.php:126
 msgid "Rate"
 msgstr "évaluer"
 
-#: includes/pages/workflow-settings.php:115
+#: includes/pages/workflow-settings.php:126
 msgid "the plugin 5 stars on WordPress.org"
 msgstr "Le plugin 5 étoiles sur WordPress.org"
 
-#: includes/pages/workflow-settings.php:116
+#: includes/pages/workflow-settings.php:127
 msgid "Like us"
 msgstr "comme nous"
 
-#: includes/pages/workflow-settings.php:116
+#: includes/pages/workflow-settings.php:127
 msgid "on"
 msgstr "sur"
 
-#: includes/pages/workflow-settings.php:118
-#, fuzzy
+#: includes/pages/workflow-settings.php:129
 msgid "Go Pro:"
-msgstr "Aller à la boîte de réception"
+msgstr "Go Pro :"
 
-#: includes/pages/workflow-settings.php:120
+#: includes/pages/workflow-settings.php:131
 msgid "Pricing & Purchase"
 msgstr "Prix et Achat"
 
-#: includes/workflow-base.php:306
+#: includes/workflow-base.php:309
 #, php-format
 msgid "Displaying %s-%s of %s"
 msgstr "Affichage de %s-%s sur %s"
@@ -549,52 +645,43 @@ msgid "Comments"
 msgstr "Commentaires"
 
 #: includes/workflow-history.php:174
-#, fuzzy
 msgid "Submitted"
-msgstr "soumis"
+msgstr "﻿ Soumis"
 
 #: includes/workflow-history.php:175
 #: includes/workflow-history.php:176
-#, fuzzy
 msgid "Aborted"
 msgstr "avorté"
 
 #: includes/workflow-history.php:177
-#, fuzzy
 msgid "Unclaimed"
 msgstr "non réclamés"
 
 #: includes/workflow-history.php:178
-#, fuzzy
 msgid "Claimed"
-msgstr "Réclamé"
+msgstr "Officiel"
 
 #: includes/workflow-history.php:179
 #: includes/workflow-history.php:201
-#, fuzzy
 msgid "Reassigned"
 msgstr "réaffecté"
 
 #: includes/workflow-history.php:182
-#, fuzzy
 msgid "Workflow completed"
 msgstr "flux de travail terminé"
 
 #: includes/workflow-history.php:183
-#, fuzzy
 msgid "Cancelled"
-msgstr "Annulé"
+msgstr "Annulée"
 
 #: includes/workflow-history.php:193
 #: includes/workflow-history.php:213
-#, fuzzy
 msgid "Rejected"
 msgstr "Rejeté"
 
 #: includes/workflow-history.php:195
-#, fuzzy
 msgid "Completed"
-msgstr "Effectué"
+msgstr "Complété"
 
 #: includes/workflow-inbox.php:8
 msgid "Post/Page"
@@ -648,73 +735,73 @@ msgstr "Article/Pages dans le workflow"
 msgid "Is Valid?"
 msgstr "Est valide ?"
 
-#: oasiswf-actions.php:129
+#: oasiswf-actions.php:149
 msgid "Abort workflow"
 msgstr "Annuler le workflow"
 
-#: oasiswf-actions.php:130
+#: oasiswf-actions.php:150
 msgid "Are you sure to abort the workflow?"
 msgstr "Etes-vous sûr de vouloir annuler le workflow ?"
 
-#: oasiswf-actions.php:230
+#: oasiswf-actions.php:250
 msgid "Submit to Workflow"
 msgstr "Soumettre au workflow"
 
-#: oasiswf-actions.php:231
+#: oasiswf-actions.php:251
 msgid "All steps are not defined.\\n Please check the workflow."
 msgstr ""
 "Toutes les étapes ne sont pas définies.\\n Veuillez vérifier le workflow."
 
-#: oasiswf-actions.php:232
+#: oasiswf-actions.php:252
 msgid "The selected workflow is not valid.\\n Please check this workflow."
 msgstr ""
 "Le workflow sélectionné n'est pas valide.\\n Veuillez vérifier le workflow."
 
-#: oasiswf-actions.php:233
 #: oasiswf-actions.php:253
+#: oasiswf-actions.php:274
 msgid "No users found for the given role."
 msgstr "Aucun utilisateur trouvé pour le profil donné."
 
-#: oasiswf-actions.php:234
-#: oasiswf-actions.php:258
+#: oasiswf-actions.php:254
+#: oasiswf-actions.php:279
 msgid "You can select multiple users only for review step.\\n Selected step is"
 msgstr ""
 "Vous ne pouvez sélectionner plusieurs utilisateurs que pour la phase de "
 "relecture.\\n L'étape actuellement sélectionnée est"
 
-#: oasiswf-actions.php:235
-#: oasiswf-actions.php:259
+#: oasiswf-actions.php:255
+#: oasiswf-actions.php:280
 msgid "step."
 msgstr "phase."
 
-#: oasiswf-actions.php:236
+#: oasiswf-actions.php:256
 msgid "Please select a workflow."
 msgstr "Veuillez sélectionner un workflow"
 
-#: oasiswf-actions.php:237
-#: oasiswf-actions.php:255
+#: oasiswf-actions.php:257
+#: oasiswf-actions.php:276
 msgid "Please select a step."
 msgstr "Veuillez sélectionner une étape."
 
-#: oasiswf-actions.php:238
+#: oasiswf-actions.php:258
 msgid "This step is not defined."
 msgstr "Cette phase n'est pas définie."
 
-#: oasiswf-actions.php:239
-#: oasiswf-actions.php:256
+#: oasiswf-actions.php:259
+#: oasiswf-actions.php:277
 msgid "Please enter a due date."
 msgstr "Veuillez choisir une date butoir."
 
-#: oasiswf-actions.php:240
-#: oasiswf-actions.php:257
+#: oasiswf-actions.php:260
+#: oasiswf-actions.php:278
 msgid "No assigned actor(s)."
 msgstr "Aucun acteur assigné."
 
-#: oasiswf-actions.php:250
+#: oasiswf-actions.php:271
 msgid "Go to Workflow Inbox"
 msgstr "Aller à la boîte de réception"
 
-#: oasiswf-actions.php:251
+#: oasiswf-actions.php:272
 msgid ""
 "This is the first step in the workflow.</br> Do you really want to cancel "
 "the post/page from the workflow?"
@@ -722,13 +809,13 @@ msgstr ""
 "Il s'agit de la première étape du workflow.</br>Voulez-vous vraiment "
 "supprimer l'article/page du workflow ?"
 
-#: oasiswf-actions.php:252
+#: oasiswf-actions.php:273
 msgid ""
 "This is the last step in the workflow. Are you sure to complete the workflow?"
 msgstr ""
 "Voici la dernière étape du workflow. Etes-vous sûr de vouloir le compléter ?"
 
-#: oasiswf-actions.php:254
+#: oasiswf-actions.php:275
 msgid "Please select an action."
 msgstr "Merci de choisir une action."
 
@@ -752,9 +839,8 @@ msgstr ""
 "au contenu révisé\", \"Auto Terminer\", \"Rapports\", et bien plus encore ..."
 
 #: oasiswf-utilities.php:67
-#, fuzzy
 msgid "check out our \"Pro\" version at "
-msgstr "consultez notre \"Pro\" version sur -"
+msgstr "Découvrez notre version « Pro » à"
 
 #: oasiswf.php:145
 msgid "Success"
@@ -781,14 +867,14 @@ msgid "Everyone should approve"
 msgstr "Tout le monde doit approuver"
 
 #: oasiswf.php:156
-#, fuzzy, php-format
+#, php-format
 msgid "Atleast 50% should approve"
-msgstr "Tout le monde doit approuver"
+msgstr ""
 
 #: oasiswf.php:157
-#, fuzzy, php-format
+#, php-format
 msgid "More that 50% should approve"
-msgstr "Tout le monde doit approuver"
+msgstr ""
 
 #: oasiswf.php:158
 msgid "Anyone should approve"
@@ -806,81 +892,80 @@ msgstr "nom"
 msgid "post title"
 msgstr "titre de l'article"
 
-#: oasiswf.php:348
+#: oasiswf.php:367
 msgid "Get the Pro Version"
 msgstr "Obtenez la version Pro"
 
-#: oasiswf.php:788
-#: oasiswf.php:789
+#: oasiswf.php:817
+#: oasiswf.php:818
 msgid "Workflow Admin"
 msgstr "flux de travail d'administration"
 
-#: oasiswf.php:796
-#: oasiswf.php:797
+#: oasiswf.php:825
+#: oasiswf.php:826
 msgid "Edit Workflows"
 msgstr "Editer"
 
-#: oasiswf.php:824
-#: oasiswf.php:825
+#: oasiswf.php:853
+#: oasiswf.php:854
 msgid "Workflows"
 msgstr "workflows"
 
-#: oasiswf.php:973
+#: oasiswf.php:1006
 msgid "Do you really want to clear all the steps?"
 msgstr "Voulez-vous vraiment effacer toutes les étapes ?"
 
-#: oasiswf.php:974
-#, fuzzy
+#: oasiswf.php:1007
 msgid "This step is already defined.Do you really want to remove this step?"
 msgstr ""
 "Cette étape est déjà défini. Voulez-vous vraiment supprimer cette étape?"
 
-#: oasiswf.php:975
+#: oasiswf.php:1008
 msgid "The path between"
 msgstr "La connexion entre"
 
-#: oasiswf.php:976
+#: oasiswf.php:1009
 msgid "step and"
 msgstr "étape et"
 
-#: oasiswf.php:977
+#: oasiswf.php:1010
 msgid "step is incorrect."
 msgstr "l'étape est incorrecte."
 
-#: oasiswf.php:989
+#: oasiswf.php:1022
 msgid ""
 "There is an existing workflow with the same name. Please choose another name."
 msgstr "Un workflow existe déjà sous ce nom. Veuillez choisir un autre nom."
 
-#: oasiswf.php:990
+#: oasiswf.php:1023
 msgid "You have unsaved changes."
 msgstr "Vous avez des modifications non enregistrées."
 
-#: oasiswf.php:1005
+#: oasiswf.php:1039
 msgid "Due date cannot be in the past."
 msgstr "La date butoir ne peut pas être dans le passé."
 
-#: oasiswf.php:1020
+#: oasiswf.php:1054
 msgid "Step name is required."
 msgstr "Le nom d'étape est requis."
 
-#: oasiswf.php:1021
+#: oasiswf.php:1055
 msgid "Step name already exists. Please use a different name."
 msgstr "Ce nom d'étape existe déjà. Merci d'utiliser un nom différent."
 
-#: oasiswf.php:1022
+#: oasiswf.php:1056
 msgid "Please select assignee(s)."
 msgstr "Sélectionner destinataire(s)."
 
-#: oasiswf.php:1023
+#: oasiswf.php:1057
 msgid "Please select status on success."
 msgstr "Sélectionner un statut pour Validé."
 
-#: oasiswf.php:1024
+#: oasiswf.php:1058
 msgid "Please select status on failure."
 msgstr "Sélectionner un statut pour Rejeté."
 
-#: oasiswf.php:1025
+#: oasiswf.php:1059
 msgid "Please select a placeholder."
 msgstr "Sélectionner un espacé réservé."
 
@@ -895,9 +980,6 @@ msgstr "Sélectionner un espacé réservé."
 
 #~ msgid "Set Due date as current date + "
 #~ msgstr "Fixer la date butoir comme date actuelle + "
-
-#~ msgid "day(s)."
-#~ msgstr "jour(s)."
 
 #~ msgid "Auto submit comments"
 #~ msgstr "Commentaires auto-générés"
