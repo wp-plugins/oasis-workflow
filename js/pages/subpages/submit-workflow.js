@@ -231,8 +231,9 @@ jQuery(document).ready(function() {
 		if (jQuery("#publish-date").val() != '') 
 		{
 			var publish = jQuery('#publish-date').val();
+			var parsedDate = jQuery.datepicker.parseDate(owf_submit_workflow_vars.dateFormat, publish);
 			//split into array
-			var publish_date_mm_dd_yyyy = jQuery.datepicker.formatDate('mm/dd/yy', new Date(publish));
+			var publish_date_mm_dd_yyyy = jQuery.datepicker.formatDate('mm/dd/yy', parsedDate);
 			var pdate = publish_date_mm_dd_yyyy.split('/');
 			
 			//set this mm/dd/yyyy value as wordpress publish date
