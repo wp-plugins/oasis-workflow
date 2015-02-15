@@ -3,17 +3,15 @@ Contributors: nuggetsol
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit,versioning, auto submit, approval workflow, editorial workflow, notifications, oasis workflow, editorial, revisions, document revision, version control, collaboration, document management, revision scheduling, duplication, clone, revise, revise article
 Requires at least: 3.6
 Tested up to: 4.1
-Stable tag: 1.0.18
+Stable tag: 1.0.19
 
 Automate your WordPress Editorial Workflow with Oasis Workflow.
 
 == Description ==
 
-Any online publishing organization has one or several Managing Editors responsible for keeping the arrangement of editorial content flowing in an organized fashion.
+Oasis Workflow is a powerful feature rich plugin designed to automate any editorial workflow process using a simple, intuitive graphical user interface (GUI).
 
-Oasis Workflow plugin is designed to automate any workflow process using a simple, intuitive graphical user interface (GUI).
-
-= The plugin provides three processes: =
+= The plugin provides three simple process/task templates: =
 * Assignment - represents task related to content generation.
 * Review - represents task related to content review.
 * Publish - represents the actual "publish" task.
@@ -213,3 +211,11 @@ If these workflows are different, they need to be recreated with this upgrade.
 
 = Version 1.0.18 =
 * fixed dd/mm/yyyy format for future publish date
+
+= Version 1.0.19 =
+* Fixed a php error related to missing date on workflow edit.
+* Added post types to workflow selection. Now you can choose the post types which should go through the workflow.
+* Made the roles drop down to be multi-site compatible. Now you will be able to see roles from all the sites.
+* Add a custom role called - Post Author.
+* Fixed "clear date" function on submit step popup.
+* Fixed Page/Post delete to delete the inbox items related to the deleted post/page.

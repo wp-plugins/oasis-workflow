@@ -179,59 +179,64 @@ class FCWorkflowBase
 		}
 	}
 
-	static function get_users_by_role($role, $postId=null, $decision=null)
-	{
-	   global $wpdb;
-	   if( count( $role ) > 0 )
-		{
-			$userstr = "";
-         $post_author = "";
-			// Instead of using WP_User_Query, we have to go this route, because user role editor
-			// plugin has implemented the pre_user_query hook and excluded the administrator users to appear in the list
+   static function get_users_by_role($role, $postId=null, $decision=null)
+   {
+      global $wpdb;
+      if( count( $role ) > 0 )
+      {
+         $userstr = "";
+         $post_author_id = "";
+         // Instead of using WP_User_Query, we have to go this route, because user role editor
+         // plugin has implemented the pre_user_query hook and excluded the administrator users to appear in the list
 
-			if ($postId != null) {
+         if ($postId != null) {
             $post = get_post($postId);
-            $post_author = $post->post_author;
-			}
+            $post_author_id = $post->post_author;
+         }
 
 
-		   foreach ( $role as $k => $v ){
-		      $user_role = '%' . $k . '%';
-            $users = $wpdb->get_results( $wpdb->prepare( "SELECT users_1.ID, users_1.display_name FROM {$wpdb->base_prefix}users users_1
-            					INNER JOIN {$wpdb->base_prefix}usermeta usermeta_1 ON ( users_1.ID = usermeta_1.user_id )
-									WHERE (usermeta_1.meta_key = '{$wpdb->prefix}capabilities' AND CAST( usermeta_1.meta_value AS CHAR ) LIKE %s)",
-                           $user_role ) );
-
+         foreach ( $role as $k => $v ){
+            if ($k == 'owfpostauthor') { // this is a custom role added by oasis workflow
+               $author_user = new WP_User( $post_author_id );
+               $users = array($author_user);
+            }
+            else {
+               $user_role = '%' . $k . '%';
+               $users = $wpdb->get_results( $wpdb->prepare( "SELECT users_1.ID, users_1.display_name FROM {$wpdb->base_prefix}users users_1
+               					INNER JOIN {$wpdb->base_prefix}usermeta usermeta_1 ON ( users_1.ID = usermeta_1.user_id )
+   									WHERE (usermeta_1.meta_key = '{$wpdb->prefix}capabilities' AND CAST( usermeta_1.meta_value AS CHAR ) LIKE %s)",
+               $user_role ) );
+            }
             foreach ( $users as $user ) {
-              $current_user = get_current_user_id();
-              if ($decision != null && $decision == 'complete' && $user->ID == $current_user) { // exclude the current user from the user list in case of success flow
-                 continue;
-              }
-              $userObj = new WP_User( $user->ID );
-              if ( !empty( $userObj->roles ) && is_array( $userObj->roles ) ) {
-	               foreach ( $userObj->roles as $userrole )
-	               {
-		               if ($userrole == $k)
-		               {
-         				   $part["ID"] = $user->ID ;
-		                  if ($user->ID == $post_author) {
-         				      $part["name"] = $user->display_name . ' (Post Author)';
-         				   }
-         				   else {
-         				      $part["name"] = $user->display_name;
-         				   }
-         				   $userstr[] =(object) $part ;
-                        break;
-		               }
-	               }
+               $current_user = get_current_user_id();
+               if ($decision != null && $decision == 'complete' && $user->ID == $current_user) { // exclude the current user from the user list in case of success flow
+                  continue;
                }
-			   }
-			}
-			return (object)$userstr;
-		}
-		return "" ;
+               $userObj = new WP_User( $user->ID );
+               if ( !empty( $userObj->roles ) && is_array( $userObj->roles ) ) {
+                  foreach ( $userObj->roles as $userrole )
+                  {
+                     if ( $userrole == $k || 'owfpostauthor' == $k) // if the selected role is 'postauthor'- the custom role.
+                     {
+                        $part["ID"] = $user->ID ;
+                        if ($user->ID == $post_author_id) {
+                           $part["name"] = $user->display_name . ' (Post Author)';
+                        }
+                        else {
+                           $part["name"] = $user->display_name;
+                        }
+                        $userstr[] =(object) $part ;
+                        break;
+                     }
+                  }
+               }
+            }
+         }
+         return (object)$userstr;
+      }
+      return "" ;
 
-	}
+   }
 
 	static function get_new_version($parentid)
 	{

@@ -53,7 +53,7 @@ var jQueryCgmp = jQuery.noConflict();
 	    	if(!wfInfo)return false;
 	    	jQuery("#wf_graphic_data_hi").val(wfInfo);
 	    	
-	    	if(!chk_workflow_dates())return;		
+//	    	if(!chk_date_input())return;		
 	    	
 	    	if( deleted_step.length > 0 ){
 	    		var delIdStr = "" ; 

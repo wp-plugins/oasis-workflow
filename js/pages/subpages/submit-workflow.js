@@ -2,21 +2,27 @@ jQuery(document).ready(function() {
 	var stepProcess = "";
 	//------main function-------------
 	function load_setting(){		
-		jQuery("#publishing-action").append("<input type='button' id='workflow_submit' class='button button-primary button-large'" +
-											" value='" + owf_submit_workflow_vars.submitToWorkflowButton + "' style='float:left;' />").css({"width": "100%"});
-		jQuery("#post").append(
-							"<input type='hidden' id='hi_workflow_id' name='hi_workflow_id' />" +
-							"<input type='hidden' id='hi_step_id' name='hi_step_id' />" +
-							"<input type='hidden' id='hi_actor_ids' name='hi_actor_ids' />" +
-							"<input type='hidden' id='hi_due_date' name='hi_due_date' />" +
-							"<input type='hidden' id='hi_comment' name='hi_comment' />" +
-							"<input type='hidden' id='save_action' name='save_action' />"
-						);
-		jQuery("#publishing-action").css({"margin-top": "10px"}) ;	
-		
-		jQuery('.inline-edit-status').hide() ;
-		
-		jQuery('.error').hide() ;
+		var allowed_post_types = jQuery.parseJSON(owf_submit_workflow_vars.allowedPostTypes);
+		var current_post_type = jQuery('#post_type').val();
+		// If not allowed post/page type then do not show
+		if(jQuery.inArray(current_post_type, allowed_post_types) != -1)
+		{		
+			jQuery("#publishing-action").append("<input type='button' id='workflow_submit' class='button button-primary button-large'" +
+												" value='" + owf_submit_workflow_vars.submitToWorkflowButton + "' style='float:left;' />").css({"width": "100%"});
+			jQuery("#post").append(
+								"<input type='hidden' id='hi_workflow_id' name='hi_workflow_id' />" +
+								"<input type='hidden' id='hi_step_id' name='hi_step_id' />" +
+								"<input type='hidden' id='hi_actor_ids' name='hi_actor_ids' />" +
+								"<input type='hidden' id='hi_due_date' name='hi_due_date' />" +
+								"<input type='hidden' id='hi_comment' name='hi_comment' />" +
+								"<input type='hidden' id='save_action' name='save_action' />"
+							);
+			jQuery("#publishing-action").css({"margin-top": "10px"}) ;	
+			
+			jQuery('.inline-edit-status').hide() ;
+			
+			jQuery('.error').hide() ;
+		}
 	}
 	
 	function calendar_action(){

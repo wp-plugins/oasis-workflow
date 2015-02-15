@@ -23,27 +23,23 @@ if( isset($_POST['page_action']) && $_POST["page_action"] == "submit" ){
 	   }
 	}
 	update_site_option("oasiswf_skip_workflow_roles", $skip_workflow_roles) ;
-
-	$auto_submit_stati = array();
-	if (isset($_POST["auto_submit_stati"]) && count($_POST["auto_submit_stati"]) > 0 )
+	
+	$wfsettings_on_post_type = array();
+	if (isset($_POST["show_workflow_setting_on_post_types"]) && count($_POST["show_workflow_setting_on_post_types"]) > 0 )
 	{
-	   $selectedOptions = $_POST["auto_submit_stati"];
-	   foreach ($selectedOptions as $selectedOption)
-	   {
-         array_push($auto_submit_stati, $selectedOption);
-	   }
+		$selectedTypes = $_POST["show_workflow_setting_on_post_types"];
+		foreach ($selectedTypes as $selectedType)
+		{
+			array_push($wfsettings_on_post_type, $selectedType);
+		}
 	}
-
+	update_site_option("oasiswf_show_wfsettings_on_post_types", $wfsettings_on_post_type) ;	
 }
 $default_due_days = get_site_option('oasiswf_default_due_days') ;
 $reminder_day = get_site_option('oasiswf_reminder_days') ;
 $reminder_day_after = get_site_option('oasiswf_reminder_days_after') ;
 $skip_workflow_roles = get_site_option('oasiswf_skip_workflow_roles') ;
-$auto_submit_settings = get_site_option('oasiswf_auto_submit_settings');
-$auto_submit_stati = $auto_submit_settings['auto_submit_stati'];
-$auto_submit_due_days = $auto_submit_settings['auto_submit_due_days'];
-$auto_submit_comment = $auto_submit_settings['auto_submit_comment'];
-$auto_submit_post_count = $auto_submit_settings['auto_submit_post_count'];
+$show_wfsettings_on_post_types = get_site_option('oasiswf_show_wfsettings_on_post_types') ;
 FCUtility::owf_pro_features();
 ?>
 <div class="wrap">
@@ -98,6 +94,12 @@ FCUtility::owf_pro_features();
     				   <?php FCUtility::owf_dropdown_roles_multi($skip_workflow_roles); ?>
     				</select>
 				</div>
+				<div class="select-info">
+					<div class="list-section-heading">
+						<label><?php echo __("Show Workflow options for the following post/page types:", "oasisworkflow")?></label>
+					</div>
+    				   <?php FCUtility::owf_dropdown_post_types_multi('show_workflow_setting_on_post_types[]', $show_wfsettings_on_post_types); ?>
+				</div>				
 				<!-- hide these settings -->
 				<div id="owf_settings_button_bar">
 					<input type="submit" id="settingSave"
@@ -128,6 +130,9 @@ FCUtility::owf_pro_features();
             </div>
             <h3><span><?php _e('Go Pro:', 'oasisworkflow') ?></span></h3>
             <div class="inside inside-section">
+            	<p><a href="http://www.oasisworkflow.com/workflow-support-for-updating-published-content" target="_blank"><?php _e('Revise your Published Content without taking it offline', 'oasisworkflow') ?></a></p>
+            	<p><a href="http://www.oasisworkflow.com/auto-submit-to-workflow" target="_blank"><?php _e('Auto Submit to Workflows', 'oasisworkflow') ?></a></p>
+            	<p><a href="http://www.oasisworkflow.com/extensions/oasis-workflow-teams" target="_blank"><?php _e('Teams Add On', 'oasisworkflow') ?></a></p>
              	<p><a href="https://www.oasisworkflow.com/pricing-purchase" target="_blank"><?php _e('Pricing & Purchase', 'oasisworkflow') ?></a></p>
             </div>
         	 </div>

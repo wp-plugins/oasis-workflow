@@ -25,9 +25,10 @@ if( isset($_POST['step_dbid']) && $_POST["step_dbid"] != "nodefine" )
 				<p>
 					<select id="step-role-list" name="step-role-list" size=10>
 						<?php
-						foreach ( $wp_roles->role_names as $role => $name ) {
-							echo "<option value='$role'>$name</option>";
-						}
+						FCUtility::owf_dropdown_roles_multi();
+						echo "<option value='owfpostauthor'>";
+						echo __("Post Author", "oasisworkflow") ;
+						echo "</option>";
 						?>
 					</select>
 				</p>

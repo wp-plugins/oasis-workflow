@@ -7,7 +7,7 @@ class FCWorkflowActions
 		add_filter( 'redirect_post_location', array('FCWorkflowActions', 'workflow_submit_save' ), '', 2 ) ;
 		add_action( 'admin_menu', array( 'FCWorkflowActions', 'create_meta_box' ) );
 		add_action( 'oasiswf_email_schedule', array( 'FCWorkflowActions', 'send_reminder_email' ) ) ;
-		add_action( 'trash_post', array( 'FCWorkflowActions', 'when_post_trash_delete' ) ) ;
+		add_action( 'wp_trash_post', array( 'FCWorkflowActions', 'when_post_trash_delete' ) ) ;
 		add_filter( 'get_edit_post_link', array( 'FCWorkflowActions', 'oasis_edit_post_link' ), '', 3 );
 	}
 
@@ -60,9 +60,11 @@ class FCWorkflowActions
 			}
 			$role = FCProcessFlow::get_current_user_role() ;
 			$skip_workflow_roles = get_site_option('oasiswf_skip_workflow_roles') ;
-			if( is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles) && !$is_post_published ){ // do not hide the ootb publish section for skip_workflow_roles option
-			   FCWorkflowActions::ootb_publish_section_hide() ;
-			}
+			$show_workflow_for_post_types = get_site_option('oasiswf_show_wfsettings_on_post_types');
+		   if( (is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles)) && // do not hide the ootb publish section for skip_workflow_roles option
+         (is_array(show_workflow_for_post_types) && in_array($post_type, show_workflow_for_post_types))){ // do not show ootb publish section for oasiswf_show_wfsettings_on_post_types
+            FCWorkflowActions::ootb_publish_section_hide() ;
+         }
 		}
 	}
 
@@ -115,16 +117,19 @@ class FCWorkflowActions
 			}
 
          $role = FCProcessFlow::get_current_user_role() ;
+         $post_type = get_post_type();
 
          // do not hide the ootb publish section for skip_workflow_roles option, but hide it if the post is in the workflow
          $skip_workflow_roles = get_site_option('oasiswf_skip_workflow_roles') ;
+         $show_workflow_for_post_types = get_site_option('oasiswf_show_wfsettings_on_post_types');
          $row = null;
          if( isset($_GET['post']) && $_GET["post"] && isset($_GET['action']) && $_GET["action"] == "edit")
          {
             $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE post_id = %d AND action_status = 'assignment'", $_GET["post"] )) ;
          }
 		 
-         if( is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles ) && !$is_post_published ){
+		   if( (is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles)) && // do not hide the ootb publish section for skip_workflow_roles option
+         	(is_array($show_workflow_for_post_types) && in_array($post_type, $show_workflow_for_post_types))){ // do not show ootb publish section for oasiswf_show_wfsettings_on_post_types
             FCWorkflowActions::ootb_publish_section_hide() ;
          }
 
@@ -260,7 +265,8 @@ class FCWorkflowActions
             'noAssignedActors' => __( 'No assigned actor(s).', 'oasisworkflow' ),
 				'drdb' =>  get_site_option('oasiswf_reminder_days'),
 				'drda' =>  get_site_option('oasiswf_reminder_days_after'),
-				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( get_option( 'date_format' ))
+				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( get_option( 'date_format' )),
+				'allowedPostTypes' => json_encode(get_site_option('oasiswf_show_wfsettings_on_post_types'))
       ));
 	}
 
@@ -280,7 +286,8 @@ class FCWorkflowActions
 				'step' => __( 'step.', 'oasisworkflow' ),
       		'drdb' =>  get_site_option('oasiswf_reminder_days'),
 				'drda' =>  get_site_option('oasiswf_reminder_days_after'),
-				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( get_option( 'date_format' ))
+				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( get_option( 'date_format' )),
+				'allowedPostTypes' => json_encode(get_site_option('oasiswf_show_wfsettings_on_post_types'))
       ));
 	}
 }

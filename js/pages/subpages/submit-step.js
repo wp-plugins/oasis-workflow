@@ -27,8 +27,8 @@ jQuery(document).ready(function() {
 		jQuery('.inline-edit-status').hide() ;
 		jQuery('.error').hide() ;
 	}
-		
-	jQuery(".date-clear").click(function(){
+	
+	jQuery( document ).on("click", ".date-clear", function(){
 		jQuery(this).parent().children(".date_input").val("");
 	});
 			

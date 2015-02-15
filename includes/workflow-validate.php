@@ -11,16 +11,22 @@ class FCWorkflowValidate extends FCWorkflowBase
 			$workflow = FCWorkflowCRUD::get_workflow_by_id( $wf_id ) ;
 			$start_date = $workflow->start_date ;
 			$end_date = $workflow->end_date ;
-			/*$auto_submit = $worflow->is_auto_submit;
-			$auto_submit_keywords = $workflow->auto_submit_keywords;*/
 			$graphic = $workflow->wf_info ;
 			$wfinfo = json_decode($graphic) ;
 		}else{
 			$wf_id = $_POST["wf_id"] ;
-			$start_date = FCWorkflowCRUD::format_date_for_db( $_POST["start-date"] ) ;
-			$end_date =  FCWorkflowCRUD::format_date_for_db( $_POST["end-date"] ) ;
-			/*$auto_submit = (isset($_POST["auto-submit"]) && $_POST["auto-submit"]) ? 1 : 0;
-			$auto_submit_keywords = stripcslashes($_POST["auto-submit-keywords"]) ;*/
+			if (isset($_POST["start-date"]) && empty($_POST["start-date"])) {
+				$error_message = "Start and End date are required." ;
+				return $error_message;
+			} else {
+				$start_date = FCWorkflowCRUD::format_date_for_db( $_POST["start-date"] ) ;
+			}
+			if (isset($_POST["end-date"]) && empty($_POST["end-date"])) {
+				$error_message = "Start and End date are required." ;
+				return $error_message;
+			} else {
+				$end_date =  FCWorkflowCRUD::format_date_for_db( $_POST["end-date"] ) ;
+			}
 			$graphic = stripcslashes($_POST["wf_graphic_data_hi"]) ;
 			$wfinfo = json_decode($graphic) ;
 			$workflow = FCWorkflowCRUD::get_workflow_by_id( $wf_id ) ;
@@ -35,7 +41,7 @@ class FCWorkflowValidate extends FCWorkflowBase
 		if( $wfinfo->steps ){
 			foreach ($wfinfo->steps as $step) {
 				if( $step->fc_dbid == "nodefine" ){
-					$error_message = "Missing step information. Workflow is not active." ;
+					$error_message = "Missing step information. Right click on each of the steps to edit step information. Workflow is not active." ;
 					return $error_message ;
 				}
 				$stepCount++ ;

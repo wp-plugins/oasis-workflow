@@ -71,21 +71,53 @@ class FCUtility {
 		echo $str;
 	}
 
-   public static function owf_dropdown_roles_multi( $selected ) {
+   public static function owf_dropdown_roles_multi( $selected=null ) {
+   	global $wpdb;
    	$r = '';
    	$p = '';
+   	$roles_array = array();
+   	
+   	if (function_exists('is_multisite') && is_multisite())
+   	{
+   		//Get all blog ids; foreach them and call the uninstall procedure on each of them
+   		$blog_ids = $wpdb->get_col("SELECT blog_id FROM {$wpdb->base_prefix}blogs");
+   	
+   		//Get all blog ids; foreach them and call the install procedure on each of them if the plugin table is found
+   		foreach ( $blog_ids as $blog_id )
+   		{
+   			switch_to_blog( $blog_id );   	
 
-   	$editable_roles = get_editable_roles();
-
-   	foreach ( $editable_roles as $role => $details ) {
-   		$name = translate_user_role($details['name'] );
-   		if ( is_array($selected) && in_array(esc_attr($role), $selected)) // preselect specified role
-   			$p .= "\n\t<option selected='selected' value='" . esc_attr($role) . "'>$name</option>";
-   		else
-   			$r .= "\n\t<option value='" . esc_attr($role) . "'>$name</option>";
-   	}
-   	echo $p . $r;
-   }
+		   	$editable_roles = get_editable_roles();
+		
+		   	foreach ( $editable_roles as $role => $details ) {
+		   		if (in_array(esc_attr($role), $roles_array)) {
+		   			continue;
+		   		}
+		   		array_push($roles_array, esc_attr($role));
+		   		$name = translate_user_role($details['name'] );
+		   		if ( is_array($selected) && in_array(esc_attr($role), $selected)) // preselect specified role
+		   			$p .= "\n\t<option selected='selected' value='" . esc_attr($role) . "'>$name</option>";
+		   		else
+		   			$r .= "\n\t<option value='" . esc_attr($role) . "'>$name</option>";
+		   	}
+		   	
+		   	restore_current_blog();
+		   }
+			echo $p . $r;
+			return;
+		}
+		
+		$editable_roles = get_editable_roles();
+		
+		foreach ( $editable_roles as $role => $details ) {
+			$name = translate_user_role($details['name'] );
+			if ( is_array($selected) && in_array(esc_attr($role), $selected)) // preselect specified role
+				$p .= "\n\t<option selected='selected' value='" . esc_attr($role) . "'>$name</option>";
+			else
+				$r .= "\n\t<option value='" . esc_attr($role) . "'>$name</option>";
+		}
+		echo $p . $r;
+	}
 
    public static function owf_dropdown_post_status_multi( $selected ) {
    	$r = '';
@@ -99,6 +131,68 @@ class FCUtility {
    	}
    	echo $p . $r;
    }
+   
+   /*
+    * TODO: Stop Gap arrangement to get all the post types from all the slave sites, by marking them public = true and show_ui = false in the main site
+    * get_post_types is not multi-site aware
+    * need to add a hook to let the users implement it and get a list of post types
+    */
+   private static function owf_get_post_types ( ) {
+   	global $wpdb;
+   	$all_types = array();
+   	$types = get_post_types(array('show_ui' => true), 'objects');
+   	foreach ( $types as $post_type ) {
+   		$temp_post_type = array ("name" => $post_type->name, "label"=> $post_type->label);
+   		if (in_array($temp_post_type, $all_types)) {
+   			continue;
+   		} else {
+   			array_push($all_types, $temp_post_type);
+   		}
+   	}
+   
+   	// public = true, but, show_ui = false
+   	$types = get_post_types(array('show_ui' => false, 'public' => true), 'objects');
+   	foreach ( $types as $post_type ) {
+   		$temp_post_type = array ("name" => $post_type->name, "label"=> $post_type->label);
+   		if (in_array($temp_post_type, $all_types)) {
+   			continue;
+   		} else {
+   			array_push($all_types, $temp_post_type);
+   		}
+   	}
+   
+   	return $all_types;
+   }
+   
+   public static function owf_dropdown_post_types_multi( $list_name, $selected ) {
+   	$p = '';
+   	// get all custom types
+   	$types = self::owf_get_post_types();
+   	$checked = '';
+   	 
+   	foreach ( $types as $post_type )
+   	{
+   		// If post type is wordpress builtin then ignore it.
+   		if( $post_type['name'] != 'attachment')
+   		{
+   			if ( is_array($selected) && in_array(esc_attr($post_type['name']), $selected))
+   			{ // preselect specified role
+   				$checked = " ' checked='checked' ";
+   			}
+   			else
+   			{
+   				$checked = '';
+   			}
+   				
+   
+   			$p .= "<label style='display: block;'> <input type='checkbox'
+				name='" . $list_name . "' value='". esc_attr($post_type['name']) . "'" . $checked . "/>";
+   			$p .= $post_type['label'];
+   			$p .= "</label>";
+   		}
+   	}
+   	echo $p;
+   }   
 
    public static function str_array_pos($string, $array)
    {
