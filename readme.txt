@@ -216,6 +216,6 @@ If these workflows are different, they need to be recreated with this upgrade.
 * Fixed a php error related to missing date on workflow edit.
 * Added post types to workflow selection. Now you can choose the post types which should go through the workflow.
 * Made the roles drop down to be multi-site compatible. Now you will be able to see roles from all the sites.
-* Add a custom role called - Post Author.
+* Added a custom role called - Post Author.
 * Fixed "clear date" function on submit step popup.
 * Fixed Page/Post delete to delete the inbox items related to the deleted post/page.
