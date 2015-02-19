@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Automate your WordPress Editorial Workflow.
- Version: 1.0.19
+ Version: 1.0.20
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.0.19' );
-define( 'OASISWF_DB_VERSION','1.0.19');
+define( 'OASISWF_VERSION' , '1.0.20' );
+define( 'OASISWF_DB_VERSION','1.0.20');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -321,7 +321,11 @@ class FCInitialization
 		else if ($pluginOptions['version'] == "1.0.18")
 		{
 			FCInitialization::upgrade_database_1019();
-		}					
+		}	
+		else if ($pluginOptions['version'] == "1.0.19")
+		{
+			// nothing to upgrade
+		}						
 
 		// update the version value
 		$oasiswf_info=array(

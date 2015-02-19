@@ -300,6 +300,14 @@ class FCWorkflowBase
          }
       }
    }
+   
+   static function format_date_for_display_and_edit( $ddate ) {
+   	if( $ddate == "0000-00-00" ) return "";
+   	if( $ddate ){
+   		$formatted_date = mysql2date( get_option( 'date_format' ), $ddate, false );
+   		return $formatted_date;
+   	}   	
+   }
 
 	static function get_page_link($count_posts,$pagenum,$per_page=20)
 	{

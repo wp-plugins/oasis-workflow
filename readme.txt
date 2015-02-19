@@ -2,8 +2,8 @@
 Contributors: nuggetsol
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit,versioning, auto submit, approval workflow, editorial workflow, notifications, oasis workflow, editorial, revisions, document revision, version control, collaboration, document management, revision scheduling, duplication, clone, revise, revise article
 Requires at least: 3.6
-Tested up to: 4.1
-Stable tag: 1.0.19
+Tested up to: 4.1.1
+Stable tag: 1.0.20
 
 Automate your WordPress Editorial Workflow with Oasis Workflow.
 
@@ -219,3 +219,7 @@ If these workflows are different, they need to be recreated with this upgrade.
 * Added a custom role called - Post Author.
 * Fixed "clear date" function on submit step popup.
 * Fixed Page/Post delete to delete the inbox items related to the deleted post/page.
+
+= Version 1.0.20 =
+* Fixed php error related to date locale (hopefully the last update related to date issues)
+* Tested for Wordpress 4.1.1

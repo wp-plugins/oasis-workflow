@@ -78,8 +78,8 @@ echo "<script type='text/javascript'>
 							if($workflow){
 								$title = $workflow->name;
 								$dec = $workflow->description;
-								$startdate = $create_workflow->format_date_for_display( $workflow->start_date );
-								$enddate = $create_workflow->format_date_for_display( $workflow->end_date );
+								$startdate = $create_workflow->format_date_for_display_and_edit( $workflow->start_date );
+								$enddate = $create_workflow->format_date_for_display_and_edit( $workflow->end_date );
 								if( !$startdate && !$enddate ){
 									$pre_version_end_date = $create_workflow->get_previous_workflow_version($wfid, "end_date") ;
 									$able_start_date = "";
