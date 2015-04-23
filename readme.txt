@@ -53,11 +53,13 @@ More details for each feature, screenshots and documentation can be found on [ou
 * French
 * German 
 * Italian
+* Swedish
  
 = Translators =
 * German (de_DE) - [meganlop](http://profiles.wordpress.org/meganlop)
 * French (fr_FR) - [Baptiste Rieg](http://www.batrieg.com)
 * Italian (it_IT) - [Martino Stenta](https://profiles.wordpress.org/molokom)
+* Swedish (sv_SE) - Norbert Kustra
 
 If you need help setting up the roles, we recommend the [User Role Editor plugin](http://wordpress.org/extend/plugins/user-role-editor/ "User Role Editor plugin").
 
@@ -225,10 +227,10 @@ If these workflows are different, they need to be recreated with this upgrade.
 * Tested for Wordpress 4.1.1
 
 = Version 1.1 =
-* Email Settings – A new tab in the Settings page, to better control how and when emails are sent from Oasis Workflow for task assignments, reminders and post publish.
+* Email Settings - A new tab in the Settings page, to better control how and when emails are sent from Oasis Workflow for task assignments, reminders and post publish.
 * Abort Workflow is added to the Inbox page. This will allow the users to abort the workflow from their inbox.
 * History Graphic - Show workflow graphic on the post page. Configurable via Workflow Settings page.
-* Added “Delete/Purge” History feature
+* Added "Delete/Purge" History feature
 * Added sorting on the Workflow Inbox page. Users can now sort their workflow inbox via post title.
 * Added "self review" to the workflows.
 * Fixed default ordering on the inbox page.
