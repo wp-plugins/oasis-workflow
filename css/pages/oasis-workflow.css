@@ -674,7 +674,7 @@ a.owf_about_link:hover {
    cursor:pointer;
 }
 
-.hidden {
+.owf-hidden {
    display: none;
 }
 

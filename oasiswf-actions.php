@@ -28,7 +28,9 @@ class FCWorkflowActions
 			    'priority' => 'high'
 			    );
 		    // TODO: this might cause issues with other plugins - compatibility issues - for the time being this feature is turned off.
-		    // add_meta_box($mbox['id'], $mbox['title'], array('FCWorkflowActions','history_graphic_box'), $mbox['page'], $mbox['context'], $mbox['priority']);
+			if( get_site_option("oasiswf_hide_workflow_graphic") !== "yes") {
+		    	add_meta_box($mbox['id'], $mbox['title'], array('FCWorkflowActions','history_graphic_box'), $mbox['page'], $mbox['context'], $mbox['priority']);
+			}
 		}
 	}
 
@@ -208,22 +210,25 @@ class FCWorkflowActions
 		return $allcaps;
 	}
 
-	static function send_reminder_email()
-	{
-		global $wpdb;
-		$emails_table = FCUtility::get_emails_table_name();
-		if( !class_exists('FCProcessFlow') ){
-			require_once( OASISWF_PATH . "includes/workflow-base.php" ) ;
-			require_once( OASISWF_PATH . "includes/process-flow.php" ) ;
-		}
-		$ddate = gmdate( 'Y-m-d' ) ;
-		$rows = $wpdb->get_results( "SELECT * FROM " . FCUtility::get_emails_table_name() . " WHERE action = 1 AND send_date = '$ddate'" ) ;
-		foreach ($rows as $row) {
-			FCWorkflowEmail::send_mail($row->to_user, $row->subject, $row->message) ;
-			$wpdb->update($emails_table, array("action" => 0), array("ID" => $row->ID)) ;
-		}
+   static function send_reminder_email()
+   {
+      global $wpdb;
+      $emails_table = FCUtility::get_emails_table_name();
+      if( !class_exists('FCProcessFlow') ){
+         require_once( OASISWF_PATH . "includes/workflow-base.php" ) ;
+         require_once( OASISWF_PATH . "includes/process-flow.php" ) ;
+      }
+      $email_settings = get_site_option('oasiswf_email_settings') ;
+      if ( $email_settings['reminder_emails'] == "yes" ) {
+      	$ddate = gmdate( 'Y-m-d' ) ;
+      	$rows = $wpdb->get_results( "SELECT * FROM " . FCUtility::get_emails_table_name() . " WHERE action = 1 AND send_date = '$ddate'" ) ;
+	      foreach ($rows as $row) {
+	         FCWorkflowEmail::send_mail($row->to_user, $row->subject, $row->message) ;
+	         $wpdb->update($emails_table, array("action" => 0), array("ID" => $row->ID)) ;
+	      }
+      }
 
-	}
+   }
 
 	static function when_post_trash_delete($postid)
 	{
@@ -265,7 +270,7 @@ class FCWorkflowActions
             'noAssignedActors' => __( 'No assigned actor(s).', 'oasisworkflow' ),
 				'drdb' =>  get_site_option('oasiswf_reminder_days'),
 				'drda' =>  get_site_option('oasiswf_reminder_days_after'),
-				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( get_option( 'date_format' )),
+				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( OASISWF_EDIT_DATE_FORMAT ),
 				'allowedPostTypes' => json_encode(get_site_option('oasiswf_show_wfsettings_on_post_types'))
       ));
 	}
@@ -274,6 +279,7 @@ class FCWorkflowActions
 	{
       wp_localize_script( 'owf_submit_step', 'owf_submit_step_vars', array(
 				'signOffButton' => __( 'Sign Off', 'oasisworkflow' ),
+				'claimButton' => __( 'Claim', 'oasisworkflow' ),
 				'inboxButton' => __( 'Go to Workflow Inbox', 'oasisworkflow' ),
 				'firstStepMessage' => __( 'This is the first step in the workflow.</br> Do you really want to cancel the post/page from the workflow?', 'oasisworkflow' ),
 				'lastStepMessage' => __( 'This is the last step in the workflow. Are you sure to complete the workflow?', 'oasisworkflow' ),
@@ -286,7 +292,7 @@ class FCWorkflowActions
 				'step' => __( 'step.', 'oasisworkflow' ),
       		'drdb' =>  get_site_option('oasiswf_reminder_days'),
 				'drda' =>  get_site_option('oasiswf_reminder_days_after'),
-				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( get_option( 'date_format' )),
+				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( OASISWF_EDIT_DATE_FORMAT ),
 				'allowedPostTypes' => json_encode(get_site_option('oasiswf_show_wfsettings_on_post_types'))
       ));
 	}

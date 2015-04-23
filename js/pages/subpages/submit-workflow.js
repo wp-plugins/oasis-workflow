@@ -8,7 +8,7 @@ jQuery(document).ready(function() {
 		if(jQuery.inArray(current_post_type, allowed_post_types) != -1)
 		{		
 			jQuery("#publishing-action").append("<input type='button' id='workflow_submit' class='button button-primary button-large'" +
-												" value='" + owf_submit_workflow_vars.submitToWorkflowButton + "' style='float:left;' />").css({"width": "100%"});
+												" value='" + owf_submit_workflow_vars.submitToWorkflowButton + "' style='float:left;clear:both;' />").css({"width": "100%"});
 			jQuery("#post").append(
 								"<input type='hidden' id='hi_workflow_id' name='hi_workflow_id' />" +
 								"<input type='hidden' id='hi_step_id' name='hi_step_id' />" +
@@ -31,12 +31,38 @@ jQuery(document).ready(function() {
 			autoSize: true,
 			dateFormat: owf_submit_workflow_vars.dateFormat
 		});
+		
+		if (jQuery('.misc-pub-curtime #timestamp b').html() !== 'immediately') {// future publish date
+			// get the user set date/time
+			var user_set_publish_date_arr = jQuery('.misc-pub-curtime #timestamp b').html().split('@');
+
+			// date
+			var parsedDate = '';
+			if (user_set_publish_date_arr[0].trim().indexOf("-") > -1) {
+				parsedDate = jQuery.datepicker.parseDate('mm-M dd, yy', user_set_publish_date_arr[0].trim());
+				
+			} else {
+				parsedDate = jQuery.datepicker.parseDate('dd M yy', user_set_publish_date_arr[0].trim());
+			}
+			
+			var publish_date_mm_dd_yyyy = jQuery.datepicker.formatDate(owf_submit_workflow_vars.dateFormat, parsedDate);
+			jQuery("#publish-date").val(publish_date_mm_dd_yyyy);
+			
+			// time
+			var user_set_publish_time_arr = user_set_publish_date_arr[1].split(":");
+			jQuery("#publish-hour").val(user_set_publish_time_arr[0]);
+			jQuery("#publish-min").val(user_set_publish_time_arr[1]);
+			
+			
+		}
+		
 		// add jquery datepicker functionality to publish textbox
 		jQuery("#publish-date").attr("readonly", true);
 		jQuery("#publish-date").datepicker({
 			autoSize: true,
 			dateFormat: owf_submit_workflow_vars.dateFormat
-		});			
+		});	
+		
 	}	
 	jQuery(".date-clear").click(function(){
 		jQuery(this).parent().children(".date_input").val("");
@@ -288,19 +314,9 @@ jQuery(document).ready(function() {
 		jQuery("#hi_comment").val(jQuery("#comments").val());
 		jQuery("#save_action").val("submit_post_to_workflow");	
 		
-		var step_status_data = {
-			action: 'get_step_status_by_step_id',
-			step_id: jQuery("#hi_step_id").val(),
-			review_result: 'complete'
-		};
-		jQuery.post(ajaxurl, step_status_data, function( response ) {
-			if(response){
-				jQuery("#post_status").val(response);
-				jQuery("#save-post").click();
-				modal_close();
-				return;
-			}
-		});	
+		jQuery("#save-post").click();
+		modal_close();		
+		return;		
 	});
 	
 	assign_actor_chk = function(){

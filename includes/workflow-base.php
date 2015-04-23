@@ -209,9 +209,11 @@ class FCWorkflowBase
             }
             foreach ( $users as $user ) {
                $current_user = get_current_user_id();
+               /*
                if ($decision != null && $decision == 'complete' && $user->ID == $current_user) { // exclude the current user from the user list in case of success flow
                   continue;
                }
+               */
                $userObj = new WP_User( $user->ID );
                if ( !empty( $userObj->roles ) && is_array( $userObj->roles ) ) {
                   foreach ( $userObj->roles as $userrole )
@@ -278,6 +280,13 @@ class FCWorkflowBase
    	$date_with_mysql_format = $date->format('Y-m-d');
       return $date_with_mysql_format ;
    }
+   
+   static function format_date_for_db_wp_default($ddate, $frm="/")
+   {
+   	$date = DateTime::createFromFormat(OASISWF_EDIT_DATE_FORMAT, $ddate );
+   	$date_with_mysql_format = $date->format('Y-m-d');
+   	return $date_with_mysql_format ;
+   }   
 
    static function format_date_for_display($ddate, $frm="-", $dateform="date")
    {
@@ -304,7 +313,7 @@ class FCWorkflowBase
    static function format_date_for_display_and_edit( $ddate ) {
    	if( $ddate == "0000-00-00" ) return "";
    	if( $ddate ){
-   		$formatted_date = mysql2date( get_option( 'date_format' ), $ddate, false );
+   		$formatted_date = mysql2date( OASISWF_EDIT_DATE_FORMAT, $ddate, false );
    		return $formatted_date;
    	}   	
    }
@@ -312,7 +321,7 @@ class FCWorkflowBase
 	static function get_page_link($count_posts,$pagenum,$per_page=20)
 	{
 		$allpages=ceil($count_posts / $per_page);
-		$base= add_query_arg( 'paged', '%#%' );
+		$base= esc_url(add_query_arg( 'paged', '%#%' ));
 		$page_links = paginate_links( array(
 			'base' => $base,
 			'format' => '',
@@ -358,39 +367,44 @@ class FCWorkflowBase
 		return gmdate("Y-m-d", $dstamp) ;
 	}
 
-	static function get_assigned_post($postid = null, $selected_user = null, $frm = "rows")
-	{
-		global $wpdb;
-		if ( is_numeric( $selected_user )){
-			$user_id = $selected_user;
-		}
-		else {
-			$user_id = get_current_user_id();
-		}
+   static function get_assigned_post($postid = null, $selected_user = null, $frm = "rows")
+   {
+      global $wpdb;
+      $user_id = $selected_user;
+      
+      $orderby = ( isset($_GET['orderby']) && $_GET['orderby'] ) ? " ORDER BY {$_GET['orderby']} {$_GET['order']}" : "  ORDER BY A.due_date" ;
+      //$orderby = "  ORDER BY A.due_date" ;
 
-		if( $postid )
-			$w = "WHERE (assign_actor_id = $user_id OR actor_id = $user_id) AND post_id = " . $postid ;
-		else
-			$w = "WHERE assign_actor_id = $user_id OR actor_id = $user_id" ;
+      if( $postid )
+      $w = "WHERE (assign_actor_id = $user_id OR actor_id = $user_id) AND post_id = " . $postid . $orderby;
+      else if(isset($user_id))
+      $w = "WHERE assign_actor_id = $user_id OR actor_id = $user_id " . $orderby ;
+      else
+      $w = $orderby;
 
-		$sql = "SELECT A.*, B.review_status, B.actor_id, B.next_assign_actors, B.step_id as review_step_id, B.action_history_id, B.update_datetime FROM
+      $sql = "SELECT A.*, B.review_status, B.actor_id, B.next_assign_actors, B.step_id as review_step_id, B.action_history_id, 
+      			B.update_datetime, posts.post_title FROM
 							(SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE action_status = 'assignment') as A
 							LEFT OUTER JOIN
 							(SELECT * FROM " . FCUtility::get_action_table_name() . " WHERE review_status = 'assignment') as B
-							ON A.ID = B.action_history_id $w order by A.due_date" ;
-		if( $frm == "rows" )
-			$result = $wpdb->get_results( $sql ) ;
-		else
-			$result = $wpdb->get_row( $sql ) ;
+							ON A.ID = B.action_history_id
+							JOIN 	{$wpdb->posts} AS posts
+							ON  posts.ID = A.post_id 
+      					$w" ;
+      
+      if( $frm == "rows" )
+      $result = $wpdb->get_results( $sql ) ;
+      else
+      $result = $wpdb->get_row( $sql ) ;
 
-		return $result;
-	}
+      return $result;
+   }
 
 	static function get_count_assigned_post()
 	{
-		$selected_user = isset( $_GET['user'] ) ? $_GET["user"] : null;
-		$wfactions = FCWorkflowBase::get_assigned_post( null, $selected_user ) ;
-		return count($wfactions);
+      $selected_user = isset( $_GET['user'] ) ? $_GET["user"] : get_current_user_id();
+      $wfactions = FCWorkflowBase::get_assigned_post( null, $selected_user ) ;
+      return count($wfactions);
 	}
 
 	static function get_pre_next_action($fromid)

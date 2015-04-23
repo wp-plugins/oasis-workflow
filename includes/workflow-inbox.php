@@ -3,9 +3,21 @@ class FCWorkflowInbox extends FCWorkflowBase
 {
 	static function get_table_header()
 	{
+		$order = ( isset($_GET['order']) && $_GET["order"] == "desc" ) ? "asc" : "desc" ;
+		
+		if( isset($_GET['orderby']) && $_GET["orderby"] == "post_title" )
+			$post_order_class = $_GET["order"] ;
+		else
+			$post_order_class = "" ;
+				
 		echo "<tr>";
 		echo "<th scope='col' class='manage-column check-column' ><input type='checkbox'></th>";
-		echo "<th width='300px'>" . __("Post/Page", "oasisworkflow") . "</th>";
+		echo "<th width='300px' scope='col' class='sorted $post_order_class'>
+				<a href='admin.php?page=oasiswf-inbox&orderby=post_title&order=$order" . "'>
+					<span>". __("Post/Page", "oasisworkflow") . "</span>
+					<span class='sorting-indicator'></span>
+				</a>				
+				</th>";
 		echo "<th>" . __("Type", "oasisworkflow") . "</th>";
 		echo "<th>" . __("Author", "oasisworkflow") . "</th>";
 		echo "<th>" . __("Workflow", "oasisworkflow") . "</th>";
@@ -44,6 +56,16 @@ class FCWorkflowInbox extends FCWorkflowBase
 		echo $result;
 		exit();
 	}
+	
+	static function check_claim_ajax() {
+		$historyId = $_POST["history_id"] ;
+		if (self::check_claim( $historyId )) {
+			echo "true";
+		} else {
+			echo "false";
+		}
+		exit();
+	}	
 
 	static function check_claim($actionid)
 	{
@@ -93,9 +115,13 @@ class FCWorkflowInbox extends FCWorkflowBase
 					//$data["comment"] = "" ;
 				}else{
 					$data["action_status"] = "claim_cancel" ;
-					$title = __("Task claimed", "oasisworkflow") ;
-					$message = __('Another user has claimed the task for the article "' . $post_title . '", so please ignore it.', "oasisworkflow") ;
-					FCWorkflowEmail::send_mail($action->assign_actor_id, $title, $message) ;
+					$email_settings = get_site_option('oasiswf_email_settings') ;
+					if ( $email_settings['assignment_emails'] == "yes" ) {
+						$blog_name = '[' . addslashes( get_bloginfo( 'name' )) . '] ';
+						$title = $blog_name. __("Task claimed", "oasisworkflow") ;
+						$message = __('Another user has claimed the task for the article "' . $post_title . '", so please ignore it.', "oasisworkflow") ;
+						FCWorkflowEmail::send_mail($action->assign_actor_id, $title, $message) ;
+					}
 					FCWorkflowEmail::delete_step_email($action->ID, $action->assign_actor_id);
 					//$data["comment"] = "" ;
 				}

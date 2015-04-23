@@ -87,7 +87,7 @@ echo "<script type='text/javascript'>
 									{
 										$able_start_date = $create_workflow->get_pre_next_date( $pre_version_end_date ) ;
 									}
-									$startdate = $create_workflow->format_date_for_display( $able_start_date ) ;
+									$startdate = $create_workflow->format_date_for_display_and_edit( $able_start_date ) ;
 								}
 							}
 						?>
@@ -184,7 +184,7 @@ echo "<div id='connection-setting'>{$create_workflow->connection_setting_html()}
 	<?php endif;?>
 	<li class="quit separator" id="stepQuit"><a href="#quit"><?php echo __("Quit", "oasisworkflow") ?></a></li>
 </ul>
-<div id="step-info-update" class="hidden"></div>
+<div id="step-info-update" class="owf-hidden"></div>
 <script type="text/javascript">
 	//-------------------------------------
 	jQuery("#wpbody").css({"position":"inherit"});

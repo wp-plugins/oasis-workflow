@@ -13,10 +13,10 @@ class FCWorkflowCRUD extends FCWorkflowBase
 		$startdate = '';
 		$enddate = '';
 		if (isset($_POST["start-date"]) && !empty($_POST["start-date"])) {
-			$startdate = FCWorkflowCRUD::format_date_for_db( $_POST["start-date"] ) ;
+			$startdate = FCWorkflowCRUD::format_date_for_db_wp_default( $_POST["start-date"] ) ;
 		}
 		if (isset($_POST["end-date"]) && !empty($_POST["end-date"])) {
-			$enddate = FCWorkflowCRUD::format_date_for_db( $_POST["end-date"] ) ;
+			$enddate = FCWorkflowCRUD::format_date_for_db_wp_default( $_POST["end-date"] ) ;
 		}
 
 		$workflow_message = FCWorkflowValidate::check_workflow_validate() ;

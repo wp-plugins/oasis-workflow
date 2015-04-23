@@ -103,9 +103,6 @@ class FCProcessFlow extends FCWorkflowBase
 		$wf_info = FCProcessFlow::get_step_by_id( $step_id ) ;
 		if($wf_info){
 			$step_info= json_decode( $wf_info->step_info ) ;
-			if ($step_info->process != 'review') { // cannot review your own work
-			   $decision = null;
-			}
 			$users = FCProcessFlow::get_users_by_role( $step_info->assignee, $postId, $decision ) ;
 			if($users){
 				$result["users"] = $users ;
@@ -242,7 +239,7 @@ class FCProcessFlow extends FCWorkflowBase
 				'create_datetime' => current_time('mysql')
       );
       if (!empty($dueDate )) {
-         $data["due_date"] = FCWorkflowCRUD::format_date_for_db( $dueDate );
+         $data["due_date"] = FCWorkflowCRUD::format_date_for_db_wp_default( $dueDate );
       }
       $iid = FCProcessFlow::save_action( $data, $actors) ;
       update_post_meta($postId, "oasis_is_in_workflow", 1, true); // set the post meta to 1, specifying that the post is in a workflow.
@@ -454,7 +451,7 @@ class FCProcessFlow extends FCWorkflowBase
          ) ;
 
          if ( isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"] )) {
-            $review_data["due_date"] = FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] );
+            $review_data["due_date"] = FCWorkflowCRUD::format_date_for_db_wp_default( $_POST["hi_due_date"] );
          }
 
          $action_table = FCUtility::get_action_table_name();
@@ -474,7 +471,7 @@ class FCProcessFlow extends FCWorkflowBase
    			'create_datetime' => current_time('mysql')
          );
          if ( isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"] )) {
-            $data["due_date"] = FCWorkflowCRUD::format_date_for_db( $_POST["hi_due_date"] );
+            $data["due_date"] = FCWorkflowCRUD::format_date_for_db_wp_default( $_POST["hi_due_date"] );
          }
 
          // insert data from the next step
@@ -741,16 +738,19 @@ class FCProcessFlow extends FCWorkflowBase
 					"post_id" => $action->post_id,
 					"comment" => json_encode($comment),
 					"from_id" => $_POST["exitId"],
-		         "step_id" => '0', // since we do not have the step id information for this
-		         "assign_actor_id" => '0', // since we do not have anyone assigned anymore.
+		         "step_id" => $action->step_id, // since we do not have the step id information for this
+		         "assign_actor_id" => get_current_user_id(), // since we do not have anyone assigned anymore.
 					'create_datetime' => current_time('mysql')
 				) ;
 		$action_history_table = FCUtility::get_action_history_table_name();
+		$action_table = FCUtility::get_action_table_name();
 		$iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
 		if($iid){
 		   // delete all the unsend emails for this workflow
 		   FCWorkflowEmail::delete_step_email($_POST["exitId"]);
 		   $wpdb->update($action_history_table, array( "action_status" => "aborted",  "create_datetime" => current_time('mysql')), array( "ID" => $_POST["exitId"] ) ) ;
+		   // change the assignments in the action table to processed
+		   $wpdb->update($action_table, array( "review_status" => "no_action",  "update_datetime" => current_time('mysql')), array( "action_history_id" => $_POST["exitId"] ) ) ;
 		   update_post_meta($action->post_id, "oasis_is_in_workflow", 0); // set the post meta to 0, specifying that the post is out of a workflow.
 			echo $iid ;
 		}

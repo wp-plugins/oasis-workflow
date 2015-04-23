@@ -1,4 +1,4 @@
-<div id='new-workflow-create-check' class='hidden'>
+<div id='new-workflow-create-check' class='owf-hidden'>
 	<p><?php echo __("The basic version of this plugin supports only one workflow. You can edit the out of the box workflow by going to \"Edit Workflow\".", "oasisworkflow");?></p>
 	<p><?php echo __("However, if you are looking to create multiple workflows, check out the \"Pro\" version of this plugin at -", "oasisworkflow");?>
 		<a target="_blank" href="https://www.oasisworkflow.com/pricing-purchase"><?php echo __("Oasis Workflow Pro", "oasisworkflow");?></a>

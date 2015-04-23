@@ -16,7 +16,7 @@ if( $oasiswf ){
 $default_due_days = get_site_option('oasiswf_default_due_days') ;
 $default_date = '';
 if ( !empty( $default_due_days )) {
-	$default_date = date(get_option( 'date_format' ), current_time('timestamp') + DAY_IN_SECONDS * $default_due_days);
+	$default_date = date(OASISWF_EDIT_DATE_FORMAT, current_time('timestamp') + DAY_IN_SECONDS * $default_due_days);
 }
 $reminder_days = get_site_option('oasiswf_reminder_days');
 $reminder_days_after = get_site_option('oasiswf_reminder_days_after');

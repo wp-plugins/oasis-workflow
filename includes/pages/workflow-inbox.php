@@ -1,5 +1,5 @@
 <?php
-$selected_user = isset( $_GET['user'] ) ? $_GET["user"] : null;
+$selected_user = isset( $_GET['user'] ) ? $_GET["user"] : get_current_user_id();
 $wfactions = $inbox_workflow->get_assigned_post( null, $selected_user ) ;
 $count_posts = count($wfactions);
 $pagenum = (isset($_GET['paged']) && $_GET["paged"]) ? $_GET["paged"] : 1;
@@ -100,17 +100,27 @@ $current_user_id = get_current_user_id();
 														<span class='loading'>$sspace</span>
 													</span>&nbsp;|&nbsp;" ;
 											}
+											if ( $current_user_role == "administrator" ){
+												echo "<span>
+												<a href='#' actionid='$wfaction->ID' class='owf_abort'>" . __("Abort", "oasisworkflow") . "</a>
+														<span class='loading'>$sspace</span>
+														</span>&nbsp;|&nbsp;" ;
+											}
 												echo "<span>
 														<a href='#' wfid='$wfaction->ID' class='reassign'>" . __("Reassign", "oasisworkflow") . "</a>
 														<span class='loading'>$sspace</span>
-													</span>
+													</span> 
 												</div>";
 												get_inline_data($post);
 										}
 								echo "</td>";
 								echo "<td>{$post->post_type}</td>" ;
 								echo "<td>{$inbox_workflow->get_user_name($user->ID)}</td>" ;
-								echo "<td>{$workflow->name}</td>" ;
+								$workflow_name = $workflow->name;
+								if (!empty( $workflow->version )) {
+									$workflow_name .= " (" . $workflow->version . ")";
+								}
+								echo "<td>{$workflow_name}</td>" ;
 								echo "<td>" . FCProcessFlow::get_gpid_dbid( $workflow->ID, $stepId, 'lbl' ) . "</td>" ;
 								echo "<td>". $wfstatus[FCProcessFlow::get_gpid_dbid( $workflow->ID, $stepId, 'process' )] ."</td>" ;
 								echo "<td>" . $inbox_workflow->format_date_for_display($wfaction->due_date) . "</td>" ;

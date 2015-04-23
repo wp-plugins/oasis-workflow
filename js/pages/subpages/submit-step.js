@@ -11,15 +11,42 @@ jQuery(document).ready(function() {
 	// When page is colled from post edit page 
 	function load_setting(){
 		if(jQuery("#hi_editable").val()){
-			jQuery("#publishing-action").append("<input type='button' id='step_submit' class='button button-primary button-large'" +
-												" value='" + owf_submit_step_vars.signOffButton + "' style='float:left;margin-top:10px;' />" + 
-												"<input type='hidden' name='hi_process_info' id='hi_process_info' />" + 
-												"<input type='hidden' name='hi_oasiswf_redirect' id='hi_oasiswf_redirect' value='step'/>").css({"width":"100%"});
+			var check_claim = {
+					action: 'check_claim_ajax',
+					history_id: jQuery("#hi_oasiswf_id").val()
+				};
+				jQuery.post(ajaxurl, check_claim, function( response ) {
+					if(response.trim() === "false") {
+						jQuery("#publishing-action").append(
+							"<input type='button' id='step_submit' class='button button-primary button-large'" +
+															" value='" + owf_submit_step_vars.signOffButton + "' style='float:left;margin-top:10px;clear:both' />" +
+															"<input type='hidden' name='hi_process_info' id='hi_process_info' />" + 
+															"<input type='hidden' name='hi_oasiswf_redirect' id='hi_oasiswf_redirect' value=''/>").css({"width":"100%"});
+					} else {
+						jQuery("#publishing-action").append(
+								"<input type='button' id='claimButton' class='button button-primary button-large'" +
+																" value='" + owf_submit_step_vars.claimButton + "' style='float:left;margin-top:10px;clear:both' />" +
+																"<input type='hidden' name='hi_process_info' id='hi_process_info' />" + 
+																"<input type='hidden' name='hi_oasiswf_redirect' id='hi_oasiswf_redirect' value=''/>").css({"width":"100%"});					
+					}
+				});
 
 		}else{
 			jQuery("#publish").hide();
-			jQuery("#publishing-action").append("<input type='button' id='step_submit' class='button button-primary button-large' " +
-												"style='float:left;margin-top:10px;' value='" + owf_submit_step_vars.signOffButton + "' />");
+			var check_claim = {
+					action: 'check_claim_ajax',
+					history_id: jQuery("#hi_oasiswf_id").val()
+				};			
+			
+			jQuery.post(ajaxurl, check_claim, function( response ) {
+				if(response.trim() === "false") {
+					jQuery("#publishing-action").append("<input type='button' id='step_submit' class='button button-primary button-large' " +
+														"style='float:left;margin-top:10px;clear:both;' value='" + owf_submit_step_vars.signOffButton + "' />");
+				} else {
+					jQuery("#publishing-action").append("<input type='button' id='claimButton' class='button button-primary button-large' " +
+							"style='float:left;margin-top:10px;clear:both;' value='" + owf_submit_step_vars.claimButton + "' />");
+				}
+			});
 		}
 		jQuery("#publishing-action").append("<a style='float:right;margin-top:10px;' href='admin.php?page=oasiswf-inbox'>" + 
 											owf_submit_step_vars.inboxButton + "</a>") ;		
@@ -461,4 +488,18 @@ jQuery(document).ready(function() {
 			}
 		});		
 	});	
+	
+	jQuery( document ).on( "click", "#claimButton", function(){
+		data = {
+				action: 'claim_process',
+				actionid: jQuery("#hi_oasiswf_id").val().trim()
+			   };
+		
+		jQuery(this).parent().children(".loading").show();		
+		jQuery.post(ajaxurl, data, function( response ) {
+			if( response.trim() )
+				jQuery("#hi_oasiswf_id").val(response.trim());
+				location.reload();				
+		});
+	});		
 }) ;

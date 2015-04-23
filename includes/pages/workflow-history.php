@@ -30,6 +30,15 @@ $per_page = 25;
 				<a href="javascript:window.open('<?php echo admin_url('admin.php?page=oasiswf-history&post=')?>' + jQuery('#post_filter').val(), '_self')">
 					<input type="button" class="button-secondary action" value="<?php echo __("Filter", "oasisworkflow"); ?>" />
 				</a>
+				<?php 
+				$current_user_role = FCProcessFlow::get_current_user_role() ;
+				if ( $current_user_role == "administrator" ){
+				?>
+					<input type="button" class="button-secondary action" id="owf-delete-history" value="<?php echo __("Delete History", "oasisworkflow"); ?>" />
+				<?php 	
+				}
+				?>
+				
 			</div>
 			<div class="tablenav-pages">
 				<?php $history_workflow->get_page_link($count_posts, $pagenum, $per_page);?>

@@ -7,12 +7,12 @@ jQuery(document).ready(function() {
 		if(!confirm(owf_abort_workflow_vars.abortWorkflowConfirm))return ;
 		data = {
 				action: 'exit_post_from_workflow' ,
-				exitId: exit_wfid,
+				exitId: exit_wfid
 			   };
 		jQuery(this).hide();
 		jQuery(".loading").show();
 		jQuery.post(ajaxurl, data, function( response ) {
-			if(response){
+			if(response.trim() != ""){
 				jQuery(".loading").hide();
 				location.reload();
 			}

@@ -5,9 +5,9 @@ $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
 $default_due_days = get_site_option('oasiswf_default_due_days') ;
 $default_date = '';
 if ( !empty( $default_due_days )) {
-	$default_date = date(get_option( 'date_format' ), current_time('timestamp') + DAY_IN_SECONDS * $default_due_days);
+	$default_date = date(OASISWF_EDIT_DATE_FORMAT, current_time('timestamp') + DAY_IN_SECONDS * $default_due_days);
 }
-$publish_date = current_time(get_option( 'date_format' ));
+$publish_date = current_time(OASISWF_EDIT_DATE_FORMAT);
 $publish_time_array = explode("-", current_time("H-i"));
 ?>
 <div class="info-setting" id="new-workflow-submit-div">

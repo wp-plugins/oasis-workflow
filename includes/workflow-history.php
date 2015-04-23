@@ -329,5 +329,76 @@ class FCWorkflowHistory extends FCWorkflowBase
       }
       return $content;
    }
+   
+   static function purge_history( ) {
+   	global $wpdb;
+   	$period = $_POST["range"];
+   	switch ( $period ){
+   		case 'one-month-ago' :
+   			$range = " AND posts.post_modified < DATE(curdate() - INTERVAL 1 MONTH) ";
+   			break;
+   		case 'three-month-ago' :
+   			$range = " AND posts.post_modified < DATE(curdate() - INTERVAL 3 MONTH) ";
+   			break;
+   		case 'six-month-ago' :
+   			$range = " AND posts.post_modified < DATE(curdate() - INTERVAL 6 MONTH) ";
+   			break;
+   		case 'twelve-month-ago' :
+   			$range = " AND posts.post_modified < DATE(curdate() - INTERVAL 12 MONTH) ";
+   			break;
+   		case 'everything' :
+   			$range = " ";
+   			break;
+   		default:
+   			return "not a valid period specified";
+   	}
+   
+   	$sql = "SELECT posts.id from " . $wpdb->posts . " AS posts WHERE 1=1 " . $range .
+   	" AND posts.id NOT IN " .
+   	"(SELECT A.post_id FROM
+							(SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE action_status = 'assignment') as A
+							LEFT OUTER JOIN
+							(SELECT * FROM " . FCUtility::get_action_table_name() . " WHERE review_status = 'assignment') as B
+							ON A.ID = B.action_history_id)";
+   
+   	$posts_not_in_workflow_array = array();
+   	$posts_not_in_workflow_results = $wpdb->get_results( $sql ) ;
+   	if (empty( $posts_not_in_workflow_results )) {
+   		echo "success";
+   		exit();
+   	}
+   	foreach ( $posts_not_in_workflow_results as $post_not_in_workflow ) {
+   		array_push($posts_not_in_workflow_array, $post_not_in_workflow->id);
+   	}
+   
+   	$intPlaceholders = array_fill(0, count($posts_not_in_workflow_array), '%d');
+   	$placeholdersForPostIds = implode(",", $intPlaceholders);
+   	$sql = "SELECT id FROM " . FCUtility::get_action_history_table_name() . " WHERE 1=1 AND post_id in (" . $placeholdersForPostIds . ")";
+   	$history_results = $wpdb->get_results( $wpdb->prepare($sql, $posts_not_in_workflow_array ) );
+   
+   	// first delete any records from fc_action table
+   	if (empty( $history_results )) {
+   		echo "success";
+   		exit();
+   	}
+   	$history_id_array = array();
+   	foreach ( $history_results as $history ) {
+   		array_push($history_id_array, $history->id);
+   	}
+   
+   	$intPlaceholders = array_fill(0, count($history_id_array), '%d');
+   	$placeholdersForHistoryIds = implode(",", $intPlaceholders);
+   
+   	// delete workflow history from action table
+   	$sql = "DELETE from " . FCUtility::get_action_table_name() . " WHERE action_history_id in (" . $placeholdersForHistoryIds . ")";
+   	$wpdb->get_results( $wpdb->prepare($sql, $history_id_array ) );
+   
+   	// delete workflow history from action history table
+   	$sql = "DELETE from " . FCUtility::get_action_history_table_name() . " WHERE id in (" . $placeholdersForHistoryIds . ")";
+   	$wpdb->get_results( $wpdb->prepare( $sql, $history_id_array ) );
+   
+   	echo "success";
+   	exit();
+   }   
 }
 ?>

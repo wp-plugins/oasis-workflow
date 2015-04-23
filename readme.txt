@@ -2,8 +2,8 @@
 Contributors: nuggetsol
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit,versioning, auto submit, approval workflow, editorial workflow, notifications, oasis workflow, editorial, revisions, document revision, version control, collaboration, document management, revision scheduling, duplication, clone, revise, revise article
 Requires at least: 3.6
-Tested up to: 4.1.1
-Stable tag: 1.0.20
+Tested up to: 4.2
+Stable tag: 1.1
 
 Automate your WordPress Editorial Workflow with Oasis Workflow.
 
@@ -223,3 +223,14 @@ If these workflows are different, they need to be recreated with this upgrade.
 = Version 1.0.20 =
 * Fixed php error related to date locale (hopefully the last update related to date issues)
 * Tested for Wordpress 4.1.1
+
+= Version 1.1 =
+* Email Settings – A new tab in the Settings page, to better control how and when emails are sent from Oasis Workflow for task assignments, reminders and post publish.
+* Abort Workflow is added to the Inbox page. This will allow the users to abort the workflow from their inbox.
+* History Graphic - Show workflow graphic on the post page. Configurable via Workflow Settings page.
+* Added “Delete/Purge” History feature
+* Added sorting on the Workflow Inbox page. Users can now sort their workflow inbox via post title.
+* Added "self review" to the workflows.
+* Fixed default ordering on the inbox page.
+* Fixed status change issue on "submit to workflow"
+* Fixed add_query_arg() and remove_query_arg() usage

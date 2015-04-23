@@ -425,4 +425,20 @@ jQuery(document).ready(function() {
 			jQuery("#stepcomment-setting").owfmodal();
 		}
 	});
+	
+	jQuery( document ).on("click", ".owf_abort", function(){
+		if(!confirm(owf_workflow_inbox_vars.abortWorkflowConfirm))return ;
+		data = {
+				action: 'exit_post_from_workflow' ,
+				exitId: jQuery(this).attr("actionid")
+			   };
+		jQuery(this).hide();
+		jQuery(".loading").show();
+		jQuery.post(ajaxurl, data, function( response ) {
+			if(response){
+				jQuery(".loading").hide();
+				location.reload();
+			}
+		});
+	})	
 });

@@ -19,13 +19,13 @@ class FCWorkflowValidate extends FCWorkflowBase
 				$error_message = "Start and End date are required." ;
 				return $error_message;
 			} else {
-				$start_date = FCWorkflowCRUD::format_date_for_db( $_POST["start-date"] ) ;
+				$start_date = FCWorkflowCRUD::format_date_for_db_wp_default( $_POST["start-date"] ) ;
 			}
 			if (isset($_POST["end-date"]) && empty($_POST["end-date"])) {
 				$error_message = "Start and End date are required." ;
 				return $error_message;
 			} else {
-				$end_date =  FCWorkflowCRUD::format_date_for_db( $_POST["end-date"] ) ;
+				$end_date =  FCWorkflowCRUD::format_date_for_db_wp_default( $_POST["end-date"] ) ;
 			}
 			$graphic = stripcslashes($_POST["wf_graphic_data_hi"]) ;
 			$wfinfo = json_decode($graphic) ;
@@ -125,8 +125,8 @@ class FCWorkflowValidate extends FCWorkflowBase
 		$graphic = stripcslashes($_POST["wf_graphic_data_hi"]) ;
 
 		//--------Date Check-----------
-		$start_date = FCWorkflowCRUD::format_date_for_db( $_POST["start-date"] ) ;
-		$end_date = FCWorkflowCRUD::format_date_for_db( $_POST["end-date"] ) ;
+		$start_date = FCWorkflowCRUD::format_date_for_db_wp_default( $_POST["start-date"] ) ;
+		$end_date = FCWorkflowCRUD::format_date_for_db_wp_default( $_POST["end-date"] ) ;
 
 		$workflow = FCWorkflowCRUD::get_workflow_by_id( $wf_id ) ;
 		$w = "ID <> " . $wf_id . " && ((start_date <= '$start_date' && end_date >= '$start_date') OR (start_date <= '$end_date' && end_date >= '$end_date'))" ;
