@@ -4,7 +4,7 @@ jQuery(document).ready(function() {
 	function calendar_action(){
 		jQuery("#due-date").datepicker({ 
 			autoSize: true,
-			dateFormat: owf_submit_step_vars.dateFormat
+			dateFormat: owf_submit_step_vars.editDateFormat
 		});
 	}
 	
@@ -351,7 +351,7 @@ jQuery(document).ready(function() {
 		
 		/* This is for checking that reminder email checkbox is selected in workflow settings.
 		If YES then Due Date is Required Else Not */
-		if(owf_submit_step_vars.drdb != "" || owf_submit_step_vars.drda != "")
+		if(owf_submit_step_vars.drdb != "" || owf_submit_step_vars.drda != "" || owf_submit_step_vars.defaultDueDays != "")
 		{
 			if (jQuery("#due-date").val() == '') {
 				alert(owf_submit_step_vars.dueDateRequired);

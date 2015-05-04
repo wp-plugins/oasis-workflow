@@ -88,10 +88,11 @@ $publish_time_array = explode("-", current_time("H-i"));
 				<label><?php echo __("Future Publish Date : ", "oasisworkflow") ;?></label>
 			</div>
 			<div class="left">
-				<input name="publish-date" id="publish-date" class="date_input" type="text" value="<?php echo $publish_date; ?>">@
+				<input name="publish-date" id="publish-date" class="date_input" type="text" real="publish-date-loading-span" value="<?php echo $publish_date; ?>">@
 				<input type="text" name="publish-hour" id="publish-hour" class="date_input wf-time" placeholder="hour" maxlength="2" value="<?php echo $publish_time_array[0]; ?>">:
 				<input type="text" name="publish-min" id="publish-min" class="date_input wf-time" placeholder="min"  maxlength="2" value="<?php echo $publish_time_array[1]; ?>">
 				<button class="date-clear" ><?php echo __("clear", "oasisworkflow") ;?></button>
+				<span class="publish-date-loading-span">&nbsp;</span>
 			</div>
 			<br class="clear">
 		</div>

@@ -270,8 +270,11 @@ class FCWorkflowActions
             'noAssignedActors' => __( 'No assigned actor(s).', 'oasisworkflow' ),
 				'drdb' =>  get_site_option('oasiswf_reminder_days'),
 				'drda' =>  get_site_option('oasiswf_reminder_days_after'),
-				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( OASISWF_EDIT_DATE_FORMAT ),
-				'allowedPostTypes' => json_encode(get_site_option('oasiswf_show_wfsettings_on_post_types'))
+				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( get_option( 'date_format' )),
+				'editDateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( OASISWF_EDIT_DATE_FORMAT ),
+				'allowedPostTypes' => json_encode(get_site_option('oasiswf_show_wfsettings_on_post_types')),
+				'defaultDueDays' =>  get_site_option('oasiswf_default_due_days')
+				
       ));
 	}
 
@@ -292,8 +295,10 @@ class FCWorkflowActions
 				'step' => __( 'step.', 'oasisworkflow' ),
       		'drdb' =>  get_site_option('oasiswf_reminder_days'),
 				'drda' =>  get_site_option('oasiswf_reminder_days_after'),
-				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( OASISWF_EDIT_DATE_FORMAT ),
-				'allowedPostTypes' => json_encode(get_site_option('oasiswf_show_wfsettings_on_post_types'))
+				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( get_option( 'date_format' )),
+				'editDateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( OASISWF_EDIT_DATE_FORMAT ),
+				'allowedPostTypes' => json_encode(get_site_option('oasiswf_show_wfsettings_on_post_types')),
+				'defaultDueDays' =>  get_site_option('oasiswf_default_due_days')
       ));
 	}
 }
@@ -307,5 +312,6 @@ add_action('wp_ajax_exit_post_from_workflow', array( 'FCProcessFlow', 'exit_post
 add_action('wp_ajax_get_step_status_by_history_id', array( 'FCProcessFlow', 'get_step_status_by_history_id' ) );
 add_action('wp_ajax_get_step_status_by_step_id', array( 'FCProcessFlow', 'get_step_status_by_step_id' ) );
 add_action('redirect_post_location', array( 'FCWorkflowActions', 'redirect_after_signoff' ) );
+add_action('wp_ajax_get_post_publish_date', array( 'FCProcessFlow', 'get_post_publish_date' ));
 
 ?>

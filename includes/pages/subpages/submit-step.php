@@ -3,7 +3,13 @@ global $chkResult;
 $oasiswf = ( isset($_GET["oasiswf"]) && $_GET["oasiswf"]) ? $_GET["oasiswf"] : $chkResult ;
 $editable = current_user_can('edit_posts') ;
 $parent_page = ( isset($_GET["parent_page"]) && $_GET["parent_page"] ) ? $_GET["parent_page"] : "post_edit" ; //check to be called from which page
-$task_user = ( isset($_GET["task_user"]) && $_GET["task_user"] ) ? $_GET["task_user"] : "";
+if ( isset($_GET["task_user"]) && $_GET["task_user"] ) {
+	$task_user = $_GET["task_user"];
+} else if ( isset($_GET["user"]) && $_GET["user"] ) {
+	$task_user = $_GET["user"];
+} else {
+	$task_user = "";
+}
 $post_id = null;
 if( $oasiswf ){
 	$current_action = FCProcessFlow::get_action_history_by_id( $oasiswf ) ;

@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Automate your WordPress Editorial Workflow.
- Version: 1.1
+ Version: 1.2
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.1' );
-define( 'OASISWF_DB_VERSION','1.1');
+define( 'OASISWF_VERSION' , '1.2' );
+define( 'OASISWF_DB_VERSION','1.2');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -354,7 +354,11 @@ class FCInitialization
 		else if ($pluginOptions['version'] == "1.0.20")
 		{
 			FCInitialization::upgrade_database_11();
-		}						
+		}	
+		else if ($pluginOptions['version'] == "1.1")
+		{
+			// nothing to upgrade
+		}							
 
 		// update the version value
 		$oasiswf_info=array(
@@ -662,8 +666,7 @@ class FCInitialization
    			'post_publish_emails' => 'yes'
    	);
    	update_site_option("oasiswf_email_settings", $email_settings) ;
-   }   
-
+   }
 
 	static function install_admin_database()
 	{
@@ -1067,7 +1070,8 @@ class FCLoadWorkflow
 					OASISWF_VERSION);			
 			
 			wp_localize_script( 'owf-workflow-inbox', 'owf_workflow_inbox_vars', array(
-				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( OASISWF_EDIT_DATE_FORMAT ),
+				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( get_option( 'date_format' )),
+				'editDateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( OASISWF_EDIT_DATE_FORMAT ),
 				'abortWorkflowConfirm' => __( 'Are you sure to abort the workflow?', 'oasisworkflow' )
 			));			
 
@@ -1125,7 +1129,8 @@ class FCLoadWorkflow
          wp_localize_script( 'owf-workflow-create', 'owf_workflow_create_vars', array(
    						'alreadyExistWorkflow' => __( 'There is an existing workflow with the same name. Please choose another name.', 'oasisworkflow' ),
          				'unsavedChanges' => __( 'You have unsaved changes.', 'oasisworkflow' ),
-         				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( OASISWF_EDIT_DATE_FORMAT )
+         				'dateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( get_option( 'date_format' )),
+         				'editDateFormat' => FCUtility::owf_date_format_to_jquery_ui_format( OASISWF_EDIT_DATE_FORMAT )
                  ));
 
    	   wp_enqueue_script( 'jquery-simplemodal',

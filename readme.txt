@@ -2,8 +2,8 @@
 Contributors: nuggetsol
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit,versioning, auto submit, approval workflow, editorial workflow, notifications, oasis workflow, editorial, revisions, document revision, version control, collaboration, document management, revision scheduling, duplication, clone, revise, revise article
 Requires at least: 3.6
-Tested up to: 4.2
-Stable tag: 1.1
+Tested up to: 4.2.1
+Stable tag: 1.2
 
 Automate your WordPress Editorial Workflow with Oasis Workflow.
 
@@ -236,3 +236,7 @@ If these workflows are different, they need to be recreated with this upgrade.
 * Fixed default ordering on the inbox page.
 * Fixed status change issue on "submit to workflow"
 * Fixed add_query_arg() and remove_query_arg() usage
+
+= Version 1.2 =
+* Fixed date format for publish date
+* Fixed issue with due date javascript

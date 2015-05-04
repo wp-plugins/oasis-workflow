@@ -356,7 +356,7 @@ jQuery(document).ready(function() {
 			});
 			jQuery("#due-date").datepicker({ 
 				autoSize: true,
-				dateFormat: owf_workflow_inbox_vars.dateFormat
+				dateFormat: owf_workflow_inbox_vars.editDateFormat
 			});
 		}
 	});

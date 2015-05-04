@@ -29,40 +29,66 @@ jQuery(document).ready(function() {
 		jQuery("#due-date").attr("readonly", true);
 		jQuery("#due-date").datepicker({ 
 			autoSize: true,
-			dateFormat: owf_submit_workflow_vars.dateFormat
+			dateFormat: owf_submit_workflow_vars.editDateFormat
 		});
 		
-		if (jQuery('.misc-pub-curtime #timestamp b').html() !== 'immediately') {// future publish date
+		if (jQuery('.misc-pub-curtime #timestamp b').html().indexOf("@") > -1) {// future publish date
 			// get the user set date/time
 			var user_set_publish_date_arr = jQuery('.misc-pub-curtime #timestamp b').html().split('@');
+			
+			var parsedDate = '';
 
 			// date
-			var parsedDate = '';
+			var publish_date_mm_dd_yyyy = '';
 			if (user_set_publish_date_arr[0].trim().indexOf("-") > -1) {
+				// get from the UI
 				parsedDate = jQuery.datepicker.parseDate('mm-M dd, yy', user_set_publish_date_arr[0].trim());
 				
+				// convert the date to edit format
+				publish_date_mm_dd_yyyy = jQuery.datepicker.formatDate(owf_submit_workflow_vars.editDateFormat, parsedDate);
+				jQuery("#publish-date").val(publish_date_mm_dd_yyyy);
+
+				// time
+				var user_set_publish_time_arr = user_set_publish_date_arr[1].split(":");
+				jQuery("#publish-hour").val(user_set_publish_time_arr[0].trim());
+				jQuery("#publish-min").val(user_set_publish_time_arr[1].trim());
+				
 			} else {
-				parsedDate = jQuery.datepicker.parseDate('dd M yy', user_set_publish_date_arr[0].trim());
+				// get from the DB
+				jQuery(".publish-date-loading-span").addClass("loading");
+
+				data = {
+					action: 'get_post_publish_date',
+					post_id: jQuery('#post_ID').val()
+				};
+				
+				jQuery.post(ajaxurl, data, function( response ) {
+					if (response.trim() != "") {
+						var user_set_publish_date_arr = response.trim().split('@');
+						parsedDate = jQuery.datepicker.parseDate('mm-M dd, yy', user_set_publish_date_arr[0].trim());
+						
+						// convert the date to edit format
+						publish_date_mm_dd_yyyy = jQuery.datepicker.formatDate(owf_submit_workflow_vars.editDateFormat, parsedDate);
+						jQuery("#publish-date").val(publish_date_mm_dd_yyyy);
+						
+						// time
+						var user_set_publish_time_arr = user_set_publish_date_arr[1].split(":");
+						jQuery("#publish-hour").val(user_set_publish_time_arr[0].trim());
+						jQuery("#publish-min").val(user_set_publish_time_arr[1].trim());
+						
+						jQuery(".publish-date-loading-span").removeClass("loading");
+					}
+				});					
+				
 			}
-			
-			var publish_date_mm_dd_yyyy = jQuery.datepicker.formatDate(owf_submit_workflow_vars.dateFormat, parsedDate);
-			jQuery("#publish-date").val(publish_date_mm_dd_yyyy);
-			
-			// time
-			var user_set_publish_time_arr = user_set_publish_date_arr[1].split(":");
-			jQuery("#publish-hour").val(user_set_publish_time_arr[0]);
-			jQuery("#publish-min").val(user_set_publish_time_arr[1]);
-			
-			
 		}
 		
-		// add jquery datepicker functionality to publish textbox
 		jQuery("#publish-date").attr("readonly", true);
+		// add jquery datepicker functionality to publish textbox
 		jQuery("#publish-date").datepicker({
 			autoSize: true,
-			dateFormat: owf_submit_workflow_vars.dateFormat
+			dateFormat: owf_submit_workflow_vars.editDateFormat
 		});	
-		
 	}	
 	jQuery(".date-clear").click(function(){
 		jQuery(this).parent().children(".date_input").val("");
@@ -263,7 +289,7 @@ jQuery(document).ready(function() {
 		if (jQuery("#publish-date").val() != '') 
 		{
 			var publish = jQuery('#publish-date').val();
-			var parsedDate = jQuery.datepicker.parseDate(owf_submit_workflow_vars.dateFormat, publish);
+			var parsedDate = jQuery.datepicker.parseDate(owf_submit_workflow_vars.editDateFormat, publish);
 			//split into array
 			var publish_date_mm_dd_yyyy = jQuery.datepicker.formatDate('mm/dd/yy', parsedDate);
 			var pdate = publish_date_mm_dd_yyyy.split('/');
@@ -297,7 +323,7 @@ jQuery(document).ready(function() {
 		if(!actors)return;
 		/* This is for checking that reminder email checkbox is selected in workflow settings.
 		If YES then Due Date is Required Else Not */
-		if(owf_submit_workflow_vars.drdb != "" || owf_submit_workflow_vars.drda != "")
+		if(owf_submit_workflow_vars.drdb != "" || owf_submit_workflow_vars.drda != "" || owf_submit_workflow_vars.defaultDueDays != "")
 		{
 			if (jQuery("#due-date").val() == '') {
 				alert(owf_submit_workflow_vars.dueDateRequired);

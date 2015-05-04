@@ -6,7 +6,7 @@ var jQueryCgmp = jQuery.noConflict();
 		
 		jQuery( "#start-date" ).datepicker({
 			autoSize: true,
-			dateFormat: owf_workflow_create_vars.dateFormat,			
+			dateFormat: owf_workflow_create_vars.editDateFormat,			
 			onSelect: function(dateText, inst) {
 				jQuery(this).css("background-color", "white");
 			}
@@ -14,7 +14,7 @@ var jQueryCgmp = jQuery.noConflict();
 		
 		jQuery( "#end-date" ).datepicker({
 			autoSize: true,
-			dateFormat: owf_workflow_create_vars.dateFormat,			
+			dateFormat: owf_workflow_create_vars.editDateFormat,			
 			onSelect: function(dateText, inst) {
 				jQuery(this).css("background-color", "white");
 			}

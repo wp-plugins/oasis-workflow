@@ -789,6 +789,17 @@ class FCProcessFlow extends FCWorkflowBase
 			  <input type='text' id='im-mn' value='{$time_array[1]}' class='immediately' size='2' maxlength='2' autocomplete='off'>";
 
    }
+   
+   static function get_post_publish_date() {
+   	$postId = isset($_POST["post_id"]) ? $_POST["post_id"] : null;
+   	if(!empty($postId)) {
+   		$publish_date = get_the_date(OASISWF_EDIT_DATE_FORMAT . " @ H:i", $postId );
+   		echo $publish_date;
+   	} else {
+   		echo "";
+   	}
+   	exit();
+   }
 }
 include(OASISWF_PATH . "includes/workflow-email.php") ;
 ?>

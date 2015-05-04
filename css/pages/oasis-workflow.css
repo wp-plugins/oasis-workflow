@@ -438,7 +438,7 @@ a.owf_about_link:hover {
    width:25px;
    margin-top:3px;
 }
-#step-loading-span, .assign-loading-span{
+#step-loading-span, .assign-loading-span, .publish-date-loading-span{
    padding-left:20px;
 }
 
