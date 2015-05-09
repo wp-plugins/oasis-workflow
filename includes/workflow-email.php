@@ -22,7 +22,7 @@ class FCWorkflowEmail extends FCWorkflowBase
 		if (empty( $email_settings['from_email_address'] )) {
 			$from_email = get_site_option( 'admin_email' );
 		}
-		$headers = array("From: " .  $from_name . " <" . $from_email . ">", "Content-Type: text/html; charset=iso-8859-1");
+		$headers = array("From: " .  $from_name . " <" . $from_email . ">", "Content-Type: text/html; charset=UTF-8");
 
 		$h = implode("\r\n",$headers) . "\r\n";
 		$decoded_title = html_entity_decode (  $title, ENT_QUOTES, 'UTF-8' );
