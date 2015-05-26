@@ -109,122 +109,14 @@ For [Frequently Asked Questions](http://oasisworkflow.com/faq) plus documentatio
 
 == Changelog ==
 
-= Version 1.0.0 =
+= Version 1.3 =
+* Show Update button for published articles.
+* Added "hide upgrade notice" link.
+* Fixed menu position to have a unique position.
 
-Initial version
-
-= Version 1.0.1 =
-* Added Multisite capability.
-* Admin can now view another user's inbox and signoff on behave of other users.
-* Bug fixes.
-
-= Version 1.0.2 =
-* Made WP 3.5 compatible
-
-= Version 1.0.3 =
-* Added an option for admin to detach the post from oasis workflow and go back to normal wordpress behavior.
-* Added reminder email AFTER certain due date feature.
-* Change the post title placeholder to be a link.
-* Bug fixes.
-
-= Version 1.0.4 =
-* Made the assignment step a multi-user step, where multiple users can be assigned the work however only one can claim it.
-* Configuration - Roles who are allowed to publish post without going through a workflow.
-* Set "publish" as the success step for the publish step.
-* Bug fixes.
-
-= Version 1.0.5 =
-* Multi site enhancements. Moved the Workflow Admin to Network Admin, so workflows can be shared between all the sites.
-* No need to duplicate the workflows for new sites inside a multi site environment.
-* Note: 
-* 1. Workflows previously created in sub sites except the main site will NOT be available anymore. 
-If these workflows are different, they need to be recreated with this upgrade.
-* 2. Make sure to complete all the existing workflows for sub sites, to avoid any unexpected behavior. 
-
-= Version 1.0.6 =
-* Internationalization(I18N) and localization (L10N) support added.
-* Bug fixes.
-* minor enhancements
-
-= Version 1.0.7 =
-* Bug fixes.
-* minor enhancements
-
-= Version 1.0.8 =
-* Updated the Inbox menu to display the number of inbox items.
-* The plugin will now come with an out of the box workflow when installed for the first time. This will help getting started with the plugin with little or no effort. Simply activate the workflow process from Workflow Admin --&gt; Settings page and you are ready to use the workflow.
-* Auto select of user during the sign off process, if there is one and only one user for that given role.
-* Due dates are not required/shown unless "reminder emails" are set to be required on the settings page.
-* Added French translation files.
-* Added Sign off button on the Posts page. This will help to sign off the post/page even when you are not in your inbox.
-* Fixed issues related to IE compatibility. The plugin should function well in IE 9 and IE 10.
-* Fixed issue with sign off caused due to the addition of  "take over" functionality by core Wordpress.
-* We have removed the connection type from the connection settings popup. The plugin defaults to one specific connection type. You might see the workflow visual representation to be a bit awkward. All you have to do is to save the workflow and it will auto-correct the connections.
-
-= Version 1.0.9 =
-* removed a call to wp-load.php to help with performance
-* added visual indicator to the first step
-
-= Version 1.0.10 =
-* made publish step a multi-user assignment step with claim process.
-* after sign off, the user will be redirected to the inbox page.
-* fixed issue with permalink being changed after publish from the inbox page.
-* fixed the issue with unnecessary call to post_publish hook.
-* fixed to remove a warning message related to mysql_real_escape_string()
-
-= Version 1.0.11 =
-* added german translation files
-* fixed the issues with Strict PHP - non static function called in static fashion
-* fixed update datetime issue with the workflow
-* changed post title to be a simple text in the subject line  
-
-= Version 1.0.12 =
-* fixed issue with workflow history discrepancies and abort workflow action.
-* fixed DB related issues with NULL and NOT NULL.
-* fixed multisite issue related to switch and restore blog.
-
-= Version 1.0.13 =
-* Load the JS and CSS scripts only when needed. This helps with compatibility issues with other plugins.
-* Allow setting of future publish date on submit to workflow.
-* fixed german translations.
-* fixed compatibility issues with Wordpress 3.9
-
-= Version 1.0.14 =
-* fixed compatibility issues with Wordpress 4.0
-* added missing calendar images
-* fixed compatibility issues with Visual Composer Plugin.
-* removed "quick edit" from Workflow Inbox
-* bug fixes
-
-= Version 1.0.15 =
-* Fixed future date issue related to timezones
-* Fixed post revision schedule
-* Modified the DB to make it easier to add more features
-
-= Version 1.0.16 =
-* Fixed compatibility issues with Wordpress 4.1
-* Added Italian translation
-* bug fixes
-
-= Version 1.0.17 =
-* Made the date formats compatible with Wordpress date formats
-* Added a setting for default due date
-* bug fixes
-
-= Version 1.0.18 =
-* fixed dd/mm/yyyy format for future publish date
-
-= Version 1.0.19 =
-* Fixed a php error related to missing date on workflow edit.
-* Added post types to workflow selection. Now you can choose the post types which should go through the workflow.
-* Made the roles drop down to be multi-site compatible. Now you will be able to see roles from all the sites.
-* Added a custom role called - Post Author.
-* Fixed "clear date" function on submit step popup.
-* Fixed Page/Post delete to delete the inbox items related to the deleted post/page.
-
-= Version 1.0.20 =
-* Fixed php error related to date locale (hopefully the last update related to date issues)
-* Tested for Wordpress 4.1.1
+= Version 1.2 =
+* Fixed date format for publish date
+* Fixed issue with due date javascript
 
 = Version 1.1 =
 * Email Settings - A new tab in the Settings page, to better control how and when emails are sent from Oasis Workflow for task assignments, reminders and post publish.
@@ -237,11 +129,118 @@ If these workflows are different, they need to be recreated with this upgrade.
 * Fixed status change issue on "submit to workflow"
 * Fixed add_query_arg() and remove_query_arg() usage
 
-= Version 1.2 =
-* Fixed date format for publish date
-* Fixed issue with due date javascript
+= Version 1.0.20 =
+* Fixed php error related to date locale (hopefully the last update related to date issues)
+* Tested for Wordpress 4.1.1
 
-= Version 1.3 =
-* Show Update button for published articles.
-* Added "hide upgrade notice" link.
-* Fixed menu position to have a unique position.
+= Version 1.0.19 =
+* Fixed a php error related to missing date on workflow edit.
+* Added post types to workflow selection. Now you can choose the post types which should go through the workflow.
+* Made the roles drop down to be multi-site compatible. Now you will be able to see roles from all the sites.
+* Added a custom role called - Post Author.
+* Fixed "clear date" function on submit step popup.
+* Fixed Page/Post delete to delete the inbox items related to the deleted post/page
+
+= Version 1.0.18 =
+* fixed dd/mm/yyyy format for future publish date
+
+= Version 1.0.17 =
+* Made the date formats compatible with Wordpress date formats
+* Added a setting for default due date
+* bug fixes
+
+= Version 1.0.16 =
+* Fixed compatibility issues with Wordpress 4.1
+* Added Italian translation
+* bug fixes
+
+= Version 1.0.15 =
+* Fixed future date issue related to timezones
+* Fixed post revision schedule
+* Modified the DB to make it easier to add more features
+
+= Version 1.0.14 =
+* fixed compatibility issues with Wordpress 4.0
+* added missing calendar images
+* fixed compatibility issues with Visual Composer Plugin.
+* removed "quick edit" from Workflow Inbox
+* bug fixes
+
+= Version 1.0.13 =
+* Load the JS and CSS scripts only when needed. This helps with compatibility issues with other plugins.
+* Allow setting of future publish date on submit to workflow.
+* fixed german translations.
+* fixed compatibility issues with Wordpress 3.9
+
+= Version 1.0.12 =
+* fixed issue with workflow history discrepancies and abort workflow action.
+* fixed DB related issues with NULL and NOT NULL.
+* fixed multisite issue related to switch and restore blog.
+
+= Version 1.0.11 =
+* added german translation files
+* fixed the issues with Strict PHP - non static function called in static fashion
+* fixed update datetime issue with the workflow
+* changed post title to be a simple text in the subject line  
+
+= Version 1.0.10 =
+* made publish step a multi-user assignment step with claim process.
+* after sign off, the user will be redirected to the inbox page.
+* fixed issue with permalink being changed after publish from the inbox page.
+* fixed the issue with unnecessary call to post_publish hook.
+* fixed to remove a warning message related to mysql_real_escape_string()
+
+= Version 1.0.9 =
+* removed a call to wp-load.php to help with performance
+* added visual indicator to the first step
+
+= Version 1.0.8 =
+* Updated the Inbox menu to display the number of inbox items.
+* The plugin will now come with an out of the box workflow when installed for the first time. This will help getting started with the plugin with little or no effort. Simply activate the workflow process from Workflow Admin --&gt; Settings page and you are ready to use the workflow.
+* Auto select of user during the sign off process, if there is one and only one user for that given role.
+* Due dates are not required/shown unless "reminder emails" are set to be required on the settings page.
+* Added French translation files.
+* Added Sign off button on the Posts page. This will help to sign off the post/page even when you are not in your inbox.
+* Fixed issues related to IE compatibility. The plugin should function well in IE 9 and IE 10.
+* Fixed issue with sign off caused due to the addition of  "take over" functionality by core Wordpress.
+* We have removed the connection type from the connection settings popup. The plugin defaults to one specific connection type. You might see the workflow visual representation to be a bit awkward. All you have to do is to save the workflow and it will auto-correct the connections.
+
+= Version 1.0.7 =
+* Bug fixes.
+* minor enhancements
+
+= Version 1.0.6 =
+* Internationalization(I18N) and localization (L10N) support added.
+* Bug fixes.
+* minor enhancements
+
+= Version 1.0.5 =
+* Multi site enhancements. Moved the Workflow Admin to Network Admin, so workflows can be shared between all the sites.
+* No need to duplicate the workflows for new sites inside a multi site environment.
+* Note: 
+* 1. Workflows previously created in sub sites except the main site will NOT be available anymore. 
+If these workflows are different, they need to be recreated with this upgrade.
+* 2. Make sure to complete all the existing workflows for sub sites, to avoid any unexpected behavior. 
+
+= Version 1.0.4 =
+* Made the assignment step a multi-user step, where multiple users can be assigned the work however only one can claim it.
+* Configuration - Roles who are allowed to publish post without going through a workflow.
+* Set "publish" as the success step for the publish step.
+* Bug fixes.
+
+= Version 1.0.3 =
+* Added an option for admin to detach the post from oasis workflow and go back to normal wordpress behavior.
+* Added reminder email AFTER certain due date feature.
+* Change the post title placeholder to be a link.
+* Bug fixes.
+
+= Version 1.0.2 =
+* Made WP 3.5 compatible
+
+= Version 1.0.1 =
+* Added Multisite capability.
+* Admin can now view another user's inbox and signoff on behave of other users.
+* Bug fixes.
+
+= Version 1.0.0 =
+* Initial version
