@@ -1,8 +1,16 @@
 <?php
 //----------------
 $action = (isset($_GET['action']) && $_GET["action"]) ? $_GET["action"] : "all" ;
-$workflows = $list_workflow->get_workflow_list( $action ) ;
-$wcclass[$action] = 'class="current"';
+$workflows = "";
+if ($action == 'hideNotice') {
+	update_site_option("oasiswf_show_upgrade_notice", "no") ;
+	$workflows = $list_workflow->get_workflow_list( "all" ) ;
+	$wcclass["all"] = 'class="current"';
+} else {
+	$workflows = $list_workflow->get_workflow_list( $action ) ;
+	$wcclass[$action] = 'class="current"';
+}
+
 $wfcount = $list_workflow->get_workflow_count() ;
 //----------------
 $count_posts = count($workflows);

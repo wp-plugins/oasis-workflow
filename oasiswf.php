@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Automate your WordPress Editorial Workflow.
- Version: 1.2
+ Version: 1.3
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.2' );
-define( 'OASISWF_DB_VERSION','1.2');
+define( 'OASISWF_VERSION' , '1.3' );
+define( 'OASISWF_DB_VERSION','1.3');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -185,7 +185,10 @@ class FCInitialization
          		'reminder_emails' => 'no',
          		'post_publish_emails' => 'yes'
          );
-         update_site_option("oasiswf_email_settings", $email_settings) ;         
+         update_site_option("oasiswf_email_settings", $email_settings) ;  
+
+         $show_upgrade_notice = "yes";
+         update_site_option("oasiswf_show_upgrade_notice", $show_upgrade_notice) ;         
 
 		}
 		else if ( OASISWF_VERSION != $pluginOptions['version'] )
@@ -215,6 +218,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1016();
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}
 		else if ($pluginOptions['version'] == "1.0.1")
 		{
@@ -225,6 +229,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1016();
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}
 		else if ($pluginOptions['version'] == "1.0.2")
 		{
@@ -235,6 +240,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1016();
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}
 		else if ($pluginOptions['version'] == "1.0.3")
 		{
@@ -244,6 +250,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1016();
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}
 		else if ($pluginOptions['version'] == "1.0.4")
 		{
@@ -252,6 +259,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1016();
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}
 		else if ($pluginOptions['version'] == "1.0.5")
 		{
@@ -260,6 +268,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1016();
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}
 		else if ($pluginOptions['version'] == "1.0.6")
 		{
@@ -268,6 +277,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1016();
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}
 		else if ($pluginOptions['version'] == "1.0.7")
 		{
@@ -276,6 +286,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1016();
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}
 		else if ($pluginOptions['version'] == "1.0.8")
 		{
@@ -284,6 +295,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1016();
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}
 		else if ($pluginOptions['version'] == "1.0.9")
 		{
@@ -292,6 +304,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1016();
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}
 		else if ($pluginOptions['version'] == "1.0.10")
 		{
@@ -300,6 +313,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1016();
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}
 	   else if ($pluginOptions['version'] == "1.0.11")
 		{
@@ -308,6 +322,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1016();
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}
 		else if ($pluginOptions['version'] == "1.0.12")
 		{
@@ -315,6 +330,7 @@ class FCInitialization
 		 	FCInitialization::upgrade_database_1016();
 		 	FCInitialization::upgrade_database_1019();
 		 	FCInitialization::upgrade_database_11();
+		 	FCInitialization::upgrade_database_13();
 		}
 	   else if ($pluginOptions['version'] == "1.0.13")
 		{
@@ -322,6 +338,7 @@ class FCInitialization
 		 	FCInitialization::upgrade_database_1016();
 		 	FCInitialization::upgrade_database_1019();
 		 	FCInitialization::upgrade_database_11();
+		 	FCInitialization::upgrade_database_13();
 		}
 		else if ($pluginOptions['version'] == "1.0.14")
 		{
@@ -329,36 +346,46 @@ class FCInitialization
 		 	FCInitialization::upgrade_database_1016();
 		 	FCInitialization::upgrade_database_1019();
 		 	FCInitialization::upgrade_database_11();
+		 	FCInitialization::upgrade_database_13();
 		}
 		else if ($pluginOptions['version'] == "1.0.15")
 		{
          FCInitialization::upgrade_database_1016();
          FCInitialization::upgrade_database_1019();
          FCInitialization::upgrade_database_11();
+         FCInitialization::upgrade_database_13();
 		}		
 		else if ($pluginOptions['version'] == "1.0.16")
 		{
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}
 		else if ($pluginOptions['version'] == "1.0.17")
 		{
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}	
 		else if ($pluginOptions['version'] == "1.0.18")
 		{
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}	
 		else if ($pluginOptions['version'] == "1.0.20")
 		{
 			FCInitialization::upgrade_database_11();
+			FCInitialization::upgrade_database_13();
 		}	
 		else if ($pluginOptions['version'] == "1.1")
 		{
-			// nothing to upgrade
-		}							
+			FCInitialization::upgrade_database_13();
+		}	
+		else if ($pluginOptions['version'] == "1.2")
+		{
+			FCInitialization::upgrade_database_13();
+		}								
 
 		// update the version value
 		$oasiswf_info=array(
@@ -381,6 +408,7 @@ class FCInitialization
 		delete_site_option('oasiswf_status');
 		delete_site_option('oasiswf_review');
 		delete_site_option('oasiswf_placeholders');
+		delete_site_option('oasiswf_show_upgrade_notice');
 		if (get_site_option('oasiswf_default_due_days')) {
 			delete_site_option('oasiswf_default_due_days');
 		}		
@@ -667,6 +695,12 @@ class FCInitialization
    	);
    	update_site_option("oasiswf_email_settings", $email_settings) ;
    }
+   
+   private static function upgrade_database_13()
+   {
+   	$show_upgrade_notice = "yes";
+   	update_site_option("oasiswf_show_upgrade_notice", $show_upgrade_notice) ;
+   }   
 
 	static function install_admin_database()
 	{
@@ -914,12 +948,13 @@ class FCLoadWorkflow
 
 	static function register_admin_menu_pages()
 	{
+		$position = FCWorkflowBase::get_menu_position(".8") ;
 		add_menu_page(__('Workflow Admin', 'oasisworkflow'),
 					  	__('Workflow Admin', 'oasisworkflow'),
 						'activate_plugins',
 						'oasiswf-admin',
 						array('FCLoadWorkflow','list_workflows'),
-						'');
+						'', $position);
 
 	    add_submenu_page('oasiswf-admin',
 	    				__('Edit Workflows', 'oasisworkflow'),
@@ -939,7 +974,7 @@ class FCLoadWorkflow
 	static function register_menu_pages()
 	{
 		$current_role = FCWorkflowBase::get_current_user_role() ;
-		$position = FCWorkflowBase::get_menu_position() ;
+		$position = FCWorkflowBase::get_menu_position(".6") ;
 
 		$inbox_count = FCWorkflowBase::get_count_assigned_post() ;
 		$count = ($inbox_count) ? '<span class="update-plugins count"><span class="plugin-count">' . $inbox_count . '</span></span>' : '' ;

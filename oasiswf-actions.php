@@ -130,7 +130,7 @@ class FCWorkflowActions
             $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE post_id = %d AND action_status = 'assignment'", $_GET["post"] )) ;
          }
 		 
-		   if( (is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles)) && // do not hide the ootb publish section for skip_workflow_roles option
+		   if( !$is_post_published && (is_array($skip_workflow_roles) && !in_array($role, $skip_workflow_roles)) && // do not hide the ootb publish section for skip_workflow_roles option
          	(is_array($show_workflow_for_post_types) && in_array($post_type, $show_workflow_for_post_types))){ // do not show ootb publish section for oasiswf_show_wfsettings_on_post_types
             FCWorkflowActions::ootb_publish_section_hide() ;
          }

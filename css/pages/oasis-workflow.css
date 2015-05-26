@@ -715,3 +715,30 @@ a.owf_about_link:hover {
 {
    width:46px !important;
 }
+
+.oasis_button_div
+{
+    float: left;
+    text-align: center;
+    max-width: 30%;
+}
+
+.oasis_button, .oasis_button:hover, .oasis_button:focus {
+    float: right;
+    border: none; 
+    font-size: 14px;
+    margin: 18px 16px;
+    padding: 12px 29px;
+    color: #FFF;
+    text-shadow: none;
+    font-weight: bold;
+    background: #0074A2;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    text-decoration: none;
+    text-align: center;
+    text-transform: uppercase;
+    box-shadow: none;
+    line-height: 26px;
+}

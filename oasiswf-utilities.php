@@ -60,14 +60,25 @@ class FCUtility {
 
 	public static function owf_pro_features()
 	{
-      $str= '<div style="width:90%; float:left;  margin: 0px 50px 5px 7px; padding: 10px 10px 10px 10px; border: 1px solid #ddd; background-color:#FFFFE0;">
-                <div style="width:100%; float:left; align: center">' .
-					 	__("If you are looking for additional functionality like \"Multiple Workflows\", \"Revise published content and add Workflow Support to revised content\", \"Auto Submit\", \"Reports\", and much more...", "oasisworkflow")
-					 	. '<br/>' .
-					 	__("check out our \"Pro\" version at ", "oasisworkflow")
-					 	. '<a target="_blank" href="https://www.oasisworkflow.com/pricing-purchase">' .  __("Oasis Workflow Pro", "oasisworkflow") . '</a>'
-                	. '</div>
-             </div>';
+      $str = "";
+      $show_upgrade_notice = get_site_option('oasiswf_show_upgrade_notice') ;
+      if ($show_upgrade_notice == "yes") {
+			$str = '<div style="width:90%; float:left;  margin: 0px 50px 5px 7px; padding: 10px 10px 10px 10px; border: 1px solid #ddd; background-color:#FFFFE0;">
+					   <form id="hide_notice">
+						<div class="oasis_button_div">
+								<a class="oasis_button" target="_blank" href="https://www.oasisworkflow.com/pricing-purchase"> ' . __( 'Learn More', 'oasisworkflow' ) . '</a>' .
+						'</div>
+	      			<div style="width:80%; float:left; align: center">' .
+	                	'<p>' .
+						 	__("Looking for additional functionality like \"Multiple Workflows\", \"Revise published content and add Workflow Support to revised content\", \"Auto Submit\", \"Teams\", and much more...", "oasisworkflow")
+						 	. '<p/><p>' .
+						 	__("It's time to upgrade your","oasisworkflow") . '<strong> Oasis Workflow plugin </strong>' . __("to", "oasisworkflow") .  '<strong> PRO </strong>' . __("version!", "oasisworkflow")
+						 	. '</p><p style="float:right;">
+						 	<a href="admin.php?page=oasiswf-admin&action=hideNotice">' . __( 'I know, don\'t bug me.', 'oasisworkflow' ) .
+						 	'</a></p>
+	              	</div></form>
+	             </div>';
+      }
 		echo $str;
 	}
 

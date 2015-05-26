@@ -25,7 +25,7 @@ class FCWorkflowBase
 		endforeach;
 	}
 
-	static function get_menu_position()
+	static function get_menu_position($decimal_loc)
 	{
 		global $menu ;
 		$sp = 0 ; $ep = 0 ;
@@ -35,7 +35,10 @@ class FCWorkflowBase
 			$menu_position[] = $k ;
 		}
 		for( $i = $ep ;$i > $sp ;$i-- ){
-			if( !in_array($i, $menu_position))return $i ;
+			if( !in_array($i, $menu_position)) {
+				$y = $i . $decimal_loc ;
+				return $y;
+			}
 		}
 	}
 

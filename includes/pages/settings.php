@@ -4,7 +4,6 @@ if (isset ( $_GET['tab'] )) { // if something is set, go to that tab
    $selected_tab =  $_GET['tab'];
 }
 
-FCUtility::owf_pro_features();
 ?>
 <div class="wrap">
 	<?php
