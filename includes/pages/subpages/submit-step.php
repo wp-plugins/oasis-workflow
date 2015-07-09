@@ -48,7 +48,7 @@ $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
 					$pdata = get_post($post_id);
 					$publish_date = strtotime( get_gmt_from_date(get_the_date('Y-m-d H:i:s', $post_id )));
                $current_gmt_time = current_time('timestamp', 1);
-					if($current_gmt_time < $publish_date) :
+					if($current_gmt_time != $publish_date) :
 					   $is_future_date = true;
 					else:
 					   $is_future_date = false;

@@ -85,7 +85,7 @@ $publish_time_array = explode("-", current_time("H-i"));
 		<!-- Added publish date box for user to choose future publish date. -->
          <div class="text-info left">
 			<div class="left">
-				<label><?php echo __("Future Publish Date : ", "oasisworkflow") ;?></label>
+				<label><?php echo __("Publish Date : ", "oasisworkflow") ;?></label>
 			</div>
 			<div class="left">
 				<input name="publish-date" id="publish-date" class="date_input" type="text" real="publish-date-loading-span" value="<?php echo $publish_date; ?>">@

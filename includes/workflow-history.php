@@ -64,7 +64,7 @@ class FCWorkflowHistory extends FCWorkflowBase
    static function get_workflow_history_all($postid=null)
    {
       global $wpdb;
-      $orderby = ( isset($_GET['orderby']) && $_GET['orderby'] ) ? " ORDER BY {$_GET['orderby']} {$_GET['order']}" : "  ORDER BY A.ID DESC" ;
+      $orderby = ( isset($_GET['orderby']) && $_GET['orderby'] ) ? " ORDER BY {$_GET['orderby']} {$_GET['order']}, A.ID DESC" : "  ORDER BY A.ID DESC" ;
       $w = "action_status!='complete' AND action_status!='cancelled'" ;
       if( $postid )$w .= " AND post_id=" . $postid ;
       $sql = "SELECT A.* , B.post_title, C.ID as userid, C.display_name as assign_actor, D.step_info, D.workflow_id, D.wf_name, D.version
@@ -99,8 +99,6 @@ class FCWorkflowHistory extends FCWorkflowBase
       $final_results = array();
       foreach ($results as $result) {
          if ($result->action_status == 'aborted' && $result->assign_actor_id == "1") {
-            continue;
-         } else {
             $final_results[] = $result;
          }
       }
@@ -134,7 +132,10 @@ class FCWorkflowHistory extends FCWorkflowBase
 
    static function get_signoff_date($row)
    {
-      if( $row->action_status == "complete" || $row->action_status == "submitted" || $row->action_status == "abort_no_action") return $row->create_datetime ;
+   	if( $row->action_status == "complete" ||	$row->action_status == "submitted" ||
+   			$row->action_status == "aborted" ||	$row->action_status == "abort_no_action") {
+   		return $row->create_datetime ;
+   	}
       if( $row->action_status == "claim_cancel" ){
          $claimed_row = FCWorkflowHistory::get_action_history("claimed", $row->step_id, $row->post_id, $row->from_id ) ;
          return $claimed_row->create_datetime ;
@@ -173,7 +174,7 @@ class FCWorkflowHistory extends FCWorkflowBase
 
       if( $row->action_status == "submitted" ) return __("Submitted","oasisworkflow") ;
       if( $row->action_status == "aborted" ) return __("Aborted","oasisworkflow") ;
-      if( $row->action_status == "abort_no_action" ) return __("Aborted","oasisworkflow") ;
+      if( $row->action_status == "abort_no_action" ) return __("No Action Taken","oasisworkflow") ;
       if( $row->action_status == "claim_cancel" )return __("Unclaimed","oasisworkflow") ;
       if( $row->action_status == "claimed" )return __("Claimed","oasisworkflow") ;
       if( $row->action_status == "reassigned" )return __("Reassigned","oasisworkflow") ;
@@ -195,6 +196,15 @@ class FCWorkflowHistory extends FCWorkflowBase
       if($pro_result == "success")return __("Completed","oasisworkflow") ;
       if($pro_result == "failure")return __("Unable to Complete","oasisworkflow") ;
    }
+   
+   static function get_next_step_status_history($row) {
+   	$nextHistory = FCWorkflowHistory::get_action_history_by_from_id( $row->ID ) ;
+   	if( !$nextHistory ) {
+   		return "";
+   	} else {
+   		return $nextHistory->action_status;
+   	}
+   }   
 
    static function get_review_signoff_status($row, $review_row)
    {

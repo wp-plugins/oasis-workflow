@@ -3,7 +3,7 @@ Contributors: nuggetsol
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit,versioning, auto submit, approval workflow, editorial workflow, notifications, oasis workflow, editorial, revisions, document revision, version control, collaboration, document management, revision scheduling, duplication, clone, revise, revise article
 Requires at least: 3.6
 Tested up to: 4.2.2
-Stable tag: 1.3
+Stable tag: 1.4
 
 Automate your WordPress Editorial Workflow with Oasis Workflow.
 
@@ -108,6 +108,11 @@ For [Frequently Asked Questions](http://oasisworkflow.com/faq) plus documentatio
 
 
 == Changelog ==
+
+= Version 1.4 =
+* Fixed abort
+* Allow for past publish date when signing off the last task.
+* Added new hooks for "submit to workflow", "sign off", "workflow complete".
 
 = Version 1.3 =
 * Show Update button for published articles.

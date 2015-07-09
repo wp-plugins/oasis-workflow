@@ -219,6 +219,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}
 		else if ($pluginOptions['version'] == "1.0.1")
 		{
@@ -230,6 +231,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}
 		else if ($pluginOptions['version'] == "1.0.2")
 		{
@@ -241,6 +243,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}
 		else if ($pluginOptions['version'] == "1.0.3")
 		{
@@ -251,6 +254,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}
 		else if ($pluginOptions['version'] == "1.0.4")
 		{
@@ -260,6 +264,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}
 		else if ($pluginOptions['version'] == "1.0.5")
 		{
@@ -269,6 +274,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}
 		else if ($pluginOptions['version'] == "1.0.6")
 		{
@@ -278,6 +284,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}
 		else if ($pluginOptions['version'] == "1.0.7")
 		{
@@ -296,6 +303,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}
 		else if ($pluginOptions['version'] == "1.0.9")
 		{
@@ -305,6 +313,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}
 		else if ($pluginOptions['version'] == "1.0.10")
 		{
@@ -314,6 +323,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}
 	   else if ($pluginOptions['version'] == "1.0.11")
 		{
@@ -323,6 +333,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}
 		else if ($pluginOptions['version'] == "1.0.12")
 		{
@@ -331,6 +342,7 @@ class FCInitialization
 		 	FCInitialization::upgrade_database_1019();
 		 	FCInitialization::upgrade_database_11();
 		 	FCInitialization::upgrade_database_13();
+		 	FCInitialization::upgrade_database_14();
 		}
 	   else if ($pluginOptions['version'] == "1.0.13")
 		{
@@ -339,6 +351,7 @@ class FCInitialization
 		 	FCInitialization::upgrade_database_1019();
 		 	FCInitialization::upgrade_database_11();
 		 	FCInitialization::upgrade_database_13();
+		 	FCInitialization::upgrade_database_14();
 		}
 		else if ($pluginOptions['version'] == "1.0.14")
 		{
@@ -347,6 +360,7 @@ class FCInitialization
 		 	FCInitialization::upgrade_database_1019();
 		 	FCInitialization::upgrade_database_11();
 		 	FCInitialization::upgrade_database_13();
+		 	FCInitialization::upgrade_database_14();
 		}
 		else if ($pluginOptions['version'] == "1.0.15")
 		{
@@ -354,42 +368,49 @@ class FCInitialization
          FCInitialization::upgrade_database_1019();
          FCInitialization::upgrade_database_11();
          FCInitialization::upgrade_database_13();
+         FCInitialization::upgrade_database_14();
 		}		
 		else if ($pluginOptions['version'] == "1.0.16")
 		{
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}
 		else if ($pluginOptions['version'] == "1.0.17")
 		{
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}	
 		else if ($pluginOptions['version'] == "1.0.18")
 		{
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}	
 		else if ($pluginOptions['version'] == "1.0.20")
 		{
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}	
 		else if ($pluginOptions['version'] == "1.1")
 		{
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
 		}	
 		else if ($pluginOptions['version'] == "1.2")
 		{
 			FCInitialization::upgrade_database_13();
-		}
+			FCInitialization::upgrade_database_14();
+		}	
 		else if ($pluginOptions['version'] == "1.3")
 		{
-			// nothing to upgrade
-		}
+			FCInitialization::upgrade_database_14();
+		}		
 
 		// update the version value
 		$oasiswf_info=array(
@@ -705,6 +726,66 @@ class FCInitialization
    	$show_upgrade_notice = "yes";
    	update_site_option("oasiswf_show_upgrade_notice", $show_upgrade_notice) ;
    }   
+   
+   private static function upgrade_database_14()
+   {
+   	global $wpdb;
+   
+   	// look through each of the blogs and upgrade the DB
+   	if (function_exists('is_multisite') && is_multisite())
+   	{
+   		//Get all blog ids; foreach them and call the uninstall procedure on each of them
+   		$blog_ids = $wpdb->get_col("SELECT blog_id FROM {$wpdb->base_prefix}blogs");
+   
+   		//Get all blog ids; foreach them and call the install procedure on each of them if the plugin table is found
+   		foreach ( $blog_ids as $blog_id )
+   		{
+   			switch_to_blog( $blog_id );
+   			if( $wpdb->query( "SHOW TABLES FROM ".$wpdb->dbname." LIKE '".$wpdb->prefix."fc_%'" ) )
+   			{
+   				FCInitialization::upgrade_helper_14();
+   			}
+   			restore_current_blog();
+   		}
+   		return;
+   	}
+   	FCInitialization::upgrade_helper_14();
+   }   
+   
+   private static function upgrade_helper_14() {
+   	global $wpdb;
+   	$action_history_table = FCUtility::get_action_history_table_name(); 
+   	
+   	$result = $wpdb->update(
+   		$action_history_table,
+   		array(
+   			'action_status' => 'abort_no_action_1'
+   		),
+   		array(
+   			'action_status' => 'aborted'
+   		)
+   	);  
+   	
+   	$result = $wpdb->update(
+   		$action_history_table,
+   		array(
+   			'action_status' => 'aborted'
+   		),
+   		array(
+   			'action_status' => 'abort_no_action'
+   		)
+   	);  
+   	
+   	$result = $wpdb->update(
+   		$action_history_table,
+   		array(
+   			'action_status' => 'abort_no_action'
+   		),
+   		array(
+   			'action_status' => 'abort_no_action_1'
+   		)
+   	);   	
+   }
 
 	static function install_admin_database()
 	{
@@ -1237,7 +1318,7 @@ add_action('wp_ajax_load_step_info', array( 'FCLoadWorkflow', 'load_step_info' )
 add_action('wp_ajax_purge_workflow_history', array('FCWorkflowHistory', 'purge_history') );
 add_action('wp_ajax_check_claim_ajax', array( 'FCWorkflowInbox', 'check_claim_ajax' ) );
 
-/* workflow action hooks
+/* workflow action hooks 
  add_action('owf_submit_to_workflow', array( 'FCWorkflowActions', 'owf_submit_to_workflow_hook_test' ), 10, 2);
  add_action('owf_step_sign_off', array( 'FCWorkflowActions', 'owf_step_sign_off_hook_test' ), 10, 4);
  add_action('owf_workflow_complete', array( 'FCWorkflowActions', 'owf_workflow_complete_hook_test' ), 10, 2);

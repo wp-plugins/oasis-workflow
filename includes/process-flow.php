@@ -245,9 +245,9 @@ class FCProcessFlow extends FCWorkflowBase
       update_post_meta($postId, "oasis_is_in_workflow", 1, true); // set the post meta to 1, specifying that the post is in a workflow.
       
       $step = FCWorkflowInbox::get_step_by_id( $stepId ) ;
-      $workflow = FCWorkflowInbox::get_workflow_by_id( $step->workflow_id );      
+      $workflow = FCWorkflowInbox::get_workflow_by_id( $step->workflow_id );
       
-      do_action( 'owf_submit_to_workflow', $postId, $workflow->ID );
+      do_action( 'owf_submit_to_workflow', $postId, $workflow->ID );      
 	}
 
    static function submit_post_to_workflow()
@@ -493,8 +493,7 @@ class FCProcessFlow extends FCWorkflowBase
       $step = FCWorkflowInbox::get_step_by_id( $from_step_id ) ;
       $workflow = FCWorkflowInbox::get_workflow_by_id( $step->workflow_id );
       
-      do_action( 'owf_step_sign_off', $post_id, $workflow->ID, $from_step_id, $to_step_id);
-      
+      do_action( 'owf_step_sign_off', $post_id, $workflow->ID, $from_step_id, $to_step_id);      
 	}
 	//-----------------------------------------------------------
 	static function change_workflow_status_to_complete()
@@ -535,7 +534,7 @@ class FCProcessFlow extends FCWorkflowBase
 			$result = $wpdb->update($action_history_table, array('action_status' => 'processed'), array('ID' => $_POST["oasiswf_id"]));
 
 			$action = FCProcessFlow::get_action_history_by_id( $_POST["oasiswf_id"] ) ;
-			if($_POST["immediately"] && $now_dt < $im_dt){
+			if($_POST["immediately"] && $now_dt != $im_dt){
 				FCProcessFlow::copy_step_status_to_post($_POST["post_id"], $action->step_id, "complete", $_POST["immediately"]) ;
 			}else{
 				FCProcessFlow::copy_step_status_to_post($_POST["post_id"], $action->step_id, "complete") ;
@@ -753,7 +752,7 @@ class FCProcessFlow extends FCWorkflowBase
 						"comment" => "Post/Page was aborted from the workflow."
 					) ;
 		$data = array(
-					"action_status" => "abort_no_action",
+					"action_status" => "aborted",
 					"post_id" => $action->post_id,
 					"comment" => json_encode($comment),
 					"from_id" => $_POST["exitId"],
@@ -765,12 +764,17 @@ class FCProcessFlow extends FCWorkflowBase
 		$action_table = FCUtility::get_action_table_name();
 		$iid = FCProcessFlow::insert_to_table( $action_history_table, $data ) ;
 		if($iid){
-		   // delete all the unsend emails for this workflow
-		   FCWorkflowEmail::delete_step_email($_POST["exitId"]);
-		   $wpdb->update($action_history_table, array( "action_status" => "aborted",  "create_datetime" => current_time('mysql')), array( "ID" => $_POST["exitId"] ) ) ;
-		   // change the assignments in the action table to processed
-		   $wpdb->update($action_table, array( "review_status" => "no_action",  "update_datetime" => current_time('mysql')), array( "action_history_id" => $_POST["exitId"] ) ) ;
-		   update_post_meta($action->post_id, "oasis_is_in_workflow", 0); // set the post meta to 0, specifying that the post is out of a workflow.
+			// find all the history records for the given post id which has the status = "assignment"
+			$post_action_histories = FCProcessFlow::get_action_history_by_status("assignment", $action->post_id);
+			foreach ($post_action_histories as $post_action_history ) {
+			   // delete all the unsend emails for this workflow
+			   FCWorkflowEmail::delete_step_email($post_action_history->ID);
+			   // update the current assignments to abort_no_action
+			   $wpdb->update($action_history_table, array( "action_status" => "abort_no_action",  "create_datetime" => current_time('mysql')), array( "ID" => $post_action_history->ID ) ) ;
+			   // change the assignments in the action table to processed
+			   $wpdb->update($action_table, array( "review_status" => "abort_no_action",  "update_datetime" => current_time('mysql')), array( "action_history_id" => $post_action_history->ID ) ) ;		   
+			}
+			update_post_meta($action->post_id, "oasis_is_in_workflow", 0); // set the post meta to 0, specifying that the post is out of a workflow.
 			echo $iid ;
 		}
 		exit() ;

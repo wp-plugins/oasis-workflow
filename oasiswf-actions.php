@@ -320,7 +320,8 @@ class FCWorkflowActions
 		FCUtility::owf_logger("this is testing the workflow completion hook");
 		FCUtility::owf_logger("PostID:" . $postId);
 		FCUtility::owf_logger("Workflow ID:" . $workflowId);
-	}	
+	}
+	
 }
 add_action('wp_ajax_get_first_step_in_wf', array( 'FCProcessFlow', 'get_first_step_in_wf' ) );
 add_action('wp_ajax_get_pre_next_steps', array( 'FCProcessFlow', 'get_pre_next_steps' ) );

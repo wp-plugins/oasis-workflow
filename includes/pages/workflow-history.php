@@ -69,16 +69,11 @@ $per_page = 25;
 								break;
 							if ( $count >= $start )
 							{
-							if( $row->assign_actor_id != -1 && $row->action_status != "aborted"){
+							if( $row->assign_actor_id != -1 ){ //assignment and/or publish steps
 								echo "<tr>";
 								echo "<th scope='row' class='check-column'><input type='checkbox' name='linkcheck[]' value='1'></th>" ;
 								echo "<td>
 										<a href='post.php?post={$row->post_id}&action=edit'><strong>{$row->post_title}</strong></a>
-										<!--
-										<div class='row-actions'>
-											<span><a href='#' id='graphic_show'>View</a></span>
-										</div>
-										-->
 									</td>";
 								echo "<td>{$history_workflow->get_user_name($row->userid)}</td>";
 								echo "<td>{$workflow_name}</td>";
@@ -98,14 +93,19 @@ $per_page = 25;
 									  </td>" ;
 								echo "</tr>";
 								}
-								if( $row->assign_actor_id == -1 ){
+								if( $row->assign_actor_id == -1 ){ //review step
 									$review_rows = $history_workflow->get_review_action_by_history_id($row->ID, "update_datetime" ) ;
 									if( $review_rows ){
 										foreach ($review_rows as $review_row) {
 											echo "<tr>" ;
 											echo "<th scope='row' class='check-column'><input type='checkbox' name='linkcheck[]' value='1'></th>" ;
 											echo "<td><a href='post.php?post={$row->post_id}&action=edit'><strong>{$row->post_title}</strong></a></td>" ;
-											echo "<td>{$history_workflow->get_user_name($review_row->actor_id)}</td>";
+											if ($review_row->actor_id == 0) {
+												$actor = "System";
+											} else {
+												$actor = $history_workflow->get_user_name($review_row->actor_id);
+											}											
+											echo "<td>{$actor}</td>";
 											echo "<td>{$workflow_name}</td>";
 											echo "<td>{$history_workflow->get_step_name($row)}</td>";
 											echo "<td>{$history_workflow->format_date_for_display( $row->create_datetime, "-", "datetime" )}</td>";
@@ -117,13 +117,17 @@ $per_page = 25;
 											}
 											echo "<td>{$history_workflow->format_date_for_display( $signoff_date, "-", "datetime" )}</td>";
 											// If editors' review status is "no_action" (Not acted upon) then set user status as "No action taken"
-											if($review_row->review_status == "no_action")
+											if($review_row->review_status == "no_action" || $review_row->review_status == "abort_no_action")
 											{
 												$review_status = __("No Action Taken", "oasisworkflow");
 											}
 											else
 											{
-												$review_status = $history_workflow->get_review_signoff_status( $row, $review_row );
+												if ($history_workflow->get_next_step_status_history($row) == "complete") {
+													$review_status = __("Workflow completed","oasisworkflow") ;
+												} else {
+													$review_status = $history_workflow->get_review_signoff_status( $row, $review_row );
+												}
 											}
 											echo "<td>$review_status</td>" ;
 											echo "<td class='comments'>
@@ -141,7 +145,6 @@ $per_page = 25;
 										}
 									}
 								}
-
 							}
 							$count++;
 						}
