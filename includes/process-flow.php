@@ -243,6 +243,11 @@ class FCProcessFlow extends FCWorkflowBase
       }
       $iid = FCProcessFlow::save_action( $data, $actors) ;
       update_post_meta($postId, "oasis_is_in_workflow", 1, true); // set the post meta to 1, specifying that the post is in a workflow.
+      
+      $step = FCWorkflowInbox::get_step_by_id( $stepId ) ;
+      $workflow = FCWorkflowInbox::get_workflow_by_id( $step->workflow_id );      
+      
+      do_action( 'owf_submit_to_workflow', $postId, $workflow->ID );
 	}
 
    static function submit_post_to_workflow()
@@ -480,6 +485,16 @@ class FCProcessFlow extends FCWorkflowBase
          //------post status change----------
          FCProcessFlow::copy_step_status_to_post($_POST["post_ID"], $history_details->step_id, $_POST["review_result"]) ;
       }
+      
+      $action_history = FCProcessFlow::get_action_history_by_id($_POST["oasiswf"]);
+      $from_step_id = $action_history->step_id;
+      $to_step_id = $_POST["hi_step_id"];
+      $post_id = $_POST["post_ID"];
+      $step = FCWorkflowInbox::get_step_by_id( $from_step_id ) ;
+      $workflow = FCWorkflowInbox::get_workflow_by_id( $step->workflow_id );
+      
+      do_action( 'owf_step_sign_off', $post_id, $workflow->ID, $from_step_id, $to_step_id);
+      
 	}
 	//-----------------------------------------------------------
 	static function change_workflow_status_to_complete()
@@ -528,6 +543,10 @@ class FCProcessFlow extends FCWorkflowBase
 			update_post_meta($_POST["post_id"], "oasis_is_in_workflow", 0); // set the post meta to 0, specifying that the post is out of a workflow.
 			echo $iid;
 		}
+		$step = FCWorkflowInbox::get_step_by_id( $history->step_id ) ;
+		$workflow = FCWorkflowInbox::get_workflow_by_id( $step->workflow_id );
+		
+		do_action( 'owf_workflow_complete', $_POST["post_id"], $workflow->ID );		
 		exit();
 	}
 

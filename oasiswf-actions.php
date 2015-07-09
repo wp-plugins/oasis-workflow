@@ -301,6 +301,26 @@ class FCWorkflowActions
 				'defaultDueDays' =>  get_site_option('oasiswf_default_due_days')
       ));
 	}
+	
+	static function owf_submit_to_workflow_hook_test($postId, $workflowId) {
+		FCUtility::owf_logger("this is testing the submit to workflow hook");
+		FCUtility::owf_logger("PostID:" . $postId);
+		FCUtility::owf_logger("Workflow ID:" . $workflowId);
+	}
+	 
+	static function owf_step_sign_off_hook_test($postId, $workflowId, $fromStepId, $toStepId) {
+		FCUtility::owf_logger("this is testing the step sign off workflow hook");
+		FCUtility::owf_logger("PostID:" . $postId);
+		FCUtility::owf_logger("Workflow ID:" . $workflowId);
+		FCUtility::owf_logger("From Step ID:" . $fromStepId);
+		FCUtility::owf_logger("To Step ID:" . $toStepId);
+	}
+	
+	static function owf_workflow_complete_hook_test($postId, $workflowId) {
+		FCUtility::owf_logger("this is testing the workflow completion hook");
+		FCUtility::owf_logger("PostID:" . $postId);
+		FCUtility::owf_logger("Workflow ID:" . $workflowId);
+	}	
 }
 add_action('wp_ajax_get_first_step_in_wf', array( 'FCProcessFlow', 'get_first_step_in_wf' ) );
 add_action('wp_ajax_get_pre_next_steps', array( 'FCProcessFlow', 'get_pre_next_steps' ) );

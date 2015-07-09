@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Automate your WordPress Editorial Workflow.
- Version: 1.3
+ Version: 1.4
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.3' );
-define( 'OASISWF_DB_VERSION','1.3');
+define( 'OASISWF_VERSION' , '1.4' );
+define( 'OASISWF_DB_VERSION','1.4');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -385,7 +385,11 @@ class FCInitialization
 		else if ($pluginOptions['version'] == "1.2")
 		{
 			FCInitialization::upgrade_database_13();
-		}								
+		}
+		else if ($pluginOptions['version'] == "1.3")
+		{
+			// nothing to upgrade
+		}
 
 		// update the version value
 		$oasiswf_info=array(
@@ -1232,5 +1236,11 @@ add_action('wp_ajax_get_step_comment', array( 'FCWorkflowInbox', 'get_step_comme
 add_action('wp_ajax_load_step_info', array( 'FCLoadWorkflow', 'load_step_info' ) );
 add_action('wp_ajax_purge_workflow_history', array('FCWorkflowHistory', 'purge_history') );
 add_action('wp_ajax_check_claim_ajax', array( 'FCWorkflowInbox', 'check_claim_ajax' ) );
+
+/* workflow action hooks
+ add_action('owf_submit_to_workflow', array( 'FCWorkflowActions', 'owf_submit_to_workflow_hook_test' ), 10, 2);
+ add_action('owf_step_sign_off', array( 'FCWorkflowActions', 'owf_step_sign_off_hook_test' ), 10, 4);
+ add_action('owf_workflow_complete', array( 'FCWorkflowActions', 'owf_workflow_complete_hook_test' ), 10, 2);
+ */
 
 ?>
