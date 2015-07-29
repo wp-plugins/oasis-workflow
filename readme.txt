@@ -51,12 +51,10 @@ More details for each feature, screenshots and documentation can be found on [ou
 * English
 * Spanish
 * French
-* German 
 * Italian
 * Swedish
  
 = Translators =
-* German (de_DE) - [meganlop](http://profiles.wordpress.org/meganlop)
 * French (fr_FR) - [Baptiste Rieg](http://www.batrieg.com)
 * Italian (it_IT) - [Martino Stenta](https://profiles.wordpress.org/molokom)
 * Swedish (sv_SE) - Norbert Kustra
