@@ -435,7 +435,6 @@ class FCProcessFlow extends FCWorkflowBase
       else {
          $task_actor_id = get_current_user_id();
       }
-      $dueDate = sanitize_text_field( $_POST["hi_due_date"] );
       $user_comments = sanitize_text_field( $_POST["hi_comment"] );
       
 		$comments[] = array( "send_id" => $task_actor_id, "comment" => stripcslashes( $user_comments ) ) ;
@@ -464,6 +463,7 @@ class FCProcessFlow extends FCWorkflowBase
          ) ;
 
          if ( isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"] )) {
+         	$dueDate = sanitize_text_field( $_POST["hi_due_date"] );
             $review_data["due_date"] = FCWorkflowCRUD::format_date_for_db_wp_default( sanitize_text_field( $dueDate ));
          }
 
@@ -484,6 +484,7 @@ class FCProcessFlow extends FCWorkflowBase
    			'create_datetime' => current_time('mysql')
          );
          if ( isset($_POST["hi_due_date"]) && !empty($_POST["hi_due_date"] )) {
+         	$dueDate = sanitize_text_field( $_POST["hi_due_date"] );
             $data["due_date"] = FCWorkflowCRUD::format_date_for_db_wp_default( $dueDate );
          }
 
