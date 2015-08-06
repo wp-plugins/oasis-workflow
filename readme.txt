@@ -5,7 +5,7 @@ Requires at least: 3.6
 Tested up to: 4.2.4
 Stable tag: 1.5
 
-Automate your WordPress Editorial Workflow with Oasis Workflow. Simple, intuitive drag and drop workflow builder to streamline your editorial review process.
+Automate your WordPress Editorial Workflow with Oasis Workflow. Simple, intuitive drag and drop workflow builder to streamline your editorial process.
 
 == Description ==
 
