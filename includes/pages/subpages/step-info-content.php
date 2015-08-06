@@ -2,9 +2,14 @@
 global $wp_roles, $wpdb ;
 $process_info = "";
 $step_info = "";
-if( isset($_POST['step_dbid']) && $_POST["step_dbid"] != "nodefine" )
+$step_dbid = "";
+$step_gpid = "";
+if( isset($_POST['step_gpid']) && sanitize_text_field( $_POST["step_gpid"] )) {
+	$step_gpid = sanitize_text_field( $_POST["step_gpid"] );
+}
+if( isset($_POST['step_dbid']) && sanitize_text_field( $_POST["step_dbid"] ) != "nodefine" )
 {
-   $step_dbid = $_POST["step_dbid"];
+   $step_dbid = sanitize_text_field( $_POST["step_dbid"] );
 	$step_row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_workflow_steps_table_name() . " WHERE ID = %d" , $step_dbid ) );
 	$step_info = json_decode($step_row->step_info);
 	$process_info = json_decode($step_row->process_info);
@@ -214,17 +219,15 @@ if( isset($_POST['step_dbid']) && $_POST["step_dbid"] != "nodefine" )
 			</div>
 		</form>
 		<br class="clear">
-		<input type="hidden" id="step_gpid-hi" value="<?php echo $_POST["step_gpid"] ;?>" />
-		<input type="hidden" id="step_dbid-hi" value="<?php echo $_POST["step_dbid"] ;?>" />
+		<input type="hidden" id="step_gpid-hi" value="<?php echo $step_gpid ;?>" />
+		<input type="hidden" id="step_dbid-hi" value="<?php echo $step_dbid ;?>" />
 	</div>
 	<div class="dialog-title" style="padding-bottom:0.5em"></div>
 	<br class="clear">
 	<p class="step-set">
-		<?php if( $_POST["editable"] ):?>
-			<input type="button" id="stepSave" class="button-primary" value="<?php echo __("Save", "oasisworkflow") ;?>"  />
-			<span>&nbsp;</span>
-		<?php endif;?>
-			<a href="#" id="stepCancel" style="color:blue;margin-top:5px;"><?php echo __("Cancel", "oasisworkflow") ;?></a>
+		<input type="button" id="stepSave" class="button-primary" value="<?php echo __("Save", "oasisworkflow") ;?>"  />
+		<span>&nbsp;</span>
+		<a href="#" id="stepCancel" style="color:blue;margin-top:5px;"><?php echo __("Cancel", "oasisworkflow") ;?></a>
 	</p>
 	<br class="clear">
 </div>

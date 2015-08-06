@@ -151,10 +151,13 @@ class FCWorkflowActions
                          '',
                    		 OASISWF_VERSION,
                          true);
+               
+               $workflow_terminology_options = get_site_option( 'oasiswf_custom_workflow_terminology' );
+               $abort_workflow_label = !empty( $workflow_terminology_options['abortWorkflowText'] ) ? $workflow_terminology_options['abortWorkflowText'] : __( 'Abort Workflow', 'oasisworkflow' );
 
                wp_localize_script( 'owf-abort-workflow', 'owf_abort_workflow_vars', array(
-         						'abortWorkflow' => __( 'Abort workflow', 'oasisworkflow' ),
-               				'abortWorkflowConfirm' => __( 'Are you sure to abort the workflow?', 'oasisworkflow' )
+         						'abortWorkflow' => $abort_workflow_label,
+               				'abortWorkflowConfirm' => __( 'Are you sure to terminate the workflow?', 'oasisworkflow' )
                        ));
 				}
 			}
@@ -256,8 +259,10 @@ class FCWorkflowActions
 
 	static function localize_submit_workflow_script()
 	{
+		$workflow_terminology_options = get_site_option( 'oasiswf_custom_workflow_terminology' );
+		$submit_to_workflow_label = !empty( $workflow_terminology_options['submitToWorkflowText'] ) ? $workflow_terminology_options['submitToWorkflowText'] : __( 'Submit to Workflow', 'oasisworkflow' );
       wp_localize_script( 'owf_submit_workflow', 'owf_submit_workflow_vars', array(
-				'submitToWorkflowButton' => __( 'Submit to Workflow', 'oasisworkflow' ),
+				'submitToWorkflowButton' => $submit_to_workflow_label,
 				'allStepsNotDefined' => __( 'All steps are not defined.\n Please check the workflow.', 'oasisworkflow' ),
 				'notValidWorkflow' => __( 'The selected workflow is not valid.\n Please check this workflow.', 'oasisworkflow' ),
 				'noUsersDefined' => __( 'No users found for the given role.', 'oasisworkflow' ),
@@ -280,8 +285,10 @@ class FCWorkflowActions
 
 	static function localize_submit_step_script()
 	{
+		$workflow_terminology_options = get_site_option( 'oasiswf_custom_workflow_terminology' );
+		$sign_off_label = !empty( $workflow_terminology_options['signOffText'] ) ? $workflow_terminology_options['signOffText'] : __( 'Sign Off', 'oasisworkflow' );		
       wp_localize_script( 'owf_submit_step', 'owf_submit_step_vars', array(
-				'signOffButton' => __( 'Sign Off', 'oasisworkflow' ),
+				'signOffButton' => $sign_off_label,
 				'claimButton' => __( 'Claim', 'oasisworkflow' ),
 				'inboxButton' => __( 'Go to Workflow Inbox', 'oasisworkflow' ),
 				'firstStepMessage' => __( 'This is the first step in the workflow.</br> Do you really want to cancel the post/page from the workflow?', 'oasisworkflow' ),

@@ -1,6 +1,6 @@
 <?php
 //----------------
-$action = (isset($_GET['action']) && $_GET["action"]) ? $_GET["action"] : "all" ;
+$action = (isset($_GET['action']) && $_GET["action"]) ? sanitize_text_field( $_GET["action"] ) : "all" ;
 $workflows = "";
 if ($action == 'hideNotice') {
 	update_site_option("oasiswf_show_upgrade_notice", "no") ;
@@ -14,7 +14,7 @@ if ($action == 'hideNotice') {
 $wfcount = $list_workflow->get_workflow_count() ;
 //----------------
 $count_posts = count($workflows);
-$pagenum=(isset($_GET['paged']) && $_GET["paged"]) ? $_GET["paged"] : 1;
+$pagenum=(isset($_GET['paged']) && $_GET["paged"]) ? sanitize_text_field( $_GET["paged"] ) : 1;
 $per_page=15;
 FCUtility::owf_pro_features();
 ?>
@@ -25,9 +25,10 @@ FCUtility::owf_pro_features();
 		<div class="tablenav">
 			<ul class="subsubsub">
 				<?php
-				$active_val = isset($wcclass["active"])? $wcclass["active"] : "";
-				$inactive_val = isset($wcclass["inactive"])? $wcclass["inactive"] : "";
-				echo '<li class="all"><a href="admin.php?page=oasiswf-admin"' . $wcclass["all"] . ' >' . __('All', "oasisworkflow") .
+				$active_val = isset( $wcclass["active"] ) ? $wcclass["active"] : "";
+				$inactive_val = isset( $wcclass["inactive"] ) ? $wcclass["inactive"] : "";
+				$all = isset( $wcclass["all"] ) ? $wcclass["all"] : "";
+				echo '<li class="all"><a href="admin.php?page=oasiswf-admin"' . $all . ' >' . __('All', "oasisworkflow") .
 						'<span class="count">(' . $wfcount->wfall . ')</span></a></li>';
 				echo ' | <li class="all"><a href="admin.php?page=oasiswf-admin&action=active"' . $active_val . '>' . __('Active', "oasisworkflow") .
 						'<span class="count">(' . $wfcount->wfactive . ')</span></a> </li>';

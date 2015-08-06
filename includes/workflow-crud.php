@@ -7,16 +7,17 @@ class FCWorkflowCRUD extends FCWorkflowBase
 	static function save()
 	{
 		global $wpdb, $workflow_message;
-		$title = trim($_POST["define-workflow-title"]) ;
-		$dec = $_POST["define-workflow-description"] ;
+		$workflow_id = intval( sanitize_text_field( $_POST["wf_id"] ));
+		$title = sanitize_text_field( $_POST["define-workflow-title"] ) ;
+		$dec = sanitize_text_field( $_POST["define-workflow-description"] );
 		$graphic = stripcslashes($_POST["wf_graphic_data_hi"]) ;
 		$startdate = '';
 		$enddate = '';
 		if (isset($_POST["start-date"]) && !empty($_POST["start-date"])) {
-			$startdate = FCWorkflowCRUD::format_date_for_db_wp_default( $_POST["start-date"] ) ;
+			$startdate = FCWorkflowCRUD::format_date_for_db_wp_default( sanitize_text_field( $_POST["start-date"] )) ;
 		}
 		if (isset($_POST["end-date"]) && !empty($_POST["end-date"])) {
-			$enddate = FCWorkflowCRUD::format_date_for_db_wp_default( $_POST["end-date"] ) ;
+			$enddate = FCWorkflowCRUD::format_date_for_db_wp_default( sanitize_text_field( $_POST["end-date"] )) ;
 		}
 
 		$workflow_message = FCWorkflowValidate::check_workflow_validate() ;
@@ -32,11 +33,12 @@ class FCWorkflowCRUD extends FCWorkflowBase
 									'is_valid' => $valid,
 									'update_datetime' => current_time('mysql')
 								),
-								array('ID' => $_POST["wf_id"])
+								array('ID' => $workflow_id )
 					);
 
 
 		if($_POST["deleted_step_ids"]){
+			$deleted_steps = sanitize_text_field( $_POST["deleted_step_ids"] );
 			$deleted_steps = explode( "@", $_POST["deleted_step_ids"] ) ;
 			for( $i = 0; $i < count( $deleted_steps ) -1 ; $i++ )
 			{
@@ -51,7 +53,8 @@ class FCWorkflowCRUD extends FCWorkflowBase
 	static function as_save()
 	{
 		global $wpdb;
-		$wf = FCWorkflowCRUD::get_workflow_by_id( $_POST["wf_id"] ) ;
+		$workflow_id = intval( sanitize_text_field( $_POST["wf_id"] ));
+		$wf = FCWorkflowCRUD::get_workflow_by_id( $workflow_id ) ;
 		if($wf){
 			$parentId = ( $wf->parent_id == 0 ) ? $wf->ID : $wf->parent_id ;
 			$newVersion = FCWorkflowCRUD::get_new_version($parentId);
@@ -178,8 +181,13 @@ class FCWorkflowCRUD extends FCWorkflowBase
 	{
 		global $wpdb ;
 		$workflow_step_table = FCUtility::get_workflow_steps_table_name();
-
-		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_workflow_steps_table_name() . " WHERE ID = %d" , $_POST["stepid"] ));
+		$wfId = isset( $_POST["wfid"] ) ? intval( sanitize_text_field( $_POST["wfid"] )) : "";
+		$stepId = isset( $_POST["stepid"] ) ? intval( sanitize_text_field( $_POST["stepid"] )) : "";
+		$stepGpId = isset( $_POST["stepgpid"] ) ? sanitize_text_field( $_POST["stepgpid"] ) : "";
+		$stepName = isset( $_POST["stepname"] ) ? sanitize_text_field( $_POST["stepname"] ) : "";
+		$action = isset( $_POST["act"] ) ? sanitize_text_field( $_POST["act"] ) : "";
+		
+		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM " . FCUtility::get_workflow_steps_table_name() . " WHERE ID = %d" , $stepId ));
 		if(	$result ) {
 			$result = $wpdb->update(
 						$workflow_step_table,
@@ -188,10 +196,8 @@ class FCWorkflowCRUD extends FCWorkflowBase
 							'process_info' => stripcslashes( $_POST["processinfo"] ),
 							'update_datetime' => current_time('mysql')
 						),
-						array('ID' =>  $_POST["stepid"])
+						array('ID' =>  $stepId)
 					);
-
-			$stepId = $_POST["stepid"] ;
 		}else{
 			$result = $wpdb->insert(
 						$workflow_step_table,
@@ -200,23 +206,23 @@ class FCWorkflowCRUD extends FCWorkflowBase
 							'process_info' => stripcslashes( $_POST["processinfo"] ),
 							'create_datetime' => current_time('mysql'),
 						   'update_datetime' => current_time('mysql'),
-							'workflow_id' => $_POST["wfid"],
+							'workflow_id' => $wfId,
 						)
 					);
 			$insert_row = $wpdb->get_row("SELECT max(ID) as maxid FROM " . FCUtility::get_workflow_steps_table_name());
 			$stepId = $insert_row->maxid ;
 		}
 
-		if( $_POST["act"] == "old" ){
+		if( $action == "old" ){
 			$param = array(
-						"wpid" => $_POST["wfid"],
-						"stepgpid" => $_POST["stepgpid"],
+						"wpid" => $wfId,
+						"stepgpid" => $stepGpId,
 						"stepdbid" => $stepId,
-						"name" => stripcslashes( $_POST["stepname"])
+						"name" => stripcslashes( $stepName )
 						);
 			FCWorkflowCRUD::wokflow_data_update($param) ;
 		}
-		echo $stepId ;
+		echo trim( $stepId ) ;
 		exit();
 	}
 
@@ -234,10 +240,13 @@ class FCWorkflowCRUD extends FCWorkflowBase
 	{
 		global $wpdb;
 		$workflow = FCWorkflowCRUD::get_workflow_by_id( $wfid ) ;
-		if( $workflow->version == 1 )return false;
+		if( $workflow->version == 1 ) { // there is only one version, nothing to do
+			return false;
+		}
+		$previous_version = $workflow->version - 1;
 		$parent_id = ( $workflow->parent_id ) ? $workflow->parent_id : $wfid ;
-		$sql = "SELECT * FROM " . FCUtility::get_workflows_table_name() . " WHERE version=" .  ( $workflow->version - 1 ) . " && (parent_id = " . $parent_id . " || ID = " . $parent_id .  " )" ;
-		$previous_workflow = $wpdb->get_row( $sql ) ;
+		$sql = "SELECT * FROM " . FCUtility::get_workflows_table_name() . " WHERE version= %d && (parent_id = %d || ID = %d )" ;
+		$previous_workflow = $wpdb->get_row( $wpdb->prepare( $sql, array( $previous_version, $parent_id, $parent_id ))) ;
 		if( $previous_workflow ){
 			if( $field_name )
 				return 	$previous_workflow->$field_name ;
@@ -247,7 +256,6 @@ class FCWorkflowCRUD extends FCWorkflowBase
 		return false;
 	}
 
-	//============The Functions is to copy and paste FCProcessFlow Class functions to get first step and last step===========
 	static function copy_get_first_last_step($wfinfo)
 	{
 		if( $wfinfo->steps ){
@@ -305,6 +313,5 @@ class FCWorkflowCRUD extends FCWorkflowBase
 
 		return false;
 	}
-	//=========================================================================================================================
 }
 ?>

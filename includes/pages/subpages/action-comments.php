@@ -1,26 +1,28 @@
 <?php
-	$action = FCWorkflowInbox::get_action_history_by_id( $_POST["actionid"] ) ;
+	$action = FCWorkflowInbox::get_action_history_by_id( intval( sanitize_text_field( $_POST["actionid"] ))) ;
 	$signoffdate = $action->create_datetime ;
 	$comments = json_decode($action->comment) ;
 
-	if( isset($_POST["page_action"]) && $_POST["page_action"] == "history" )
+	if( isset($_POST["page_action"]) && sanitize_text_field( $_POST["page_action"] ) == "history" )
 	{
-		$action = FCWorkflowInbox::get_action_history_by_from_id( $_POST["actionid"] ) ;
+		$action = FCWorkflowInbox::get_action_history_by_from_id( $action ) ;
 		if( $action ){
 			$comments = json_decode($action->comment) ;
 		}
 		if(!$comments)$comments = array();
 	}
 
-	if( isset($_POST["page_action"]) && $_POST["page_action"] =="review" )
+	if( isset($_POST["page_action"]) && sanitize_text_field( $_POST["page_action"] ) =="review" )
 	{
 		$signoffdate = "" ;
-		$action = FCWorkflowInbox::get_review_action_by_id( $_POST["actionid"] ) ;
+		$action = FCWorkflowInbox::get_review_action_by_id( $action ) ;
 		if( $action ){
 			$comments = json_decode($action->comments) ;
 			$signoffdate = $action->update_datetime ;
 		}
-		if(!$comments)$comments = array();
+		if( !$comments ) {
+			$comments = array();
+		}
 	}
 ?>
 <div class="info-setting" id="stepcomment-setting" style="display:none;">

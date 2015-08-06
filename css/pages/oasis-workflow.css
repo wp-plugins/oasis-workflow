@@ -184,7 +184,8 @@ div#workflow-edit-icon {
 }
 
 .div-line {
-   border-bottom:1px dotted grey; font-size:90%;
+   border-bottom:1px dotted grey; 
+   font-size:90%;
    text-align:center;
 }
 
@@ -741,4 +742,24 @@ a.owf_about_link:hover {
     text-transform: uppercase;
     box-shadow: none;
     line-height: 26px;
+}
+
+.select-actors-div select[multiple] {
+    height: 100px;
+}
+
+.full-width {
+   width:100%;
+}
+
+.half-width {
+   width:50% !important;
+}
+
+.quarter-width {
+   width:25% !important;
+}
+
+.three-fourth-width {
+   width:75% !important;
 }

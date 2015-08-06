@@ -2,10 +2,10 @@
 Contributors: nuggetsol
 Tags: workflow, work flow, review, assignment, publish, inbox, workflow history, audit,versioning, auto submit, approval workflow, editorial workflow, notifications, oasis workflow, editorial, revisions, document revision, version control, collaboration, document management, revision scheduling, duplication, clone, revise, revise article
 Requires at least: 3.6
-Tested up to: 4.2.2
-Stable tag: 1.4
+Tested up to: 4.2.4
+Stable tag: 1.5
 
-Automate your WordPress Editorial Workflow with Oasis Workflow.
+Automate your WordPress Editorial Workflow with Oasis Workflow. Simple, intuitive drag and drop workflow builder to streamline your editorial review process.
 
 == Description ==
 
@@ -106,6 +106,14 @@ For [Frequently Asked Questions](http://oasisworkflow.com/faq) plus documentatio
 
 
 == Changelog ==
+
+= Version 1.5 =
+* Fixed CSRF and SQL injection security related issues.
+* Default the workflow if there is only one applicable workflow.
+* Added multi-select and multi-push/pull for the assignee and available users.
+* Added more sort options on the inbox.
+* Allow to save step even when there are items in the workflow.
+* Added a new settings tab for configuring workflow terminology. You can now specify your own terminology for various actions.
 
 = Version 1.4 =
 * Fixed abort

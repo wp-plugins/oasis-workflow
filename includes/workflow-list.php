@@ -4,7 +4,7 @@ class FCWorkflowList extends FCWorkflowBase
 	static function delete()
 	{
 		global $wpdb;
-		$wf_id = $_GET["wf_id"] ;
+		$wf_id = intval( sanitize_text_field( $_GET["wf_id"] )) ;
 		FCWorkflowList::delete_step_by_wfid( $wf_id ) ;
 		$result = $wpdb->get_results( $wpdb->prepare( "DELETE FROM " . FCUtility::get_workflows_table_name() . " WHERE ID = %d", $wf_id ) );
 		wp_redirect( network_admin_url( 'admin.php?page=oasiswf-admin' ) );
@@ -40,20 +40,22 @@ class FCWorkflowList extends FCWorkflowBase
 		echo "</tr>";
 	}
 
-	static function get_workflow_list($action=null)
+	static function get_workflow_list( $action = null )
 	{
 		global $wpdb;
 		$currenttime = date("Y-m-d") ;
 		if( $action == "all" )
 			return FCWorkflowList::get_all_workflows();
 
-		if( $action == "active" )
-			$sql = "SELECT * FROM " . FCUtility::get_workflows_table_name() . " WHERE start_date <= '$currenttime' AND end_date >= '$currenttime' AND is_valid = 1" ;
+		if( $action == "active" ) {
+			$sql = "SELECT * FROM " . FCUtility::get_workflows_table_name() . " WHERE start_date <= %s AND end_date >= %s AND is_valid = 1" ;
+			return $wpdb->get_results( $wpdb->prepare( $sql, array( $currenttime, $currenttime ))) ;
+		}
 
-		if( $action == "inactive" )
-			$sql = "SELECT * FROM " . FCUtility::get_workflows_table_name() . " WHERE NOT(start_date <= '$currenttime' AND end_date >= '$currenttime' AND is_valid = 1)" ;
-
-		return $wpdb->get_results( $sql ) ;
+		if( $action == "inactive" ) {
+			$sql = "SELECT * FROM " . FCUtility::get_workflows_table_name() . " WHERE NOT(start_date <= %s AND end_date >= %s AND is_valid = 1)" ;
+			return $wpdb->get_results( $wpdb->prepare( $sql, array( $currenttime, $currenttime ))) ;
+		}
 	}
 
 	static function get_workflow_count()
@@ -62,10 +64,10 @@ class FCWorkflowList extends FCWorkflowBase
 		$currenttime = date("Y-m-d") ;
 		$sql = "SELECT
 					SUM(ID > 0) as wfall,
-					SUM(start_date <= '$currenttime' AND end_date >= '$currenttime' AND is_valid = 1) as wfactive,
-					SUM(NOT(start_date <= '$currenttime' AND end_date >= '$currenttime' AND is_valid = 1)) as wfinactive
+					SUM(start_date <= %s AND end_date >= %s AND is_valid = 1) as wfactive,
+					SUM(NOT(start_date <= %s AND end_date >= %s AND is_valid = 1)) as wfinactive
 				FROM " . FCUtility::get_workflows_table_name();
-		return $wpdb->get_row( $sql ) ;
+		return $wpdb->get_row( $wpdb->prepare( $sql, array( $currenttime, $currenttime, $currenttime, $currenttime))) ;
 	}
 }
 ?>

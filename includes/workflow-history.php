@@ -3,35 +3,24 @@ class FCWorkflowHistory extends FCWorkflowBase
 {
    static function get_table_header()
    {
-      $create_date_order_class = "";
-      $order = ( isset($_GET['order']) && $_GET["order"] == "desc" ) ? "asc" : "desc" ;
+      $order = ( isset($_GET['order']) && sanitize_text_field( $_GET["order"] ) == "desc" ) ? "asc" : "desc" ;
 
-      if( isset($_GET['orderby']) && $_GET["orderby"] == "post_title" )
-         $post_order_class = $_GET["order"] ;
+      if( isset($_GET['orderby']) && sanitize_text_field( $_GET["orderby"] ) == "post_title" )
+         $post_order_class = sanitize_text_field( $_GET["order"] );
       else
          $post_order_class = "" ;
 
-      if( isset($_GET['orderby']) && $_GET["orderby"] == "wf_name" )
-         $wf_order_class = $_GET["order"] ;
+      if( isset($_GET['orderby']) && sanitize_text_field( $_GET["orderby"] ) == "wf_name" )
+         $wf_order_class = sanitize_text_field( $_GET["order"] );
       else
          $wf_order_class = "" ;
 
-      if( isset($_GET['orderby']) && $_GET["orderby"] == "assign_actor" )
-         $assign_order_class = $_GET["order"] ;
+      if( isset($_GET['orderby']) && sanitize_text_field( $_GET["orderby"] ) == "create_datetime" )
+         $create_date_order_class = sanitize_text_field( $_GET["order"] );
       else
-      $assign_order_class = "" ;
+         $create_date_order_class = "" ;
 
-      if( isset($_GET['orderby']) && $_GET["orderby"] == "due_date" )
-         $due_date_order_class = $_GET["order"] ;
-      else
-         $due_date_order_class = "" ;
-
-      if( isset($_GET['orderby']) && $_GET["orderby"] == "reminder_date" )
-         $reminder_date_order_class = $_GET["order"] ;
-      else
-         $reminder_date_order_class = "" ;
-
-      $wherepost = ( isset($_GET['post']) && $_GET["post"] ) ? "&post=" . $_GET["post"] : "" ;
+      $wherepost = ( isset($_GET['post']) && sanitize_text_field( $_GET["post"] )) ? "&post=" . intval( sanitize_text_field( $_GET["post"] )) : "" ;
 
       echo "<tr>";
       echo "<th scope='col' class='manage-column check-column' ><input type='checkbox'></th>";
@@ -64,9 +53,36 @@ class FCWorkflowHistory extends FCWorkflowBase
    static function get_workflow_history_all($postid=null)
    {
       global $wpdb;
-      $orderby = ( isset($_GET['orderby']) && $_GET['orderby'] ) ? " ORDER BY {$_GET['orderby']} {$_GET['order']}, A.ID DESC" : "  ORDER BY A.ID DESC" ;
+
+      // use white list approach to set order by clause
+      $orderby = array(
+      		'post_title' => 'post_title',
+      		'wf_name' => 'wf_name',
+      		'create_datetime' => 'create_datetime'
+      );
+      
+      $sortorder = array(
+      		'asc' => 'ASC',
+      		'desc' => 'DESC',
+      );
+      
+      // default order by
+      $orderbycol = " ORDER BY A.ID DESC"; // default order by column
+      if ( isset($_GET['orderby']) && $_GET['orderby'] ) {
+      	// sanitize data
+      	$user_provided_orderby = sanitize_text_field( $_GET['orderby'] );
+      	$user_provided_order = sanitize_text_field( $_GET['order'] );
+      	if (  array_key_exists ( $user_provided_orderby, $orderby )) { 
+      		$orderbycol = " ORDER BY " . $orderby[$user_provided_orderby] . " " . $sortorder[$user_provided_order] . ", A.ID DESC";
+      	}
+      }
+      
       $w = "action_status!='complete' AND action_status!='cancelled'" ;
-      if( $postid )$w .= " AND post_id=" . $postid ;
+      
+      // if post id is provided, filter by post_id
+      if( $postid ) {
+      	$w .= " AND post_id= %d ";
+      }
       $sql = "SELECT A.* , B.post_title, C.ID as userid, C.display_name as assign_actor, D.step_info, D.workflow_id, D.wf_name, D.version
 					FROM
 						((SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE $w) AS A
@@ -79,35 +95,55 @@ class FCWorkflowHistory extends FCWorkflowBase
 						LEFT JOIN
 						(SELECT AA.*, BB.name as wf_name, BB.version FROM " . FCUtility::get_workflow_steps_table_name() . " AS AA LEFT JOIN " . FCUtility::get_workflows_table_name() . " AS BB ON AA.workflow_id = BB.ID) AS D
 						ON A.step_id = D.ID)
-						{$orderby}" ;
-		$result = $wpdb->get_results( $sql ) ;
+						{$orderbycol}" ;
+						
+		$result = "";
+		if ( $postid ) {
+			$result = $wpdb->get_results( $wpdb->prepare( $sql, $postid )) ;
+		} else {
+			$result = $wpdb->get_results( $sql ) ;
+		}
 		return $result;
    }
 
-   static function get_history_count($postid=null)
+   static function get_history_count( $postid = null )
    {
       global $wpdb;
+      
       $w = "action_status !='complete' AND action_status!='cancelled'" ;
-      if( $postid )$w .= " AND post_id=" . $postid ;
+      
+      // if post id is provided, filter by post_id
+      if( $postid ) {
+      	$w .= " AND post_id= %d ";
+      }
       $sql = "SELECT A.*
 					FROM
 						((SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE $w) AS A
 						LEFT JOIN " . FCUtility::get_action_table_name() . " AS C
 						ON A.ID = C.action_history_id)
 					" ;
-      $results = $wpdb->get_results( $sql ) ;
+      
+   	$results = "";
+		if ( $postid ) {
+			$results = $wpdb->get_results( $wpdb->prepare( $sql, $postid )) ;
+		} else {
+			$results = $wpdb->get_results( $sql ) ;
+		}
+		
       $final_results = array();
       foreach ($results as $result) {
-         if ($result->action_status == 'aborted' && $result->assign_actor_id == "1") {
-            $final_results[] = $result;
-         }
+         $final_results[] = $result;
       }
       return count($final_results);
    }
 
    static function get_step_name($row)
    {
-      if( $row->action_status == "submitted" )return "submit" ;
+   	$option = get_site_option( 'oasiswf_custom_workflow_terminology' );
+   	$submit_to_workflow = !empty($option['submitToWorkflowText']) ? $option['submitToWorkflowText'] : __( 'Submit to Workflow', "oasisworkflow" );
+      if( $row->action_status == "submitted" ) {
+      	return $submit_to_workflow;
+      }
       $info = $row->step_info;
       if( $info ){
          $stepinfo = json_decode( $info )	;
@@ -154,14 +190,14 @@ class FCWorkflowHistory extends FCWorkflowBase
    static function get_process_result($fromStep, $toStep)
    {
       $fromsteps = FCWorkflowHistory::get_process_steps($fromStep) ;
-      if( $fromsteps && isset($fromsteps["success"]) && $fromsteps["success"] )
+      if( $fromsteps && isset( $fromsteps["success"] ) && $fromsteps["success"] )
       {
          foreach ($fromsteps["success"] as $k => $v) {
             if( $k == $toStep )return "success" ;
          }
       }
 
-      if( $fromsteps && $fromsteps["failure"] )
+      if( $fromsteps && isset( $fromsteps["failure"] ) && $fromsteps["failure"] )
       {
          foreach ($fromsteps["failure"] as $k => $v) {
             if( $k == $toStep )return "failure" ;

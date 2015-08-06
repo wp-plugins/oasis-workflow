@@ -1,12 +1,12 @@
 <?php
 global $chkResult;
-$oasiswf = ( isset($_GET["oasiswf"]) && $_GET["oasiswf"]) ? $_GET["oasiswf"] : $chkResult ;
+$oasiswf = ( isset($_GET["oasiswf"]) && $_GET["oasiswf"]) ? sanitize_text_field( $_GET["oasiswf"] ) : $chkResult ;
+$parent_page = ( isset($_GET["parent_page"]) && $_GET["parent_page"] ) ? sanitize_text_field( $_GET["parent_page"] ) : "post_edit" ; //check to be called from which page
 $editable = current_user_can('edit_posts') ;
-$parent_page = ( isset($_GET["parent_page"]) && $_GET["parent_page"] ) ? $_GET["parent_page"] : "post_edit" ; //check to be called from which page
 if ( isset($_GET["task_user"]) && $_GET["task_user"] ) {
-	$task_user = $_GET["task_user"];
+	$task_user = intval( sanitize_text_field( $_GET["task_user"] ));
 } else if ( isset($_GET["user"]) && $_GET["user"] ) {
-	$task_user = $_GET["user"];
+	$task_user = intval( sanitize_text_field( $_GET["user"] ));
 } else {
 	$task_user = "";
 }
@@ -26,9 +26,15 @@ if ( !empty( $default_due_days )) {
 }
 $reminder_days = get_site_option('oasiswf_reminder_days');
 $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
+
+$workflow_terminology_options = get_site_option( 'oasiswf_custom_workflow_terminology' );
+$sign_off_label = !empty( $workflow_terminology_options['signOffText'] ) ? $workflow_terminology_options['signOffText'] : __( 'Sign Off', 'oasisworkflow' );
+$assign_actors_label = !empty( $workflow_terminology_options['assignActorsText'] ) ? $workflow_terminology_options['assignActorsText'] : __( 'Assign Actor(s)', 'oasisworkflow' );
+$due_date_label = !empty( $workflow_terminology_options['dueDateText'] ) ? $workflow_terminology_options['dueDateText'] : __( 'Due Date', 'oasisworkflow' );
+
 ?>
 <div class="info-setting" id="new-step-submit-div" style="display:none;">
-	<div class="dialog-title"><strong><?php echo __("Sign Off", "oasisworkflow") ;?></strong></div>
+	<div class="dialog-title"><strong><?php echo $sign_off_label ;?></strong></div>
 	<div id="message_div"></div>
 	<div>
 		<div class="select-part">
@@ -77,14 +83,14 @@ $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
 				<br class="clear">
 			</div>
 			<div id="multi-actors-div" class="select-info" style="height:120px;">
-				<label><?php echo __("Assign actor(s) :", "oasisworkflow") ;?></label>
+				<label><?php echo $assign_actors_label . " :" ;?></label>
 				<div class="select-actors-div">
 					<div class="select-actors-list" >
 						<label><?php echo __("Available", "oasisworkflow") ;?></label>
 						<span class="assign-loading-span" style="float:right;margin-top:-18px;">&nbsp;</span>
 						<br class="clear">
 						<p>
-							<select id="actors-list-select" name="actors-list-select" size=10></select>
+							<select id="actors-list-select" name="actors-list-select" multiple="multiple" size=10></select>
 						</p>
 					</div>
 					<div class="select-actors-div-point">
@@ -94,7 +100,7 @@ $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
 					<div class="select-actors-list">
 						<label><?php echo __("Assigned", "oasisworkflow") ;?></label><br class="clear">
 						<p>
-							<select id="actors-set-select" name="actors-set-select" size=10></select>
+							<select id="actors-set-select" name="actors-set-select" multiple="multiple" size=10></select>
 						</p>
 					</div>
 				</div>
@@ -103,7 +109,7 @@ $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
 			<?php if ($default_due_days != '' || $reminder_days != '' || $reminder_days_after != ''):?>
 			<div class="text-info left">
 				<div class="left">
-					<label><?php echo __("Due Date : ", "oasisworkflow") ;?></label>
+					<label><?php echo $due_date_label . " : " ; ?></label>
 				</div>
 				<div class="left">
 					<input class="date_input" id="due-date" value="<?php echo $default_date;?>"/>
@@ -124,15 +130,15 @@ $reminder_days_after = get_site_option('oasiswf_reminder_days_after');
 			</div>
 
 		<div class="changed-data-set">
-			<input type="button" id="submitSave" class="button-primary" value="<?php echo __("Sign Off", "oasisworkflow") ;?>" />
-			<input type="button" id="cancelSave" class="button-primary" value="<?php echo __("Sign Off", "oasisworkflow") ;?>" />
-			<input type="button" id="completeSave" class="button-primary" value="<?php echo __("Sign Off", "oasisworkflow") ;?>" />
+			<input type="button" id="submitSave" class="button-primary" value="<?php echo $sign_off_label ?>" />
+			<input type="button" id="cancelSave" class="button-primary" value="<?php echo $sign_off_label ?>" />
+			<input type="button" id="completeSave" class="button-primary" value="<?php echo $sign_off_label ?>" />
 			<span>&nbsp;</span>
 			<a href="#" id="submitCancel"><?php echo __("Cancel", "oasisworkflow") ;?></a>
 		</div>
 		<br class="clear">
 	</div>
-	<input type="hidden" id="hi_post_id"  value="<?php echo $_GET["post"] ;?>" />
+	<input type="hidden" id="hi_post_id"  value="<?php echo $post_id ;?>" />
 	<input type="hidden" id="hi_oasiswf_id" name="hi_oasiswf_id" value="<?php echo $oasiswf ;?>" />
 	<input type="hidden" id="hi_editable" value="<?php echo $editable ;?>" />
 	<input type="hidden" id="hi_parrent_page" value="<?php echo $parent_page ;?>" />

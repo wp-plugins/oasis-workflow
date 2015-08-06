@@ -1,8 +1,8 @@
 <?php
-$selected_post = isset( $_GET['post'] ) ? $_GET["post"] : "";
+$selected_post = isset( $_GET['post'] ) ? intval( sanitize_text_field( $_GET["post"] )) : "";
 $histories = $history_workflow->get_workflow_history_all( $selected_post );
 $count_posts = $history_workflow->get_history_count($selected_post);
-$pagenum = (isset( $_GET['paged'] ) && $_GET["paged"]) ? $_GET["paged"] : 1;
+$pagenum = (isset( $_GET['paged'] ) && $_GET["paged"]) ? intval( sanitize_text_field( $_GET["paged"] )) : 1;
 $per_page = 25;
 ?>
 <div class="wrap">
@@ -18,7 +18,7 @@ $per_page = 25;
 					if( $wf_posts )
 					{
 						foreach ($wf_posts as $wf_post) {
-							if( isset( $_GET['post'] ) && $_GET["post"] == $wf_post->wfpostid )
+							if( isset( $_GET['post'] ) && intval( sanitize_text_field( $_GET["post"] )) == $wf_post->wfpostid )
 								echo "<option value={$wf_post->wfpostid} selected>{$wf_post->title}</option>" ;
 							else
 								echo "<option value={$wf_post->wfpostid}>{$wf_post->title}</option>" ;

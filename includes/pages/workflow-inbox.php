@@ -1,12 +1,16 @@
 <?php
-$selected_user = isset( $_GET['user'] ) ? $_GET["user"] : get_current_user_id();
+$selected_user = isset( $_GET['user'] ) ? intval( sanitize_text_field( $_GET["user"] )) : get_current_user_id();
 $wfactions = $inbox_workflow->get_assigned_post( null, $selected_user ) ;
 $count_posts = count($wfactions);
-$pagenum = (isset($_GET['paged']) && $_GET["paged"]) ? $_GET["paged"] : 1;
+$pagenum = (isset($_GET['paged']) && $_GET["paged"]) ? intval( sanitize_text_field( $_GET["paged"] )) : 1;
 $per_page = 10;
 $posteditable = current_user_can('edit_others_posts') ;
 $current_user_role = FCProcessFlow::get_current_user_role() ;
 $current_user_id = get_current_user_id();
+
+$workflow_terminology_options = get_site_option( 'oasiswf_custom_workflow_terminology' );
+$sign_off_label = !empty( $workflow_terminology_options['signOffText'] ) ? $workflow_terminology_options['signOffText'] : __( 'Sign Off', 'oasisworkflow' );
+$abort_workflow_label = !empty( $workflow_terminology_options['abortWorkflowText'] ) ? $workflow_terminology_options['abortWorkflowText'] : __( 'Abort Workflow', 'oasisworkflow' );
 
 ?>
 <div class="wrap">
@@ -23,7 +27,7 @@ $current_user_id = get_current_user_id();
 					if( $assigned_users )
 					{
 						foreach ($assigned_users as $assigned_user) {
-							if( (isset( $_GET['user'] ) && $_GET["user"] == $assigned_user->ID) )
+							if( (isset( $_GET['user'] ) && intval( sanitize_text_field( $_GET["user"] )) == $assigned_user->ID) )
 								echo "<option value={$assigned_user->ID} selected>{$assigned_user->display_name}</option>" ;
 							else
 								echo "<option value={$assigned_user->ID}>{$assigned_user->display_name}</option>" ;
@@ -93,16 +97,16 @@ $current_user_id = get_current_user_id();
 												echo "<span><a href='post.php?post={$wfaction->post_id}&action=edit&oasiswf={$wfaction->ID}&user={$selected_user}' class='edit' real={$wfaction->post_id}>" . __("Edit", "oasisworkflow"). "</a></span>&nbsp;|&nbsp;" ;
 											}
 
-												echo "<span><a href='" . get_permalink($wfaction->post_id) . "'>" . __("View", "oasisworkflow") . "</a></span>&nbsp;|&nbsp;";
+												echo "<span><a target='_blank' href='" . get_permalink($wfaction->post_id) . "'>" . __("View", "oasisworkflow") . "</a></span>&nbsp;|&nbsp;";
 											if($posteditable || ($user->ID == $current_user_id )){
 												echo "<span>
-														<a href='#' wfid='$wfaction->ID' postid='$wfaction->post_id' class='quick_sign_off'>" . __("Sign Off", "oasisworkflow") . "</a>
+														<a href='#' wfid='$wfaction->ID' postid='$wfaction->post_id' class='quick_sign_off'>" . $sign_off_label . "</a>
 														<span class='loading'>$sspace</span>
 													</span>&nbsp;|&nbsp;" ;
 											}
 											if ( $current_user_role == "administrator" ){
 												echo "<span>
-												<a href='#' actionid='$wfaction->ID' class='owf_abort'>" . __("Abort", "oasisworkflow") . "</a>
+												<a href='#' actionid='$wfaction->ID' class='owf_abort'>" . $abort_workflow_label . "</a>
 														<span class='loading'>$sspace</span>
 														</span>&nbsp;|&nbsp;" ;
 											}

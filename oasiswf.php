@@ -3,7 +3,7 @@
  Plugin Name: Oasis Workflow
  Plugin URI: http://www.oasisworkflow.com
  Description: Automate your WordPress Editorial Workflow.
- Version: 1.4
+ Version: 1.5
  Author: Nugget Solutions Inc.
  Author URI: http://www.nuggetsolutions.com
  Text Domain: oasis-workflow
@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 //Install, activate, deactivate and uninstall
 
-define( 'OASISWF_VERSION' , '1.4' );
-define( 'OASISWF_DB_VERSION','1.4');
+define( 'OASISWF_VERSION' , '1.5' );
+define( 'OASISWF_DB_VERSION','1.5');
 define( 'OASISWF_PATH', plugin_dir_path(__FILE__) ); //use for include files to other files
 define( 'OASISWF_ROOT' , dirname(__FILE__) );
 define( 'OASISWF_FILE_PATH' , OASISWF_ROOT . '/' . basename(__FILE__) );
@@ -220,6 +220,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}
 		else if ($pluginOptions['version'] == "1.0.1")
 		{
@@ -232,6 +233,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}
 		else if ($pluginOptions['version'] == "1.0.2")
 		{
@@ -244,6 +246,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}
 		else if ($pluginOptions['version'] == "1.0.3")
 		{
@@ -255,6 +258,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}
 		else if ($pluginOptions['version'] == "1.0.4")
 		{
@@ -265,6 +269,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}
 		else if ($pluginOptions['version'] == "1.0.5")
 		{
@@ -275,6 +280,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}
 		else if ($pluginOptions['version'] == "1.0.6")
 		{
@@ -285,6 +291,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}
 		else if ($pluginOptions['version'] == "1.0.7")
 		{
@@ -294,6 +301,8 @@ class FCInitialization
 			FCInitialization::upgrade_database_1019();
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
+			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}
 		else if ($pluginOptions['version'] == "1.0.8")
 		{
@@ -304,6 +313,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}
 		else if ($pluginOptions['version'] == "1.0.9")
 		{
@@ -314,6 +324,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}
 		else if ($pluginOptions['version'] == "1.0.10")
 		{
@@ -324,6 +335,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}
 	   else if ($pluginOptions['version'] == "1.0.11")
 		{
@@ -334,6 +346,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}
 		else if ($pluginOptions['version'] == "1.0.12")
 		{
@@ -343,6 +356,7 @@ class FCInitialization
 		 	FCInitialization::upgrade_database_11();
 		 	FCInitialization::upgrade_database_13();
 		 	FCInitialization::upgrade_database_14();
+		 	FCInitialization::upgrade_database_15();
 		}
 	   else if ($pluginOptions['version'] == "1.0.13")
 		{
@@ -352,6 +366,7 @@ class FCInitialization
 		 	FCInitialization::upgrade_database_11();
 		 	FCInitialization::upgrade_database_13();
 		 	FCInitialization::upgrade_database_14();
+		 	FCInitialization::upgrade_database_15();
 		}
 		else if ($pluginOptions['version'] == "1.0.14")
 		{
@@ -361,6 +376,7 @@ class FCInitialization
 		 	FCInitialization::upgrade_database_11();
 		 	FCInitialization::upgrade_database_13();
 		 	FCInitialization::upgrade_database_14();
+		 	FCInitialization::upgrade_database_15();
 		}
 		else if ($pluginOptions['version'] == "1.0.15")
 		{
@@ -369,6 +385,7 @@ class FCInitialization
          FCInitialization::upgrade_database_11();
          FCInitialization::upgrade_database_13();
          FCInitialization::upgrade_database_14();
+         FCInitialization::upgrade_database_15();
 		}		
 		else if ($pluginOptions['version'] == "1.0.16")
 		{
@@ -376,6 +393,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}
 		else if ($pluginOptions['version'] == "1.0.17")
 		{
@@ -383,6 +401,7 @@ class FCInitialization
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}	
 		else if ($pluginOptions['version'] == "1.0.18")
 		{
@@ -390,26 +409,35 @@ class FCInitialization
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}	
 		else if ($pluginOptions['version'] == "1.0.20")
 		{
 			FCInitialization::upgrade_database_11();
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}	
 		else if ($pluginOptions['version'] == "1.1")
 		{
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}	
 		else if ($pluginOptions['version'] == "1.2")
 		{
 			FCInitialization::upgrade_database_13();
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
 		}	
 		else if ($pluginOptions['version'] == "1.3")
 		{
 			FCInitialization::upgrade_database_14();
+			FCInitialization::upgrade_database_15();
+		}	
+		else if ($pluginOptions['version'] == "1.4")
+		{
+			FCInitialization::upgrade_database_15();
 		}		
 
 		// update the version value
@@ -457,6 +485,9 @@ class FCInitialization
 		if (get_site_option('oasiswf_hide_workflow_graphic')) {
 			delete_site_option('oasiswf_hide_workflow_graphic');
 		}			
+		if (get_site_option('oasiswf_custom_workflow_terminology')) {
+			delete_site_option('oasiswf_custom_workflow_terminology');
+		}		
 
 		$wpdb->query("DELETE FROM {$wpdb->prefix}options WHERE option_name like 'workflow_%'") ;
 		$wpdb->query("DROP TABLE IF EXISTS " . FCUtility::get_workflows_table_name());
@@ -786,6 +817,20 @@ class FCInitialization
    		)
    	);   	
    }
+   
+   private static function upgrade_database_15()
+   {
+   	$oasiswf_custom_workflow_terminology = array(
+   			'submitToWorkflowText' => __( 'Submit to Workflow', 'oasisworkflow' ),
+   			'signOffText' => __( 'Sign Off', 'oasisworkflow' ),
+   			'assignActorsText' => __( 'Assign Actor(s)', 'oasisworkflow' ),
+   			'dueDateText' => __( 'Due Date', 'oasisworkflow' ),
+   			'publishDateText' => __( 'Publish Date', 'oasisworkflow' ),
+   			'abortWorkflowText' => __( 'Abort Workflow', 'oasisworkflow' ),
+   			'workflowHistoryText' => __( 'Workflow History' )
+   	);
+   	update_site_option("oasiswf_custom_workflow_terminology", $oasiswf_custom_workflow_terminology) ;
+   }   
 
 	static function install_admin_database()
 	{
@@ -1082,10 +1127,13 @@ class FCLoadWorkflow
 	    				$current_role,
 	    				'oasiswf-inbox',
 	    				array('FCLoadWorkflow','workflow_inbox'));
-
+		
+		$workflow_terminology_options = get_site_option( 'oasiswf_custom_workflow_terminology' );
+		$workflow_history_label = !empty( $workflow_terminology_options['workflowHistoryText'] ) ? $workflow_terminology_options['workflowHistoryText'] : __( 'Workflow History' );
+		
 		add_submenu_page('oasiswf-inbox',
-						__('Workflow History', 'oasisworkflow'),
-						__('Workflow History', 'oasisworkflow'),
+						$workflow_history_label,
+						$workflow_history_label,
 						$current_role,
 						'oasiswf-history',
 						array('FCLoadWorkflow','workflow_history'));

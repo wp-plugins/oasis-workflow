@@ -9,6 +9,12 @@ if ( !empty( $default_due_days )) {
 }
 $publish_date = current_time(OASISWF_EDIT_DATE_FORMAT);
 $publish_time_array = explode("-", current_time("H-i"));
+
+$workflow_terminology_options = get_site_option( 'oasiswf_custom_workflow_terminology' );
+$assign_actors_label = !empty( $workflow_terminology_options['assignActorsText'] ) ? $workflow_terminology_options['assignActorsText'] : __( 'Assign Actor(s)', 'oasisworkflow' );
+$due_date_label = !empty( $workflow_terminology_options['dueDateText'] ) ? $workflow_terminology_options['dueDateText'] : __( 'Due Date', 'oasisworkflow' );
+$publish_date_label = !empty( $workflow_terminology_options['publishDateText'] ) ? $workflow_terminology_options['publishDateText'] : __( 'Publish Date', 'oasisworkflow' );
+
 ?>
 <div class="info-setting" id="new-workflow-submit-div">
 	<div class="dialog-title"><strong><?php echo __("Submit", "oasisworkflow") ;?></strong></div>
@@ -16,11 +22,13 @@ $publish_time_array = explode("-", current_time("H-i"));
 		<div class="select-part">
 			<label><?php echo __("Workflow : ", "oasisworkflow") ;?></label>
 			<select id="workflow-select" style="width:200px;">
-				<option></option>
 				<?php
+				$count = count($workflow);
 				if( $workflow ){
+					$ary_sel = array();
 					foreach ($workflow as $row) {
 						if( FCProcessFlow::check_submit_wf_editable( $row->ID ) ){
+							$ary_sel[] = $row->ID;
 							if( $row->version== 1 )
 								echo "<option value={$row->ID}>" . $row->name . "</option>" ;
 							else
@@ -32,6 +40,25 @@ $publish_time_array = explode("-", current_time("H-i"));
 			</select>
 			<br class="clear">
 		</div>
+       <?php
+       if(count($ary_sel) == 1) {
+          echo <<<TRIGGER_EVENT
+            <script>
+               jQuery(document).ready(function() {
+                  jQuery("#workflow-select option[value='$ary_sel[0]']").prop("selected", true);
+               });
+            </script>
+TRIGGER_EVENT;
+       } else {
+          echo <<<ADD_BLANK_OPTION
+            <script>
+               jQuery(document).ready(function() {
+                  jQuery('#workflow-select').prepend('<option selected="selected"></option>');
+               });
+            </script>
+ADD_BLANK_OPTION;
+       }
+       ?>		
 		<div class="select-info">
 			<label><?php echo __("Step : ", "oasisworkflow") ;?></label>
 			<select id="step-select" name="step-select" style="width:150px;" real="step-loading-span" disabled="true"></select>
@@ -47,14 +74,14 @@ $publish_time_array = explode("-", current_time("H-i"));
 		</div>
 
 		<div id="multiple-actors-div" class="select-info" style="height:140px;">
-			<label><?php echo __("Assign actor(s) :", "oasisworkflow") ;?></label>
+			<label><?php echo $assign_actors_label ." :" ; ?></label>
 			<div class="select-actors-div">
 				<div class="select-actors-list" >
 					<label><?php echo __("Available", "oasisworkflow") ;?></label>
 					<span class="assign-loading-span" style="float:right;">&nbsp;</span><br>
 
 					<p>
-						<select id="actors-list-select" name="actors-list-select" size=10></select>
+						<select id="actors-list-select" name="actors-list-select" multiple="multiple" size=10></select>
 					</p>
 				</div>
 				<div class="select-actors-div-point">
@@ -64,7 +91,7 @@ $publish_time_array = explode("-", current_time("H-i"));
 				<div class="select-actors-list">
 					<label><?php echo __("Assigned", "oasisworkflow") ;?></label><br>
 					<p>
-						<select id="actors-set-select" name="actors-set-select" size=10></select>
+						<select id="actors-set-select" name="actors-set-select" multiple="multiple" size=10></select>
 					</p>
 				</div>
 			</div>
@@ -73,7 +100,7 @@ $publish_time_array = explode("-", current_time("H-i"));
 		<?php if ($default_due_days != '' || $reminder_days != '' || $reminder_days_after != ''):?>
 		<div class="text-info left">
 			<div class="left">
-				<label><?php echo __("Due Date : ", "oasisworkflow") ;?></label>
+				<label><?php echo $due_date_label . " : ";?></label>
 			</div>
 			<div class="left">
 				<input class="date_input" name="due-date" id="due-date"  value="<?php echo $default_date;?>"/>
@@ -85,7 +112,7 @@ $publish_time_array = explode("-", current_time("H-i"));
 		<!-- Added publish date box for user to choose future publish date. -->
          <div class="text-info left">
 			<div class="left">
-				<label><?php echo __("Publish Date : ", "oasisworkflow") ;?></label>
+				<label><?php echo $publish_date_label . " : " ;?></label>
 			</div>
 			<div class="left">
 				<input name="publish-date" id="publish-date" class="date_input" type="text" real="publish-date-loading-span" value="<?php echo $publish_date; ?>">@

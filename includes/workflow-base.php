@@ -375,40 +375,68 @@ class FCWorkflowBase
       global $wpdb;
       $user_id = $selected_user;
       
-      $orderby = ( isset($_GET['orderby']) && $_GET['orderby'] ) ? " ORDER BY {$_GET['orderby']} {$_GET['order']}" : "  ORDER BY A.due_date" ;
-      //$orderby = "  ORDER BY A.due_date" ;
+      // use white list approach to set order by clause
+      $orderby = array(
+      		'post_title' => 'post_title',
+      		'post_type' => 'post_type',
+      		'post_author' => 'post_author',
+      		'due_date' => 'due_date'
+      );
+      
+      $sortorder = array(
+      		'asc' => 'ASC',
+      		'desc' => 'DESC',
+      );
+      
+      // default order by
+      $orderbycol = " ORDER BY A.due_date, posts.post_title"; // default order by column      
+      
+      if ( isset($_GET['orderby']) && $_GET['orderby'] ) {
+      	// sanitize data
+      	$user_provided_orderby = sanitize_text_field( $_GET['orderby'] );
+      	$user_provided_order = sanitize_text_field( $_GET['order'] );
+      	if (  array_key_exists ( $user_provided_orderby, $orderby )) {
+      		$orderbycol = " ORDER BY " . $orderby[$user_provided_orderby] . " " . $sortorder[$user_provided_order];
+      	}
+      }
 
-      if( $postid )
-      $w = "WHERE (assign_actor_id = $user_id OR actor_id = $user_id) AND post_id = " . $postid . $orderby;
-      else if(isset($user_id))
-      $w = "WHERE assign_actor_id = $user_id OR actor_id = $user_id " . $orderby ;
-      else
-      $w = $orderby;
+      if( $postid ) {
+      	$w = "WHERE (assign_actor_id = $user_id OR actor_id = $user_id) AND post_id = " . $postid . $orderbycol;
+      }
+      else if(isset($user_id)) {
+      	$w = "WHERE assign_actor_id = $user_id OR actor_id = $user_id " . $orderbycol ;
+      }
+      else {
+      	$w = $orderbycol;
+      }
 
       $sql = "SELECT A.*, B.review_status, B.actor_id, B.next_assign_actors, B.step_id as review_step_id, B.action_history_id, 
-      			B.update_datetime, posts.post_title FROM
+      			B.update_datetime, posts.post_title, users.display_name as post_author, posts.post_type FROM
 							(SELECT * FROM " . FCUtility::get_action_history_table_name() . " WHERE action_status = 'assignment') as A
 							LEFT OUTER JOIN
 							(SELECT * FROM " . FCUtility::get_action_table_name() . " WHERE review_status = 'assignment') as B
 							ON A.ID = B.action_history_id
-							JOIN 	{$wpdb->posts} AS posts
-							ON  posts.ID = A.post_id 
+							JOIN 	{$wpdb->posts} AS posts 
+							ON  posts.ID = A.post_id
+							JOIN {$wpdb->base_prefix}users AS users 
+							ON users.ID = posts.post_author
       					$w" ;
       
-      if( $frm == "rows" )
-      $result = $wpdb->get_results( $sql ) ;
-      else
-      $result = $wpdb->get_row( $sql ) ;
+      if( $frm == "rows" ) {
+      	$result = $wpdb->get_results( $sql ) ;
+      } else {
+      	$result = $wpdb->get_row( $sql ) ;
+      }
 
       return $result;
    }
 
-	static function get_count_assigned_post()
-	{
-      $selected_user = isset( $_GET['user'] ) ? $_GET["user"] : get_current_user_id();
+   static function get_count_assigned_post()
+   {
+      $selected_user = isset( $_GET['user'] ) ? intval( sanitize_text_field( $_GET["user"] )) : get_current_user_id();
       $wfactions = FCWorkflowBase::get_assigned_post( null, $selected_user ) ;
       return count($wfactions);
-	}
+   }
 
 	static function get_pre_next_action($fromid)
 	{
@@ -570,7 +598,7 @@ if( isset($_POST['save_action']) && $_POST["save_action"] == "workflow_as_save" 
 	FCWorkflowCRUD::as_save();
 }
 
-if( isset($_GET['page']) && $_GET["page"] == "oasiswf-admin" && isset($_GET['action']) && $_GET["action"] == "delete" )
+if( isset($_GET['page']) && sanitize_text_field( $_GET["page"] ) == "oasiswf-admin" && isset($_GET['action']) && sanitize_text_field( $_GET["action"] ) == "delete" )
 {
 	FCWorkflowList::delete();
 }

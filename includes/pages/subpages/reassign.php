@@ -1,8 +1,10 @@
 <?php
-$history_id = $_POST["oasiswf"] ;
-$task_user = ( isset($_POST["task_user"]) && $_POST["task_user"] ) ? $_POST["task_user"] : get_current_user_id();
-$args['role'] = FCWorkflowInbox::get_user_role( $task_user ) ;
-$role_users = get_users( $args ) ;
+$history_id = intval( sanitize_text_field( $_POST["oasiswf"] )) ;
+$task_user = ( isset($_POST["task_user"]) && $_POST["task_user"] ) ? intval( sanitize_text_field( $_POST["task_user"] )) : get_current_user_id();
+$users = array();
+$history_details = FCProcessFlow::get_action_history_by_id( $history_id );
+$user_info = FCProcessFlow::get_users_in_step_internal( $history_details->step_id );
+$users = $user_info["users"];
 ?>
 <div id="reassgn-setting" class="popup-div">
 	<div class="dialog-title"><strong><?php echo __("Reassign", "oasisworkflow");?></strong></div>
@@ -12,12 +14,11 @@ $role_users = get_users( $args ) ;
 		<select id="reassign_actors" style="width:150px;float:left;">
 			<option value=""></option>
 			<?php
-			foreach ($role_users as $user) {
-				//$lblNm = ( $user->nicename ) ? $user->nicename : $user->user_login ;
-				$lblNm = FCWorkflowInbox::get_user_name($user->ID) ;
-				if( $task_user != $user->ID )
-					echo "<option value={$user->ID}>$lblNm</option>" ;
-			}
+				foreach ($users as $user) {
+					$lblNm = FCWorkflowInbox::get_user_name($user->ID) ;
+					if( $task_user != $user->ID )
+						echo "<option value={$user->ID}>$lblNm</option>" ;
+				}
 			?>
 		</select>
 	</p>

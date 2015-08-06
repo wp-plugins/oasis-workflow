@@ -150,40 +150,47 @@ jQuery(document).ready(function() {
 	}
 	
 	//-------select function------------
-	jQuery("#workflow-select").change(function(){
+    if(jQuery('#workflow-select option:selected').length > 0 ) {
+        workflow_select(jQuery("#workflow-select").val());
+    }
+
+    function workflow_select(workflow_id) {
 		action_setting("wf", "pre") ;
-		if(!jQuery(this).val()){
+		if(!workflow_id){
 			jQuery("#step-loading-span").removeClass("loading");
 			return;
 		}
 		
 		data = {
-				action: 'get_first_step_in_wf' ,
-				wf_id: jQuery(this).val()
-			   };
+			action: 'get_first_step_in_wf' ,
+			wf_id: workflow_id
+		};
 		
 		jQuery("#step-loading-span").addClass("loading");
-		
 		jQuery.post(ajaxurl, data, function( response ) {
 			jQuery("#step-loading-span").removeClass("loading");
-			if(response == "nodefine"){
+			if(response.trim() == "nodefine"){
 				alert(owf_submit_workflow_vars.allStepsNotDefined);
 				jQuery("#workflow-select").val("");
 				return;
 			}
-			if(response == "wrong"){
+			if(response.trim() == "wrong"){
 				alert(owf_submit_workflow_vars.notValidWorkflow);
 				jQuery("#workflow-select").val("");
 				return;
 			}			
 			var stepinfo = {} ;			
-			if(response){
-				stepinfo = JSON.parse(response) ;
+			if(response.trim()){
+				stepinfo = JSON.parse(response.trim()) ;
 				jQuery("#step-select").find('option').remove();				
 				jQuery("#step-select").append("<option value='" + stepinfo["first"][0][0] + "'>" + stepinfo["first"][0][1] + "</option>") ;
 				jQuery("#step-select").change();
 			}
 		});
+    }
+    
+	jQuery("#workflow-select").change(function(){
+        workflow_select(jQuery(this).val());
 	});
 	
 	jQuery("#step-select").change(function(){
@@ -216,49 +223,43 @@ jQuery(document).ready(function() {
 				jQuery("#one-actors-div").hide();
 				jQuery("#multiple-actors-div").show();
 				add_option_to_select("actors-list-select", users, 'name', 'ID') ;	
-				
-				// If there is only one assignee ound then directly select as asigned user
-				if(numKeys(users)==1) {
-					var v = jQuery('#actors-list-select option:selected').val();
-					var t = jQuery('#actors-list-select option:selected').text();
-					if(option_exist_chk(v)){
-						if(jQuery("#actors-set-select option").length == 1){
-							alert(owf_submit_workflow_vars.multipleUsers + " " + stepProcess + " " + owf_submit_workflow_vars.step);
-							return;
-						}
-						jQuery('#actors-set-select').append('<option value=' + v + '>' + t + '</option>');
-					}
-					return false;
-				}
 			}else{
 				jQuery("#multiple-actors-div").hide();
 				jQuery("#one-actors-div").show();
 				add_option_to_select("actor-one-select", users, 'name', 'ID') ;	
-				
 			}
-					
 		});
 	});
 	
 	//---- point function -------
 	jQuery("#assignee-set-point").click(function(){
-		
-		var v = jQuery('#actors-list-select option:selected').val();
-		var t = jQuery('#actors-list-select option:selected').text();
-		if(option_exist_chk(v)){
-			jQuery('#actors-set-select').append('<option value=' + v + '>' + t + '</option>');
-		}
+        
+        jQuery('#actors-list-select option:selected').each(function() {
+            var v = jQuery(this).val();
+            var t = jQuery(this).text();
+            insert_remove_options('actors-list-select', 'actors-set-select', v, t);
+        });
 		return false;
 	});
-	
+        
+    var insert_remove_options = function(removeSelector, appendSelector, val, text) {
+        if(typeof val !== 'undefined') {
+            jQuery("#"+removeSelector+" option[value='" + val + "']").remove();
+            jQuery('#'+appendSelector).append('<option value=' + val + '>' + text + '</option>');
+        }
+    };
+        
 	jQuery("#assignee-unset-point").click(function(){
-		var v = jQuery('#actors-set-select option:selected').val();
-		jQuery("#actors-set-select option[value='" + v + "']").remove();
+        jQuery('#actors-set-select option:selected').each(function() {
+            var v = jQuery(this).val();
+            var t = jQuery(this).text();
+            insert_remove_options('actors-set-select', 'actors-list-select', v, t);
+        });
 		return false;
 	});
 	
 	var option_exist_chk = function(val){
-		if(jQuery('#actors-set-select option[value=' + val + ']').length>0){
+		if(jQuery('#actors-set-select option[value=' + val + ']').length > 0){
 			return false;
 		}else{
 			return true;

@@ -270,20 +270,29 @@ jQuery(document).ready(function() {
 	//--------------------------------	
 	jQuery( document ).on( "click", "#assignee-set-point", function(){
 		
-		var v = jQuery('#actors-list-select option:selected').val();
-		var t = jQuery('#actors-list-select option:selected').text();
-		if(option_exist_chk(v)){
-			jQuery('#actors-set-select').append('<option value=' + v + '>' + t + '</option>');
-		}
-		return false;
+        jQuery('#actors-list-select option:selected').each(function() {
+            var v = jQuery(this).val();
+            var t = jQuery(this).text();
+            insert_remove_options('actors-list-select', 'actors-set-select', v, t);
+        });
+        return false;
 	});
-	
+    
+	var insert_remove_options = function(removeSelector, appendSelector, val, text) {
+	    if(typeof val !== 'undefined') {
+	        jQuery("#"+removeSelector+" option[value='" + val + "']").remove();
+	        jQuery('#'+appendSelector).append('<option value=' + val + '>' + text + '</option>');
+	    }
+	};
+
 	jQuery( document ).on( "click", "#assignee-unset-point" , function(){
-		var v = jQuery('#actors-set-select option:selected').val();
-		jQuery("#actors-set-select option[value='" + v + "']").remove();
-		return false;
+	        jQuery('#actors-set-select option:selected').each(function() {
+	            var v = jQuery(this).val();
+	            var t = jQuery(this).text();
+	            insert_remove_options('actors-set-select', 'actors-list-select', v, t);
+	        });
 	});
-	
+
 	var option_exist_chk = function(val){
 		if(jQuery('#actors-set-select option[value=' + val + ']').length>0){
 			return false;

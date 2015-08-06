@@ -342,7 +342,8 @@ jQuery(document).ready(function() {
 			   };
 		jQuery(this).parent().children(".loading").show();
 		jQuery.get(ajaxurl, data, function( response ) {
-			jQuery("#step_submit_content").html(response);
+			var content = jQuery.parseJSON( response.trim() );
+			jQuery("#step_submit_content").html( content );
 			setTimeout("call_modal()", 100);			
 		});
 		call_modal = function(){
@@ -378,7 +379,8 @@ jQuery(document).ready(function() {
 		
 		jQuery.post(ajaxurl, data, function( response ) {
 			if( response ){
-				jQuery("#reassign-div").html(response) ;
+				var content = jQuery.parseJSON( response.trim() );
+				jQuery("#reassign-div").html( content ) ;
 				setTimeout("call_reassign_modal()", 100);				
 			}
 		});
